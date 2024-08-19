@@ -3,6 +3,16 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/app/components/*"],
+      "@env/*": ["src/environments/*"],
+      "@models/*": ["src/app/models/*"],
+      "@pipes/*": ["src/app/pipes/*"],
+      "@services/*": ["src/app/services/*"],
+      "@utils/*": ["src/app/utils/*"]
+    },
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
@@ -21,7 +31,7 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
