@@ -1,0 +1,10 @@
+<nav class="flex w-full justify-between items-center p-4 bg-white border-b border-gray-300">
+  <img src="logo.png" alt="Logo" class="w-48 h-12">
+  <div class="space-x-8">
+  @for(link of links; track $index){
+    <a routerLink="{{link.url}}" routerLinkActive="active">
+      <ng-icon [svg]="link.icon" size="32"></ng-icon>
+    </a>
+  }
+  </div>
+</nav>
