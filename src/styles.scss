@@ -3,3 +3,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --text: 180 9% 7%;
+    --background: 180 14% 96%;
+    --primary: 174 27% 53%;
+    --secondary: 171 36% 71%;
+    --accent: 170 46% 65%;
+  }
+  .dark {
+    --text: 180 9% 93%;
+    --background: 180 14% 4%;
+    --primary: 174 27% 47%;
+    --secondary: 171 36% 29%;
+    --accent: 170 46% 35%;
+  }
+}
+
