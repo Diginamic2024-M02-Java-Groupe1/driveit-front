@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
-import {NgIconComponent, provideIcons} from "@ng-icons/core";
+import {NgIconComponent, provideIcons} from "@ng-icons/core"
 import {heroArrowRightOnRectangle, heroUser} from "@ng-icons/heroicons/outline";
 interface Link {
   name: string;
