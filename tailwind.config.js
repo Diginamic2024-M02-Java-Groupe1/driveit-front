@@ -10,6 +10,7 @@ module.exports = {
       'primary': 'hsl(var(--primary))',
       'secondary': 'hsl(var(--secondary))',
       'accent': 'hsl(var(--accent))',
+      driveGreen: '#47C29F',
     },
     extend: {},
   },
