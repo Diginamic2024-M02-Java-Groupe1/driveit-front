@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import {NgxSonnerToaster, toast} from "ngx-sonner";
 import {AjoutVehicleServiceComponent} from "@components/ajout-vehicle-service/modal/ajout-vehicle-service.component";
 import {NavbarComponent} from "@components/navbar/navbar.component";
+import {MenuComponent} from "@components/menu/menu.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgxSonnerToaster, NavbarComponent, AjoutVehicleServiceComponent],
+  imports: [RouterOutlet, NgxSonnerToaster, NavbarComponent, AjoutVehicleServiceComponent, MenuComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
