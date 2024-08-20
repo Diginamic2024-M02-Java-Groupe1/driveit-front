@@ -3,6 +3,7 @@ import {NgxSonnerToaster, toast} from "ngx-sonner";
 import {NavbarComponent} from "@components/navbar/navbar.component";
 import {MenuComponent} from "@components/menu/menu.component";
 
+
 @Component({
   selector: 'app-root',
   standalone: true,

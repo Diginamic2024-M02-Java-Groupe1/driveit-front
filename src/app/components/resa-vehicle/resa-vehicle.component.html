@@ -1,0 +1,88 @@
+<div class="grid grid-cols-1 md:grid-cols-3 bg-amber-50 py-2 px-2">
+  <div class="md:mx-auto md:my-auto">
+    <div class="flex w-4/5 mx-auto justify-center items-center bg-white space-y-8">
+      <div class="w-full">
+        <form [formGroup]="filterForm"  class="bg-white rounded-md shadow-2xl p-5" (ngSubmit)="onFilter()">
+          <!--          <h2 class="text-gray-800 font-bold text-xl mb-1">Filtrer les véhicules</h2>-->
+          <p class="text-center mt-4 mb-4"> Début : </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="startDate"
+                     class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Date</label>
+              <input formControlName="startDate" [owlDateTimeTrigger]="dt3" [owlDateTime]="dt3" id="startDate"
+                     class="appearance-none block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1">
+              <owl-date-time [pickerType]="'calendar'" #dt3></owl-date-time>
+            </div>
+            <div>
+              <label for="startHeure"
+                     class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Heure</label>
+              <input formControlName="startHeure" [owlDateTimeTrigger]="dt4" [owlDateTime]="dt4" id="startHeure"
+                     class="appearance-none block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1">
+              <owl-date-time [pickerType]="'timer'" #dt4></owl-date-time>
+            </div>
+          </div>
+          <p class="text-center mt-2 mb-4"> Fin : </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="endDate"
+                     class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Date</label>
+              <input  formControlName="endDate" [owlDateTimeTrigger]="dt5" [owlDateTime]="dt5" id="endDate"
+                     class="appearance-none block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1">
+              <owl-date-time [pickerType]="'calendar'" #dt5></owl-date-time>
+            </div>
+            <div>
+              <label for="endHeure"
+                     class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Heure</label>
+              <input  formControlName="endHeure" [owlDateTimeTrigger]="dt6" [owlDateTime]="dt6" id="endHeure"
+                     class="appearance-none block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1">
+              <owl-date-time [pickerType]="'timer'" #dt6></owl-date-time>
+            </div>
+          </div>
+          <button type="submit"
+                  class="mt-4 w-full bg-driveGreen text-white py-2 px-6 rounded-md hover:bg-emerald-500">
+            Filtrer
+          </button>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+  <div *ngIf="showCarousel" class="col-span-2 md:mx-auto md:my-auto">
+    <div class="w-full h-full px-2">
+      <p-carousel
+        [value]="products"
+        [numVisible]="2"
+        [numScroll]="2"
+        [circular]="false"
+        [responsiveOptions]="responsiveOptions">
+        <ng-template let-product pTemplate="item">
+          <div class="border-1 surface-border border-round p-1 text-sm">
+            <div class="mb-3">
+              <div class="grid grid-cols-2 gap-0.5">
+                <div class="relative mx-auto">
+                  <img
+                    src="https://primefaces.org/cdn/primeng/images/demo/product/{{ product.image }}"
+                    [alt]="product.name"
+                    class="w-full border-round"/>
+                </div>
+
+                <div class=" mx-auto my-auto">
+
+                  <p>Marque : {{ product.name }}</p>
+                  <p>Modèle : {{ product.name }}</p>
+                  <p>AA-123-BB</p>
+                  <p>Places : {{ product.price }}</p>
+
+                  <button class="mt-2 text-white py-2 px-6 rounded-md hover:bg-emerald-500 text-center bg-emerald-500 font-semibold">Réserver</button>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+    </div>
+  </div>
+</div>
