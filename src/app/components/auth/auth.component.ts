@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import {LoginComponent} from "@components/login/login.component";
-import {RegisterComponent} from "@components/register/register.component";
+import {Component, ViewEncapsulation} from '@angular/core';
+import {LoginComponent} from "@components/auth/login/login.component";
+import {RegisterComponent} from "@components/auth/register/register.component";
 import {NgIf} from "@angular/common";
+import {MatTab, MatTabGroup} from "@angular/material/tabs";
 
 @Component({
   selector: 'app-auth',
@@ -10,20 +11,14 @@ import {NgIf} from "@angular/common";
     LoginComponent,
     RegisterComponent,
     NgIf,
+    MatTab,
+    MatTabGroup,
   ],
   templateUrl: './auth.component.html',
-  styleUrl: './auth.component.scss'
+  styleUrl: './auth.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class AuthComponent {
 
-  showLogin = true;
-
-  showLoginForm() {
-    this.showLogin = true;
-  }
-
-  showRegisterForm() {
-    this.showLogin = false;
-  }
 
 }
