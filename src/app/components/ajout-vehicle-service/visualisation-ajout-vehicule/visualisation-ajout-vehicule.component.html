@@ -1,0 +1,18 @@
+<div>
+  <h3>Visualisation du véhicule</h3>
+  <p><strong>Immatriculation: </strong> {{ vehicleDataService.immatriculation }}</p>
+  <p><strong>Nombre de places: </strong> {{ vehicleDataService.nbPlaces }}</p>
+  <p><strong>Catégorie: </strong>{{ vehicleDataService.category }}</p>
+  <p><strong>Pollution: </strong>{{ vehicleDataService.pollution }}</p>
+  <p><strong>Marque: </strong>{{ vehicleDataService.brand }}</p>
+  <p><strong>Modèle: </strong>{{ vehicleDataService.model }}</p>
+  <p><strong>Motorisation: </strong>{{ vehicleDataService.motorization }}</p>
+  <p><strong>Statut: </strong>{{ vehicleDataService.status }}</p>
+  <div
+    class="relative order-first md:order-last h-28 md:h-auto flex justify-center items-center border border-dashed border-grey-400 col-span-2 m-2 rounded-lg bg-no-repeat bg-center bg-origin-padding bg-cover ml-8"
+    [style.background-image]="'url(' + vehicleDataService.imageUrl + ')'">
+    <span *ngIf="!vehicleDataService.imageUrl" class="text-grey-400 opacity-75">
+      <!-- SVG d'image par défaut -->
+    </span>
+  </div>
+</div>

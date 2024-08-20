@@ -8,5 +8,10 @@ import { Component } from '@angular/core';
   styleUrl: './image-vehicule.component.scss'
 })
 export class ImageVehiculeComponent {
+  imageUrl: string | ArrayBuffer | null | undefined;
 
+  onUrlInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.imageUrl = input.value;
+  }
 }
