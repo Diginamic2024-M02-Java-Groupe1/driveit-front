@@ -7,6 +7,7 @@ import {MenuComponent} from "@components/menu/menu.component";
 import {FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 
+
 @Component({
   selector: 'app-root',
   standalone: true,
