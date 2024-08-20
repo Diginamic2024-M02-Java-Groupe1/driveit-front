@@ -1,0 +1,17 @@
+<mat-drawer-container class="h-full">
+  <mat-drawer #drawer class="w-64 bg-primary p-4" mode="over">
+    <div class="flex justify-end">
+      <button type="button" (click)="drawer.toggle()">
+        <ng-icon name="heroXMark" size="32" class="text-text"></ng-icon>
+      </button>
+    </div>
+    <ul class="mt-2">
+      @for(link of links; track $index){
+        <li class="mb-2" routerLinkActive="text-accent bg-gray-200 rounded-md" [routerLinkActiveOptions]="{exact:true}">
+          <a routerLink="{{link.url}}" class="block p-2 text-text hover:text-white hover:bg-secondary rounded-md">{{ link.name }}</a>
+        </li>
+      }
+    </ul>
+  </mat-drawer>
+  <router-outlet/>
+</mat-drawer-container>
