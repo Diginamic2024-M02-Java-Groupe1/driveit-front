@@ -6,11 +6,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'text': 'hsl(var(--text))',
-        'background': 'hsl(var(--background))',
-        'primary': 'hsl(var(--primary))',
-        'secondary': 'hsl(var(--secondary))',
-        'accent': 'hsl(var(--accent))',
+        primary: 'hsl(174, 27%, 53%)',
+        secondary: 'hsl(171, 36%, 71%)',
+        accent: 'hsl(170, 46%, 65%)',
+        text: 'hsl(180, 9%, 7%)',
+        background: 'hsl(180, 14%, 96%)',
         driveGreen: '#47C29F',
       },
     },

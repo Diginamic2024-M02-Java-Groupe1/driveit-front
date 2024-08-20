@@ -1,4 +1,4 @@
-<mat-drawer-container class="h-full">
+<mat-drawer-container class="w-full h-full">
   <mat-drawer #drawer class="w-64 bg-primary p-4" mode="over">
     <div class="flex justify-end">
       <button type="button" (click)="drawer.toggle()">
@@ -8,10 +8,12 @@
     <ul class="mt-2">
       @for(link of links; track $index){
         <li class="mb-2" routerLinkActive="text-accent bg-gray-200 rounded-md" [routerLinkActiveOptions]="{exact:true}">
-          <a routerLink="{{link.url}}" class="block p-2 text-text hover:text-white hover:bg-secondary rounded-md">{{ link.name }}</a>
+          <a (click)="drawer.toggle()" routerLink="{{link.url}}" class="block p-2 text-text hover:text-white hover:bg-secondary rounded-md">{{ link.name }}</a>
         </li>
       }
     </ul>
   </mat-drawer>
+  <div class="flex w-full h-full justify-center items-center">
   <router-outlet/>
+  </div>
 </mat-drawer-container>

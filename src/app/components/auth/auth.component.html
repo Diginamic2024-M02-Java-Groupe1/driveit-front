@@ -1,22 +1,12 @@
-<div class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden py-6 sm:py-12">
-  <div class="relative py-3 sm:w-full mx-auto ">
-    <div class="grid grid-cols-2">
-    <button
-      (click)="showLoginForm()"
-      [style.background-color]="showLogin ? '': '#47C29F'"
-      [style.color]="showLogin ? '#374151' : 'white'"
-      class=" text-2xl font-light py-2 px-4 rounded-md">
-      Login
-    </button>
-    <button
-      (click)="showRegisterForm()"
-      [style.background-color]="!showLogin ? '' : '#47C29F'"
-      [style.color]="!showLogin ? '#374151' : 'white'"
-      class=" text-2xl font-light py-2 px-4 rounded-md">
-      Register
-    </button>
+<mat-tab-group dynamicHeight>
+  <mat-tab label="Connexion">
+    <div class="example-small-box mat-elevation-z4">
+      <app-login ></app-login>
     </div>
-    <app-login *ngIf="showLogin"></app-login>
-    <app-register *ngIf="!showLogin"></app-register>
-  </div>
-</div>
+  </mat-tab>
+  <mat-tab label="Inscription">
+    <div class="example-large-box mat-elevation-z4">
+      <app-register></app-register>
+    </div>
+  </mat-tab>
+</mat-tab-group>
