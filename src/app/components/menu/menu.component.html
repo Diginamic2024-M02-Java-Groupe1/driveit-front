@@ -8,7 +8,7 @@
     <ul class="mt-2">
       @for(link of links; track $index){
         <li class="mb-2" routerLinkActive="text-accent bg-gray-200 rounded-md" [routerLinkActiveOptions]="{exact:true}">
-          <a routerLink="{{link.url}}" class="block p-2 text-text hover:text-white hover:bg-secondary rounded-md">{{ link.name }}</a>
+          <a (click)="drawer.toggle()" routerLink="{{link.url}}" class="block p-2 text-text hover:text-white hover:bg-secondary rounded-md">{{ link.name }}</a>
         </li>
       }
     </ul>
