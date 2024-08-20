@@ -12,5 +12,11 @@ export class VehicleDataService {
   model: string = '';
   motorization: string = '';
   status: string = '';
-  imageUrl: string | ArrayBuffer | null | undefined = null;
+
+  imageUrl: string | ArrayBuffer | null | undefined;
+
+  onUrlInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.imageUrl = input.value;
+  }
 }
