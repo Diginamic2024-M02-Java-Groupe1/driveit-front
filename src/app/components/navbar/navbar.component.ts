@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {NgIconComponent, provideIcons} from "@ng-icons/core";
 import {heroArrowRightOnRectangle, heroBars3, heroUser} from "@ng-icons/heroicons/outline";
