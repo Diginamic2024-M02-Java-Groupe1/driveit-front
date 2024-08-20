@@ -3,8 +3,11 @@
   <div class="space-x-8">
   @for(link of links; track $index){
     <a routerLink="{{link.url}}" routerLinkActive="active">
-      <ng-icon [svg]="link.icon" size="32"></ng-icon>
+      <ng-icon [svg]="link.icon" size="32" class="text-text"></ng-icon>
     </a>
   }
+  <button type="button" (click)="toggleMenu()">
+    <ng-icon name="heroBars3" size="32" class="text-text"></ng-icon>
+  </button>
   </div>
 </nav>
