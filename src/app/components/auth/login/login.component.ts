@@ -3,6 +3,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass} from "@angular/common";
 import {AuthService} from "@services/auth.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   submitted: boolean = false;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private router: Router) {
   }
 
   get email() {
@@ -33,9 +34,12 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
     console.log(this.loginForm.value);
     if (this.loginForm.valid) {
-      console.log('Form is valid');
       this.authService.login(this.email?.value, this.password?.value).subscribe((response) => {
-        console.log(response);
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+          console.log('Login successful');
+          this.router.navigate(['']);
+        }
       });
     } else {
       console.log('Form is invalid');
