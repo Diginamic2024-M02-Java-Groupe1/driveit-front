@@ -2,7 +2,6 @@ import {Component, ViewEncapsulation} from '@angular/core';
 import {LoginComponent} from "@components/auth/login/login.component";
 import {RegisterComponent} from "@components/auth/register/register.component";
 import {NgIf} from "@angular/common";
-import {MatTab, MatTabGroup} from "@angular/material/tabs";
 
 @Component({
   selector: 'app-auth',
@@ -11,8 +10,6 @@ import {MatTab, MatTabGroup} from "@angular/material/tabs";
     LoginComponent,
     RegisterComponent,
     NgIf,
-    MatTab,
-    MatTabGroup,
   ],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {NgIconComponent, provideIcons} from "@ng-icons/core";
 import {heroArrowRightOnRectangle, heroBars3, heroUser} from "@ng-icons/heroicons/outline";
-import {MatIconButton} from "@angular/material/button";
 import {DrawerService} from "@services/drawer.service";
 
 interface Link {
@@ -18,7 +17,6 @@ interface Link {
     RouterLink,
     RouterLinkActive,
     NgIconComponent,
-    MatIconButton
   ],
   providers: [provideIcons({heroUser,heroArrowRightOnRectangle,heroBars3})],
   templateUrl: './navbar.component.html',
@@ -32,7 +30,7 @@ export class NavbarComponent {
 
   constructor(private drawerService: DrawerService) {}
 
-  toggleMenu() {
-    this.drawerService.toggleDrawer();
-  }
+  // toggleMenu() {
+  //   this.drawerService.toggleDrawer();
+  // }
 }
