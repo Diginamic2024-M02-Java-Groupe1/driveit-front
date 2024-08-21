@@ -1,6 +1,5 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NgIf, NgOptimizedImage} from '@angular/common';
-import {VehicleDataService} from "@services/ajoutVehiculeService/vehicle-data.service";
 
 @Component({
   selector: 'app-visualisation-ajout-vehicule',
@@ -13,8 +12,8 @@ import {VehicleDataService} from "@services/ajoutVehiculeService/vehicle-data.se
   styleUrls: ['./visualisation-ajout-vehicule.component.scss']
 })
 export class VisualisationAjoutVehiculeComponent {
+  @Input() formValues: any;
 
-  constructor(protected vehicleDataService: VehicleDataService) {
-
+  constructor() {
   }
 }

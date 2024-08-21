@@ -1,22 +1,22 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {Vehicle} from "@models/vehicle";
+import {StatusVehicle} from "@models/enums/status-vehicle";
+import {Motorization} from "@models/motorization";
+import {Model} from "@models/model";
+import {Category} from "@models/category";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root',
 })
 export class VehicleDataService {
-  immatriculation: string = '';
-  nbPlaces: string = '';
-  category: string = '';
-  pollution: string = '';
-  brand: string = '';
-  model: string = '';
-  motorization: string = '';
-  status: string = '';
+  private url: string = 'http://localhost:8081';
 
-  imageUrl: string | ArrayBuffer | null | undefined;
+  constructor(private http: HttpClient, private vehicle: Vehicle) {
+  }
 
-  onUrlInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.imageUrl = input.value;
+  insertVehicle(vehicle: Vehicle): Observable<Vehicle> {
+    return this.http.post<Vehicle>(`${this.url}/api/vehicule/service`, vehicle);
   }
 }

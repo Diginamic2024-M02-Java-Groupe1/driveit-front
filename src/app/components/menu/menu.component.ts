@@ -19,8 +19,8 @@ export class MenuComponent implements AfterViewInit{
 
   links = [
     {name: 'Home', url: '/'},
-    {name: 'Ajouter un véhicule de service', url: '/ajoutVehicule'},
-    {name: 'Reserver Vehicule', url: '/reserver-vehicule'},
+    {name: 'Ajouter un véhicule', url: '/ajout-vehicule'},
+    {name: 'Réserver un véhicule', url: '/reserver-vehicule'},
   ];
 
   constructor(private drawerService: DrawerService) {
