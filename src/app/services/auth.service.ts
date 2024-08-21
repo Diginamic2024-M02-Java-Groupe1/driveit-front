@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {environment} from "@env/environment";
 
 interface LoginResponse {
   token: string;
@@ -11,7 +12,7 @@ interface LoginResponse {
 })
 export class AuthService {
 
-  private url: string = 'http://localhost:8081/auth';
+  private url: string = environment.auth;
 
   constructor(private http: HttpClient) { }
 
@@ -25,5 +26,9 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
   }
 }
