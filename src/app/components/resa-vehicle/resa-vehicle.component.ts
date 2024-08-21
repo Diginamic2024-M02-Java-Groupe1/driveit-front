@@ -5,7 +5,10 @@ import {OwlDateTimeIntl, OwlDateTimeModule, OwlNativeDateTimeModule} from "@dani
 import { CarouselModule } from 'primeng/carousel';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Vehicle} from "@models/vehicle";
+import {ResaVehicleService} from "@services/resa-vehicle.service";
+import {ResaVehicle} from "@models/resa-vehicle";
 
 @Component({
   selector: 'app-resa-vehicle',
@@ -21,11 +24,27 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/
     ButtonModule,
     NgIf,
     ReactiveFormsModule,
+    FormsModule,
   ],
   templateUrl: './resa-vehicle.component.html',
   styleUrl: './resa-vehicle.component.scss'
 })
 export class ResaVehicleComponent implements OnInit  {
+
+  vehicles:Vehicle[] = [];
+  filteredVehicles:ResaVehicle[] = [];
+  showCarousel: boolean = false;
+  filterForm: FormGroup;
+
+  responsiveOptions: any[] = [];
+
+
+  constructor(private fb: FormBuilder,private resaVehicleService: ResaVehicleService) {
+    this.filterForm = this.fb.group({
+      startDateTime: [!null,Validators.required],
+      endDateTime: [!null,Validators.required]
+    });
+  }
 
   products = [
       {
@@ -97,20 +116,10 @@ export class ResaVehicleComponent implements OnInit  {
       },
     ];
 
-  filteredProducts = this.products;
-  showCarousel: boolean = false;
-  filterForm: FormGroup;
+  // showCarousel: boolean = false;
+  // filterForm: FormGroup;
 
-  responsiveOptions: any[] = [];
 
-  constructor(private fb: FormBuilder) {
-    this.filterForm = this.fb.group({
-      startDate: ['',Validators.required],
-      startHeure: ['',Validators.required],
-      endDate: ['',Validators.required],
-      endHeure: ['',Validators.required]
-    });
-  }
 
 
 ngOnInit() {
@@ -131,6 +140,7 @@ ngOnInit() {
         numScroll: 1
       }
     ];
+
   this.filterForm.valueChanges.subscribe(() => {
     this.showCarousel = false;
   });
@@ -138,26 +148,26 @@ ngOnInit() {
 
 
   onFilter() {
+  console.log(this.filterForm.status)
     if (this.filterForm.valid) {
-      const {startDate, startHeure, endDate, endHeure} = this.filterForm.value;
-      this.filteredProducts = this.products.filter(product => {
-        // Add your filtering logic here
-        return true; // Replace with actual condition
-      });
-      this.showCarousel = true;
+      const { startDateTime, endDateTime} = this.filterForm.value;
+      const startDate = startDateTime.toISOString();
+      const endDate = endDateTime.toISOString();
+      console.log('Start date:', startDate);
+      console.log('End date:', endDate);
+      this.resaVehicleService.getFilteredVehicles(startDate,endDate).subscribe(
+        (data: ResaVehicle[]) => {
+          console.log('Je suis dans le onFilter');
+          this.filteredVehicles = data;
+          console.log('Filtered vehicles:', this.filteredVehicles);
+          this.showCarousel = true;
+        },
+        error => {
+          console.error('Error fetching filtered vehicles', error);
+        }
+      );
     }
   }
 
-  getSeverity(status: string) {
-    switch (status) {
-      case 'In Stock':
-        return 'success';
-      case 'Low Stock':
-        return 'warning';
-      case 'Out of Stock':
-        return 'danger';
-      default:
-        return 'info';
-    }
-  }
+
 }
