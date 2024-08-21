@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {RouterLink} from "@angular/router";
 import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
-import {OwlDateTimeIntl, OwlDateTimeModule, OwlNativeDateTimeModule} from "@danielmoncada/angular-datetime-picker";
-import { CarouselModule } from 'primeng/carousel';
-import { TagModule } from 'primeng/tag';
-import { ButtonModule } from 'primeng/button';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {OwlDateTimeModule, OwlNativeDateTimeModule} from "@danielmoncada/angular-datetime-picker";
+import {CarouselModule} from 'primeng/carousel';
+import {TagModule} from 'primeng/tag';
+import {ButtonModule} from 'primeng/button';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Vehicle} from "@models/vehicle";
 import {ResaVehicleService} from "@services/resa-vehicle.service";
 import {ResaVehicle} from "@models/resa-vehicle";
+import {CalendarModule} from "primeng/calendar";
 
 @Component({
   selector: 'app-resa-vehicle',
@@ -25,6 +26,7 @@ import {ResaVehicle} from "@models/resa-vehicle";
     NgIf,
     ReactiveFormsModule,
     FormsModule,
+    CalendarModule,
   ],
   templateUrl: './resa-vehicle.component.html',
   styleUrl: './resa-vehicle.component.scss'
@@ -39,11 +41,13 @@ export class ResaVehicleComponent implements OnInit  {
   responsiveOptions: any[] = [];
 
 
-  constructor(private fb: FormBuilder,private resaVehicleService: ResaVehicleService) {
-    this.filterForm = this.fb.group({
-      startDateTime: [!null,Validators.required],
-      endDateTime: [!null,Validators.required]
-    });
+  constructor(private resaVehicleService: ResaVehicleService) {
+    this.filterForm = new FormGroup(
+      {
+        startDateTime: new FormControl<Date | null>(null, Validators.required),
+        endDateTime: new FormControl<Date | null>(null, Validators.required)
+      }
+    )
   }
 
   products = [
@@ -155,17 +159,17 @@ ngOnInit() {
       const endDate = endDateTime.toISOString();
       console.log('Start date:', startDate);
       console.log('End date:', endDate);
-      this.resaVehicleService.getFilteredVehicles(startDate,endDate).subscribe(
-        (data: ResaVehicle[]) => {
+      this.resaVehicleService.getFilteredVehicles(startDate, endDate).subscribe({
+        next: (data: ResaVehicle[]) => {
           console.log('Je suis dans le onFilter');
           this.filteredVehicles = data;
           console.log('Filtered vehicles:', this.filteredVehicles);
           this.showCarousel = true;
         },
-        error => {
+        error: (error) => {
           console.error('Error fetching filtered vehicles', error);
         }
-      );
+      });
     }
   }
 

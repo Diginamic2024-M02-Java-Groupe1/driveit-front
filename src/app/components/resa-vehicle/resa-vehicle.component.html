@@ -1,3 +1,4 @@
+<!-- src/app/components/resa-vehicle/resa-vehicle.component.html -->
 <div class="grid grid-cols-1 md:grid-cols-3 bg-amber-50 py-2 px-2">
   <div class="md:mx-auto md:my-auto">
     <div class="flex w-full mx-auto justify-center items-center bg-white space-y-8">
@@ -5,28 +6,18 @@
         <form [formGroup]="filterForm" class="bg-white rounded-md shadow-2xl p-5" (ngSubmit)="onFilter()">
           <h2 class="text-gray-800 font-bold text-xl mb-1">Filtrer les véhicules</h2>
 
-
           <label for="dateTimeStart" class="control-label">Date et heure début :</label>
           <div class="relative">
-            <input formControlName="startDateTime" [owlDateTime]="dateTimeStart" id="dateTimeStart"
-                    class="appearance-none pl-4 block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 px-1 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
-                   name="dateStart">
-            <span [owlDateTimeTrigger]="dateTimeStart"
-                  class="absolute right-0 w-10 top-0 h-full flex items-center justify-center rounded-r-2xl bg-driveGreen">
-              <i class="pi pi-calendar-clock text-emerald-100"></i>
-            </span>
-            <owl-date-time #dateTimeStart></owl-date-time>
+            <p-calendar formControlName="startDateTime" id="dateTimeStart" [showTime]="true" hourFormat="24"
+                        class="appearance-none pl-4 block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 px-1 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
+                        name="dateStart"></p-calendar>
           </div>
-          <label for="dateTimeEnd" class="control-label">Date et heure début :</label>
+
+          <label for="dateTimeEnd" class="control-label">Date et heure fin :</label>
           <div class="relative">
-            <input formControlName="endDateTime" [owlDateTime]="dateTimeEnd" id="dateTimeEnd"
-                   class="appearance-none pl-4 block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 px-1 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
-                   name="dateEnd">
-            <span [owlDateTimeTrigger]="dateTimeEnd"
-                  class="absolute right-0 w-10 top-0 h-full flex items-center justify-center rounded-r-2xl bg-driveGreen">
-              <i class="pi pi-calendar-clock"></i>
-            </span>
-            <owl-date-time #dateTimeEnd></owl-date-time>
+            <p-calendar formControlName="endDateTime" id="dateTimeEnd" [showTime]="true" hourFormat="24"
+                        class="appearance-none pl-4 block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 px-1 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
+                        name="dateEnd"></p-calendar>
           </div>
 
           <button type="submit"
@@ -36,7 +27,6 @@
 
         </form>
       </div>
-
     </div>
   </div>
   <div *ngIf="showCarousel" class="col-span-2 md:mx-auto md:my-auto">
@@ -59,7 +49,6 @@
                 </div>
 
                 <div class=" mx-auto my-auto">
-
                   <p>Marque : {{ vehicle.brand }}</p>
                   <p>Modèle : {{ vehicle.model }}</p>
                   <p>AA-123-BB</p>
@@ -71,7 +60,6 @@
                   </button>
 
                 </div>
-
               </div>
             </div>
           </div>
