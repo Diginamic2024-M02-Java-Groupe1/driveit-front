@@ -4,6 +4,9 @@ import {ResaVehicleComponent} from "@components/resa-vehicle/resa-vehicle.compon
 import {AuthGuard} from "./guards/auth.guard";
 import {AjoutVehicleServiceComponent} from "@components/ajout-vehicle-service/modal/ajout-vehicle-service.component";
 import {NotFoundComponent} from "@components/not-found/not-found.component";
+import {
+  VehicleReservationLayoutComponent
+} from "@components/vehicle-reservation-layout/vehicle-reservation-layout.component";
 
 export const routes: Routes = [
   {
@@ -22,6 +25,11 @@ export const routes: Routes = [
   {
     path: 'ajoutVehicule',
     component: AjoutVehicleServiceComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path:'VehicleReserveHistory',
+    component: VehicleReservationLayoutComponent,
     canActivate: [AuthGuard]
   },
   {

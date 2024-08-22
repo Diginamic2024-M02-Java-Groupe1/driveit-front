@@ -31,15 +31,11 @@ import {CalendarModule} from "primeng/calendar";
   templateUrl: './resa-vehicle.component.html',
   styleUrl: './resa-vehicle.component.scss'
 })
-export class ResaVehicleComponent implements OnInit  {
+export class ResaVehicleComponent implements OnInit {
 
-  vehicles:Vehicle[] = [];
-  filteredVehicles:ResaVehicle[] = [];
+  filteredVehicles: ResaVehicle[] = [];
   showCarousel: boolean = false;
   filterForm: FormGroup;
-
-  responsiveOptions: any[] = [];
-
 
   constructor(private resaVehicleService: ResaVehicleService) {
     this.filterForm = new FormGroup(
@@ -50,34 +46,16 @@ export class ResaVehicleComponent implements OnInit  {
     )
   }
 
-ngOnInit() {
-  this.responsiveOptions = [
-      {
-        breakpoint: '1199px',
-        numVisible: 1,
-        numScroll: 1
-      },
-      {
-        breakpoint: '991px',
-        numVisible: 2,
-        numScroll: 1
-      },
-      {
-        breakpoint: '767px',
-        numVisible: 1,
-        numScroll: 1
-      }
-    ];
-
-  this.filterForm.valueChanges.subscribe(() => {
-    this.showCarousel = false;
-  });
-}
+  ngOnInit() {
+    this.filterForm.valueChanges.subscribe(() => {
+      this.showCarousel = false;
+    });
+  }
 
 
   onFilter() {
     if (this.filterForm.valid) {
-      const { startDateTime, endDateTime} = this.filterForm.value;
+      const {startDateTime, endDateTime} = this.filterForm.value;
       const startDate = startDateTime.toISOString();
       const endDate = endDateTime.toISOString();
       this.resaVehicleService.getFilteredVehicles(startDate, endDate).subscribe({
@@ -92,10 +70,18 @@ ngOnInit() {
     }
   }
 
-  reserveVehicle(reservationVehicle: ResaVehicle) {
-    this.resaVehicleService.reserveVehicle(1, reservationVehicle).subscribe({
+  reserveVehicle(vehicle: Vehicle) {
+    const reservationData: ResaVehicle = {
+      dateTimeStart: this.filterForm.get('startDateTime')?.value.toISOString(),
+      dateTimeEnd: this.filterForm.get('endDateTime')?.value.toISOString(),
+      vehicle: {
+        id: vehicle.id,
+        registration: vehicle.registration,
+      }
+    };
+    this.resaVehicleService.reserveVehicle(1, reservationData).subscribe({
       next: (data) => {
-        console.log('Vehicle reserved', data);
+        this.onFilter();
       },
       error: (error) => {
         console.error('Error reserving vehicle', error);
