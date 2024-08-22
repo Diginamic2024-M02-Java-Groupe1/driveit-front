@@ -21,9 +21,4 @@ export class AppComponent {
   protected readonly toast = toast;
 
   constructor(private authService: AuthService) {}
-
-  @HostListener('window:beforeunload', ['$event'])
-  unloadHandler() {
-    this.authService.logout();
-  }
 }
