@@ -6,9 +6,9 @@ import {CarouselModule} from 'primeng/carousel';
 import {TagModule} from 'primeng/tag';
 import {ButtonModule} from 'primeng/button';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {Vehicle} from "@models/vehicle";
+import {Vehicle} from "@models/vehicle.model";
 import {ResaVehicleService} from "@services/resa-vehicle.service";
-import {ResaVehicle} from "@models/resa-vehicle";
+import {ResaVehicle} from "@models/resa-vehicle.model";
 import {CalendarModule} from "primeng/calendar";
 
 @Component({

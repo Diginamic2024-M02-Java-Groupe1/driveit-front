@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from "@env/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {ResaVehicle} from "@models/resa-vehicle";
+import {ResaVehicle} from "@models/resa-vehicle.model";
 
 
 @Injectable({
