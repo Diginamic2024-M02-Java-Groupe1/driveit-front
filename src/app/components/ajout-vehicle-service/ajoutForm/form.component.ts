@@ -18,6 +18,7 @@ import {StatusVehicle} from "@models/enums/status-vehicle";
   styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnInit {
+  // vehicleNew: Vehicle= {} as Vehicle;
   protected ajoutVehiculeForm!: FormGroup;
   submitted: boolean = false;
   vehicles: Vehicle[] = [];
@@ -26,8 +27,9 @@ export class FormComponent implements OnInit {
     private fb: FormBuilder,
     private vehicleService : VehicleDataService
   ) {
+    // Validators.pattern('[A-Z]{2}-\\d{3}-[A-Z]{2}')]
     this.ajoutVehiculeForm = new FormGroup({
-      registration: new FormControl('', [Validators.required, Validators.pattern('[A-Z]{2}-\\d{3}-[A-Z]{2}')],),
+      registration: new FormControl('', [Validators.required]),
       numberOfSeats: new FormControl('', [Validators.required, Validators.min(1)]),
       category: new FormControl('', [Validators.required]),
       brand: new FormControl('', [Validators.required]),
@@ -35,7 +37,7 @@ export class FormComponent implements OnInit {
       motorization: new FormControl('', [Validators.required]),
       emission: new FormControl('', [Validators.required, Validators.min(0)]),
       status: new FormControl(StatusVehicle.AVAILABLE, [Validators.required]),
-      urlImage: new FormControl('', [Validators.required]),
+      url: new FormControl('', [Validators.required]),
       service: new FormControl('', [Validators.required]),
     });
   }
@@ -72,7 +74,7 @@ export class FormComponent implements OnInit {
     return this.ajoutVehiculeForm.get('status');
   }
 
-  get urlImage() {
+  get url() {
     return this.ajoutVehiculeForm.get('urlImage');
   }
 
@@ -85,12 +87,33 @@ export class FormComponent implements OnInit {
     console.log(this.ajoutVehiculeForm.value);
     if (this.ajoutVehiculeForm.valid) {
       const vehicle: Vehicle = {
-        ...this.ajoutVehiculeForm.value,
-        brand: {
-          name: this.ajoutVehiculeForm.get('brand')?.value,  // Si vous avez aussi un ID, vous pourriez le passer ici
-        }
-      };
-      console.log(vehicle);
+        id: 0,
+        registration: this.ajoutVehiculeForm.get('registration')?.value,
+        numberOfSeats: this.ajoutVehiculeForm.get('numberOfSeats')?.value,
+        service: this.ajoutVehiculeForm.get('service')?.value,
+        emission: this.ajoutVehiculeForm.get('emission')?.value,
+        url: this.ajoutVehiculeForm.get('urlImage')?.value,
+        status: this.ajoutVehiculeForm.get('status')?.value,
+        collaborators: [],
+        carpooling: [],
+        motorization: {
+          id: 1,
+        name: this.ajoutVehiculeForm.get('motorization')?.value,
+      },
+      model: {
+          id: 1,
+          name: this.ajoutVehiculeForm.get('model')?.value,
+          brand: {
+            id: 1,
+          name: this.ajoutVehiculeForm.get('brand')?.value,
+        },
+      },
+      category: {
+        id:1,
+        name: this.ajoutVehiculeForm.get('category')?.value,
+      },
+    };
+    console.log(vehicle);
       this.vehicleService.insertVehicle(vehicle).subscribe(
         response => {
           console.log('Le véhicule a été ajouté avec succès.', response);

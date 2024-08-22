@@ -15,11 +15,11 @@ export class VehicleDataService {
   }
 
   insertVehicle(vehicle: Vehicle): Observable<Vehicle> {
-    const headers = { 'Authorization': `Bearer ${this.authService.getToken()}` }; // Add token to headers if needed
-    return this.http.post<Vehicle>(`${this.apiURL}/vehicule/service`, vehicle,  { headers })
+    // const headers = { 'Authorization': `Bearer ${this.authService.getToken()}` }; // Add token to headers if needed
+    return this.http.post<Vehicle>(`${this.apiURL}/vehicule/service`, vehicle)
       .pipe(
         catchError(this.handleError)
-      ); //TODO : passer le token dans les headers de la requête
+      );
   }
 
   private handleError(error: HttpErrorResponse) {

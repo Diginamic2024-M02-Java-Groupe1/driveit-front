@@ -6,12 +6,12 @@
         <div class=" w-full">
           <label for="urlImage"
                  class="block tracking-wide text-grey-darker text-xs font-bold mb-2">URL de l'image</label>
-          <input type="text" formControlName="urlImage" id="urlImage"
+          <input type="text" formControlName="url" id="urlImage"
                  placeholder="Entrez l'URL de l'image"
                  class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
-                 [ngClass]="{'ring-2 ring-red-500': urlImage?.invalid && (!urlImage?.untouched), 'ring-2 ring-green-500': urlImage?.valid}"
+                 [ngClass]="{'ring-2 ring-red-500': url?.invalid && (!url?.untouched), 'ring-2 ring-green-500': url?.valid}"
                  (input)="onUrlInput($event)">
-          @if (urlImage?.invalid && (urlImage?.dirty || !urlImage?.untouched || submitted)) {
+          @if (url?.invalid && (url?.dirty || !url?.untouched || submitted)) {
             <div class="text-red-500 text-xs italic">
               {{ getErrorMessage('urlImage') }}
             </div>
