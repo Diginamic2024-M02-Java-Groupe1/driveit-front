@@ -20,13 +20,13 @@
         <div class="flex space-x-4 form-group">
           <div class="w-1/2">
             <div class="mb-6">
-              <label for="immatriculation"
+              <label for="registration"
                      class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Immatriculation</label>
-              <p-inputMask mask="aa-999-aa" id="immatriculation" formControlName="immatriculation"
+              <p-inputMask mask="aa-999-aa" id="registration" formControlName="registration"
                            placeholder="AB-123-CD"
                            class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
-                           [ngClass]="{'ring-2 ring-red-500': immatriculation?.invalid && (!immatriculation?.untouched), 'ring-2 ring-green-500': immatriculation?.valid}"></p-inputMask>
-              @if (immatriculation?.invalid && (immatriculation?.dirty || !immatriculation?.untouched || submitted)) {
+                           [ngClass]="{'ring-2 ring-red-500': registration?.invalid && (!registration?.untouched), 'ring-2 ring-green-500': registration?.valid}"></p-inputMask>
+              @if (registration?.invalid && (registration?.dirty || !registration?.untouched || submitted)) {
                 <div class="text-red-500 text-xs italic">
                   {{ getErrorMessage('immatriculation') }}
                 </div>
@@ -34,12 +34,12 @@
             </div>
 
             <div class="mb-6">
-              <label for="nbPlaces" class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Nombre de
+              <label for="numberOfSeats" class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Nombre de
                 places</label>
-              <input type="number" min="0" id="nbPlaces" formControlName="nbPlaces" placeholder="5"
+              <input type="number" min="0" id="numberOfSeats" formControlName="numberOfSeats" placeholder="5"
                      class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
-                     [ngClass]="{'ring-2 ring-red-500': nbPlaces?.invalid && (!nbPlaces?.untouched), 'ring-2 ring-green-500': nbPlaces?.valid}">
-              @if (nbPlaces?.invalid && (nbPlaces?.dirty || !nbPlaces?.untouched || submitted)) {
+                     [ngClass]="{'ring-2 ring-red-500': numberOfSeats?.invalid && (!numberOfSeats?.untouched), 'ring-2 ring-green-500': numberOfSeats?.valid}">
+              @if (numberOfSeats?.invalid && (numberOfSeats?.dirty || !numberOfSeats?.untouched || submitted)) {
                 <div class="text-red-500 text-xs italic">
                   {{ getErrorMessage('nbPlaces') }}
                 </div>
@@ -70,8 +70,8 @@
               }
             </div>
             <div class="mb-6">
-              <label for="isService" class="tracking-wide text-grey-darker text-xs font-bold mb-2 mr-2">Service</label>
-              <input id="isService" formControlName="isService"
+              <label for="service" class="tracking-wide text-grey-darker text-xs font-bold mb-2 mr-2">Service</label>
+              <input id="service" formControlName="service"
                      type="checkbox">
             </div>
           </div>
@@ -99,13 +99,13 @@
               }
             </div>
             <div class="mb-6">
-              <label for="motorisation"
+              <label for="motorization"
                      class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Motorisation</label>
-              <input id="motorisation" formControlName="motorisation"
+              <input id="motorization" formControlName="motorization"
                      placeholder="Hybride"
                      class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
-                     [ngClass]="{'ring-2 ring-red-500': motorisation?.invalid && (!motorisation?.untouched), 'ring-2 ring-green-500': motorisation?.valid}">
-              @if (motorisation?.invalid && (motorisation?.dirty || !motorisation?.untouched || submitted)) {
+                     [ngClass]="{'ring-2 ring-red-500': motorization?.invalid && (!motorization?.untouched), 'ring-2 ring-green-500': motorization?.valid}">
+              @if (motorization?.invalid && (motorization?.dirty || !motorization?.untouched || submitted)) {
                 <div class="text-red-500 text-xs italic">
                   {{ getErrorMessage('motorisation') }}
                 </div>
@@ -116,10 +116,10 @@
               <div class="relative">
                 <select id="status" formControlName="status"
                         class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 pr-8 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
-                        [ngClass]="{'ring-2 ring-red-500': status?.invalid && (status?.touched || submitted), 'ring-2 ring-green-500': status?.valid}">
-                  <option value="Disponible" selected>Disponible</option>
-                  <option value="Indisponible">Indisponible</option>
-                  <option value="En réparation">En réparation</option>
+                        [ngClass]="{'ring-2 ring-red-500': status?.invalid && (status?.untouched || submitted), 'ring-2 ring-green-500': status?.valid && status?.touched}">
+                  <option value="{{StatusVehicle.AVAILABLE}}">Disponible</option>
+                  <option value="{{StatusVehicle.UNAVAILABLE}}">Indisponible</option>
+                  <option value="{{StatusVehicle.MAINTENANCE}}">En réparation</option>
                   @if (status?.invalid && (status?.dirty || !status?.untouched || submitted)) {
                     <div class="text-red-500 text-xs italic">
                       {{ getErrorMessage('status') }}

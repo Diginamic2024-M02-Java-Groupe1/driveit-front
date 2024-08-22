@@ -17,12 +17,12 @@ export const routes: Routes = [
   {
     path: 'reserver-vehicule',
     component: ResaVehicleComponent,
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: 'ajout-vehicule',
     component: FormComponent,
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: '**',

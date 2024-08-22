@@ -7,6 +7,7 @@ import {
 import { InputMaskModule } from 'primeng/inputmask';
 import {VehicleDataService} from "@services/ajoutVehiculeService/vehicle-data.service";
 import {Vehicle} from "@models/vehicle";
+import {StatusVehicle} from "@models/enums/status-vehicle";
 
 
 @Component({
@@ -19,31 +20,32 @@ import {Vehicle} from "@models/vehicle";
 export class FormComponent implements OnInit {
   protected ajoutVehiculeForm!: FormGroup;
   submitted: boolean = false;
+  vehicles: Vehicle[] = [];
 
   constructor(
     private fb: FormBuilder,
     private vehicleService : VehicleDataService
   ) {
     this.ajoutVehiculeForm = new FormGroup({
-      immatriculation: new FormControl('', [Validators.required, Validators.pattern('[A-Z]{2}-\\d{3}-[A-Z]{2}')],),
-      nbPlaces: new FormControl('', [Validators.required, Validators.min(1)]),
+      registration: new FormControl('', [Validators.required, Validators.pattern('[A-Z]{2}-\\d{3}-[A-Z]{2}')],),
+      numberOfSeats: new FormControl('', [Validators.required, Validators.min(1)]),
       category: new FormControl('', [Validators.required]),
       brand: new FormControl('', [Validators.required]),
       model: new FormControl('', [Validators.required]),
-      motorisation: new FormControl('', [Validators.required]),
+      motorization: new FormControl('', [Validators.required]),
       emission: new FormControl('', [Validators.required, Validators.min(0)]),
-      status: new FormControl('', [Validators.required]),
+      status: new FormControl(StatusVehicle.AVAILABLE, [Validators.required]),
       urlImage: new FormControl('', [Validators.required]),
-      isService: new FormControl('', [Validators.required]),
+      service: new FormControl('', [Validators.required]),
     });
   }
 
-  get immatriculation() {
-    return this.ajoutVehiculeForm.get('immatriculation');
+  get registration() {
+    return this.ajoutVehiculeForm.get('registration');
   }
 
-  get nbPlaces() {
-    return this.ajoutVehiculeForm.get('nbPlaces');
+  get numberOfSeats() {
+    return this.ajoutVehiculeForm.get('numberOfSeats');
   }
 
   get category() {
@@ -58,8 +60,8 @@ export class FormComponent implements OnInit {
     return this.ajoutVehiculeForm.get('model');
   }
 
-  get motorisation() {
-    return this.ajoutVehiculeForm.get('motorisation');
+  get motorization() {
+    return this.ajoutVehiculeForm.get('motorization');
   }
 
   get emission() {
@@ -74,21 +76,34 @@ export class FormComponent implements OnInit {
     return this.ajoutVehiculeForm.get('urlImage');
   }
 
-  get isService() {
-    return this.ajoutVehiculeForm.get('isService');
+  get service() {
+    return this.ajoutVehiculeForm.get('service');
   }
 
   onSubmit(): void {
     this.submitted = true;
     console.log(this.ajoutVehiculeForm.value);
     if (this.ajoutVehiculeForm.valid) {
-      const vehicle: Vehicle = this.ajoutVehiculeForm.value;
-      this.vehicleService.insertVehicle(vehicle).subscribe();
-      console.log('Le véhicule a été ajouté avec succès.');
+      const vehicle: Vehicle = {
+        ...this.ajoutVehiculeForm.value,
+        brand: {
+          name: this.ajoutVehiculeForm.get('brand')?.value,  // Si vous avez aussi un ID, vous pourriez le passer ici
+        }
+      };
+      console.log(vehicle);
+      this.vehicleService.insertVehicle(vehicle).subscribe(
+        response => {
+          console.log('Le véhicule a été ajouté avec succès.', response);
+        },
+        error => {
+          console.error('Erreur lors de l\'ajout du véhicule.', error);
+        }
+      );
     } else {
       console.log('Le formulaire est invalide.');
     }
   }
+
 
   getErrorMessage(controlName: string): string {
     const control = this.ajoutVehiculeForm.get(controlName);
@@ -116,4 +131,5 @@ export class FormComponent implements OnInit {
     this.ajoutVehiculeForm.get('urlImage')?.setValue(input.value);
   }
 
+  protected readonly StatusVehicle = StatusVehicle;
 }
