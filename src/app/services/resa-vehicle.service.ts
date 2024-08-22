@@ -21,4 +21,10 @@ export class ResaVehicleService {
 
     return this.http.get<ResaVehicle[]>(`${this.apiURL}/vehicules/location/filtrer`,{params});
   }
+
+  reserveVehicle(userId: number, reservationVehicle: ResaVehicle): Observable<string> {
+    return this.http.post<string>(`${this.apiURL}/vehicules/reserver`, reservationVehicle, {
+      params: new HttpParams().set('userId', userId.toString())
+    });
+  }
 }
