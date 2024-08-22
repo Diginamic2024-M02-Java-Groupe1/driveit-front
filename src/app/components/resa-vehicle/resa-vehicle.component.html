@@ -10,14 +10,26 @@
           <div class="relative">
             <p-calendar formControlName="startDateTime" id="dateTimeStart" [showTime]="true" hourFormat="24"
                         class="appearance-none pl-4 block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 px-1 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
-                        name="dateStart"></p-calendar>
+                        name="dateStart">
+              <ng-template pTemplate="date" let-date>
+                <span [ngStyle]="{textDecoration: (date.day < 21 && date.day > 10) ? 'line-through' : 'inherit'}">
+                  {{ date.day }}
+                </span>
+              </ng-template>
+            </p-calendar>
           </div>
 
           <label for="dateTimeEnd" class="control-label">Date et heure fin :</label>
           <div class="relative">
             <p-calendar formControlName="endDateTime" id="dateTimeEnd" [showTime]="true" hourFormat="24"
                         class="appearance-none pl-4 block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 px-1 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
-                        name="dateEnd"></p-calendar>
+                        name="dateEnd">
+              <ng-template pTemplate="date" let-date>
+                <span [ngStyle]="{textDecoration: (date.day < 21 && date.day > 10) ? 'line-through' : 'inherit'}">
+                    {{ date.day }}
+                </span>
+              </ng-template>
+            </p-calendar>
           </div>
 
           <button type="submit"
@@ -43,16 +55,16 @@
               <div class="grid grid-cols-2 gap-0.5">
                 <div class="relative mx-auto">
                   <img
-                    src="https://primefaces.org/cdn/primeng/images/demo/product/{{ vehicle.image }}"
-                    [alt]="vehicle.name"
+                    src="vehicle.url"
+                    [alt]="vehicle.model.brand.name + ' ' + vehicle.model.name"
                     class="w-full border-round"/>
                 </div>
 
                 <div class=" mx-auto my-auto">
-                  <p>Marque : {{ vehicle.brand }}</p>
-                  <p>Modèle : {{ vehicle.model }}</p>
-                  <p>AA-123-BB</p>
-                  <p>Places : {{ vehicle.numberOfSeats }}</p>
+                  <p>Marque : {{ vehicle.model.brand.name }}</p>
+                  <p>Modèle : {{ vehicle.model.name }}</p>
+                  <p>{{ vehicle.registration }}</p>
+                  <p>Places :{{ vehicle.numberOfSeats }} </p>
 
                   <button
                     class="mt-2 text-white py-2 px-6 rounded-md hover:bg-emerald-500 text-center bg-emerald-500 font-semibold">
