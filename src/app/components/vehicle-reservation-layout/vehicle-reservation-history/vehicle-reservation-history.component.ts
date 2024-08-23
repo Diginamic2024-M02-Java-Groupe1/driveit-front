@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, SimpleChange, SimpleChanges, ViewChild} from '@angular/core';
 import {
   VehicleReservationItemComponent
 } from "@components/vehicle-reservation-layout/vehicle-reservation-item/vehicle-reservation-item.component";
@@ -13,6 +13,8 @@ import {DatePipe} from "@angular/common";
 import {ToastModule} from "primeng/toast";
 import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
 import {ConfirmationService, MessageService} from "primeng/api";
+import {CurrentUser} from "@models/current-user.model";
+import {AuthService} from "@services/auth.service";
 
 @Component({
   selector: 'app-vehicle-reservation-history',
@@ -35,10 +37,12 @@ export class VehicleReservationHistoryComponent implements OnInit {
 
   @Input() idCollabo!: number;
   @Input() statusChoice!: StatusFilter;
-  reservations!: ResaVehicle[];
   @ViewChild(ConfirmPopup)confirmPopup!: ConfirmPopup;
+  reservations!: ResaVehicle[];
 
-  constructor(private resaService: ResaVehicleService,private confirmationService:ConfirmationService,private messageService: MessageService) {
+  constructor(private resaService: ResaVehicleService,
+              private confirmationService:ConfirmationService,
+              private messageService: MessageService) {
   }
 
   accept(): void {
@@ -50,14 +54,25 @@ export class VehicleReservationHistoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   this.loadReservations();
   }
 
-  loadReservations(): void {
-    const idCollabo = 1;
+  ngOnChanges(changes:SimpleChanges): void {
+    if (changes['idCollabo'] && changes['idCollabo'].currentValue) {
+      this.loadReservations(this.idCollabo);
+    }
+    if (changes['statusChoice'] && changes['statusChoice'].currentValue) {
+      this.loadReservations(this.idCollabo);
+    }
+  }
+
+  loadReservations(idUser:number): void {
+    if (!idUser) {
+      console.error('idCollabo is not set');
+      return;
+    }
+
     const statusChoice = this.statusChoice;
-    console.log('statusChoice', statusChoice);
-    this.resaService.getReservations(idCollabo, statusChoice).subscribe((reservations: ResaVehicle[]) => {
+    this.resaService.getReservations(idUser, statusChoice).subscribe((reservations: ResaVehicle[]) => {
       this.reservations = reservations;
     });
   }
@@ -70,21 +85,26 @@ export class VehicleReservationHistoryComponent implements OnInit {
       acceptButtonStyleClass: 'p-button-danger p-button-sm',
       accept: () => {
         this.deleteReservation(reserveId);
-        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+        this.messageService.add({ severity: 'info', summary: 'Confirmé', detail: 'Vous avez accepté', life: 3000 });
       },
       reject: () => {
-        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        this.messageService.add({ severity: 'error', summary: 'Annuler', detail: 'Vous avez annulé', life: 3000 });
       }
     });
   }
 
   deleteReservation(id: number): void {
+    if (!id) {
+      console.error('id is not set');
+      return;
+    }
+
     this.resaService.deleteReservationVehicle(id).subscribe({
       next: () => {
-        this.loadReservations();
+        this.loadReservations(this.idCollabo);
       },
       error: (error) => {
-        console.error('Error deleting reservation', error);
+        console.error('Erreur pour la suppression de la réservation', error);
       }
     });
   }

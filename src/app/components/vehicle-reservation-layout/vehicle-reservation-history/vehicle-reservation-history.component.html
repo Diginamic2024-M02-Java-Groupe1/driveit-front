@@ -19,9 +19,6 @@
         <td>{{reservation.vehicle.registration}}</td>
         <td><input type="datetime-local" [value]="reservation.dateTimeStart" disabled ></td>
         <td><input type="datetime-local" [value]="reservation.dateTimeEnd" disabled ></td>
-<!--        <td><button (click)="deleteReservation(reservation.id)" class="mt-2 text-white py-2 px-6 rounded-md hover:bg-red-500 text-center bg-red-500 font-semibold">-->
-<!--          Supprimer-->
-<!--        </button></td>-->
         <td>
         <p-toast />
         <p-confirmPopup #confirmPopupRef>
@@ -38,7 +35,9 @@
         <p-button (onClick)="confirm($event,reservation.id)" class="mt-2 text-white py-2 px-6 rounded-md hover:bg-red-500 text-center bg-red-500 font-semibold" severity="danger" label="Supprimer" />
         </td>
       </tr>
-<!--      <app-vehicle-reservation-item [resaVehicle]="reservation"></app-vehicle-reservation-item>-->
+
+<!--      <app-vehicle-reservation-item [resaVehicle]="reservation"/>-->
+
 
     </ng-template>
     <ng-template pTemplate="summary">
