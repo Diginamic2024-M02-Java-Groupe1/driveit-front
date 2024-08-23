@@ -33,7 +33,7 @@ export class ResaVehicleService {
   reserveVehicle(userId: number, reservationVehicle: ResaVehicle): Observable<string> {
     return this.http.post(`${this.apiURL}/vehicules/location/reserver`, reservationVehicle, {
       params: new HttpParams().set('userId', userId.toString()),
-      responseType: 'text' // Handle response as text
+      responseType: 'text'
     });
   }
 

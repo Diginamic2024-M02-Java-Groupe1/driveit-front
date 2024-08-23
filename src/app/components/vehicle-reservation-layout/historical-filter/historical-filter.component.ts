@@ -38,8 +38,13 @@ export class HistoricalFilterComponent implements OnInit{
   }
   ngOnInit() {
     this.filterForm = new FormGroup({
-      startDateTime: new FormControl<Date | null>(null, Validators.required),
+      // startDateTime: new FormControl<Date | null>(null,),
       status: new FormControl<StatusFilter | null>(null, Validators.required)
+    });
+
+    this.filterForm.get('status')?.valueChanges.subscribe((value) => {
+      const statusFilter =value.value;
+      this.filterChanged.emit(statusFilter);
     });
   }
 

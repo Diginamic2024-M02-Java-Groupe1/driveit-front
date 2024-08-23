@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {environment} from "@env/environment";
+import {CurrentUser} from "@models/current-user.model";
 
 interface LoginResponse {
   token: string;
@@ -13,6 +14,7 @@ interface LoginResponse {
 export class AuthService {
 
   private url: string = environment.auth;
+  private urlApi: string = environment.api;
 
   constructor(private http: HttpClient) { }
 
@@ -42,6 +44,10 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+  getCurrentUser(): Observable<CurrentUser> {
+    return this.http.get<CurrentUser>(`${this.urlApi}/collaborators/me`);
   }
 
   logout(): void {
