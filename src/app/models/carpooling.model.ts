@@ -1,6 +1,6 @@
-import {Collaborator} from "@models/collaborator";
-import {Address} from "@models/address";
-import {Vehicle} from "@models/vehicle";
+import {Collaborator} from "@models/collaborator.model";
+import {Address} from "@models/address.model";
+import {Vehicle} from "@models/vehicle.model";
 
 export interface Carpooling {
   id: number;
