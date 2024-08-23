@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterLink} from "@angular/router";
 import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
-import {OwlDateTimeModule, OwlNativeDateTimeModule} from "@danielmoncada/angular-datetime-picker";
 import {CarouselModule} from 'primeng/carousel';
 import {TagModule} from 'primeng/tag';
 import {ButtonModule} from 'primeng/button';
@@ -10,6 +9,7 @@ import {Vehicle} from "@models/vehicle.model";
 import {ResaVehicleService} from "@services/resa-vehicle.service";
 import {ResaVehicle} from "@models/resa-vehicle.model";
 import {CalendarModule} from "primeng/calendar";
+import {NgxSonnerToaster, toast} from "ngx-sonner";
 
 @Component({
   selector: 'app-resa-vehicle',
@@ -18,8 +18,6 @@ import {CalendarModule} from "primeng/calendar";
     RouterLink,
     NgForOf,
     NgOptimizedImage,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
     CarouselModule,
     TagModule,
     ButtonModule,
@@ -27,6 +25,7 @@ import {CalendarModule} from "primeng/calendar";
     ReactiveFormsModule,
     FormsModule,
     CalendarModule,
+    NgxSonnerToaster,
   ],
   templateUrl: './resa-vehicle.component.html',
   styleUrl: './resa-vehicle.component.scss'
@@ -74,14 +73,12 @@ export class ResaVehicleComponent implements OnInit {
     const reservationData: ResaVehicle = {
       dateTimeStart: this.filterForm.get('startDateTime')?.value.toISOString(),
       dateTimeEnd: this.filterForm.get('endDateTime')?.value.toISOString(),
-      vehicle: {
-        id: vehicle.id,
-        registration: vehicle.registration,
-      }
+      vehicle: vehicle
     };
     this.resaVehicleService.reserveVehicle(1, reservationData).subscribe({
       next: (data) => {
         this.onFilter();
+        toast.success('Réservation effectuée')
       },
       error: (error) => {
         console.error('Error reserving vehicle', error);

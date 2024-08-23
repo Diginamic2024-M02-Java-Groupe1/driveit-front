@@ -1,33 +1,30 @@
 import {Component, Input, OnInit, SimpleChange, SimpleChanges, ViewChild} from '@angular/core';
-import {
-  VehicleReservationItemComponent
-} from "@components/vehicle-reservation-layout/vehicle-reservation-item/vehicle-reservation-item.component";
 import {TagModule} from "primeng/tag";
 import {RatingModule} from "primeng/rating";
-import {Button} from "primeng/button";
+import {ButtonModule} from "primeng/button";
 import {TableModule} from "primeng/table";
 import {ResaVehicle} from "@models/resa-vehicle.model";
 import {ResaVehicleService} from "@services/resa-vehicle.service";
 import {StatusFilter} from "@models/enums/status-filter.enum";
-import {DatePipe} from "@angular/common";
+import {CommonModule, DatePipe} from "@angular/common";
 import {ToastModule} from "primeng/toast";
 import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
 import {ConfirmationService, MessageService} from "primeng/api";
-import {CurrentUser} from "@models/current-user.model";
-import {AuthService} from "@services/auth.service";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-vehicle-reservation-history',
   standalone: true,
   imports: [
-    VehicleReservationItemComponent,
     TagModule,
     RatingModule,
-    Button,
+    ButtonModule,
+    CommonModule,
     TableModule,
     DatePipe,
     ToastModule,
     ConfirmPopupModule,
+    RouterLink,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './vehicle-reservation-history.component.html',
