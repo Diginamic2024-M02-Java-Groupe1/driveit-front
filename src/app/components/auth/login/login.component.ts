@@ -36,7 +36,8 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.authService.login(this.email?.value, this.password?.value).subscribe((response) => {
         if (response.token) {
-          localStorage.setItem('token', response.token);
+          this.authService.saveToken(response.token);
+          this.authService.saveUserCredentials(this.email?.value, this.password?.value);
           console.log('Login successful');
           this.router.navigate(['']);
         }
@@ -64,9 +65,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const {email, password} = this.authService.getUserCredentials();
     this.loginForm = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(20)]),
+      email: new FormControl(email, [Validators.required, Validators.email]),
+      password: new FormControl(password, [Validators.required, Validators.minLength(5), Validators.maxLength(20)]),
     });
   }
 }

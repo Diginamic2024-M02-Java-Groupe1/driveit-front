@@ -1,0 +1,13 @@
+<div class="w-full grid grid-cols-1 md:grid-cols-3 gap-24 bg-amber-50 py-2 px-2">
+  <!--    <div class="flex w-full mx-auto items-center bg-white space-y-8">-->
+  <div>
+    <app-historical-filter (filterChanged)="onFilterChanged($event)"></app-historical-filter>
+  </div>
+  <div class="col-span-2">
+    <app-vehicle-reservation-history  [idCollabo]="idCollabo"  [statusChoice]="statusFilter" ></app-vehicle-reservation-history>
+  </div>
+  <!--    </div>-->
+</div>
+
+
+
