@@ -5,6 +5,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { AjoutVehicleServiceComponent } from '@components/ajout-vehicle-service/modal/ajout-vehicle-service.component';
 import { NotFoundComponent } from '@components/not-found/not-found.component';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
+import {LoginComponent} from "@components/auth/login/login.component";
+import {RegisterComponent} from "@components/auth/register/register.component";
 
 export const routes: Routes = [
   {
@@ -31,7 +33,22 @@ export const routes: Routes = [
   },
   {
     path: 'auth',
-    component: AuthComponent
+    component: AuthComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'login',
+        pathMatch: 'full'
+      },
+      {
+        path: 'login',
+        component: LoginComponent,
+      },
+      {
+        path: 'register',
+        component: RegisterComponent,
+      }
+    ]
   },
   {
     path: '**',

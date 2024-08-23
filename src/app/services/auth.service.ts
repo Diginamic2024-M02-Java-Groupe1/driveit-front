@@ -5,6 +5,7 @@ import {environment} from "@env/environment";
 
 interface LoginResponse {
   token: string;
+  expiresIn: number;
 }
 
 @Injectable({
