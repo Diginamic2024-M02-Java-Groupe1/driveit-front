@@ -1,0 +1,185 @@
+<div>
+  <h1 class="text-center mb-4">Ajouter un véhicule</h1>
+  <div class="border border-gray-300 p-4 rounded-lg">
+    <div class="flex space-x-10 items-center">
+      <form [formGroup]="ajoutVehiculeForm" (ngSubmit)="onSubmit()" class="flex flex-col justify-center items-center">
+        <div class=" w-full">
+          <label for="url"
+                 class="block tracking-wide text-grey-darker text-xs font-bold mb-2">URL de l'image</label>
+          <input type="text" formControlName="url" id="url"
+                 placeholder="Entrez l'URL de l'image"
+                 class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
+                 [ngClass]="{'ring-2 ring-red-500': url?.invalid && (!url?.untouched), 'ring-2 ring-green-500': url?.valid}"
+                 (input)="onUrlInput($event)">
+          @if (url?.invalid && (url?.dirty || !url?.untouched || submitted)) {
+            <div class="text-red-500 text-xs italic">
+              {{ getErrorMessage('url') }}
+            </div>
+          }
+        </div>
+        <div class="flex space-x-4 form-group">
+          <div class="w-1/2">
+            <div class="mb-6">
+              <label for="registration"
+                     class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Immatriculation</label>
+              <p-inputMask mask="aa-999-aa" id="registration" formControlName="registration"
+                           placeholder="AB-123-CD"
+                           class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
+                           [ngClass]="{'ring-2 ring-red-500': registration?.invalid && (!registration?.untouched), 'ring-2 ring-green-500': registration?.valid}"></p-inputMask>
+              @if (registration?.invalid && (registration?.dirty || !registration?.untouched || submitted)) {
+                <div class="text-red-500 text-xs italic">
+                  {{ getErrorMessage('immatriculation') }}
+                </div>
+              }
+            </div>
+
+            <div class="mb-6">
+              <label for="numberOfSeats" class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Nombre de
+                places</label>
+              <input type="number" min="0" id="numberOfSeats" formControlName="numberOfSeats" placeholder="5"
+                     class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
+                     [ngClass]="{'ring-2 ring-red-500': numberOfSeats?.invalid && (!numberOfSeats?.untouched), 'ring-2 ring-green-500': numberOfSeats?.valid}">
+              @if (numberOfSeats?.invalid && (numberOfSeats?.dirty || !numberOfSeats?.untouched || submitted)) {
+                <div class="text-red-500 text-xs italic">
+                  {{ getErrorMessage('numberOfSeats') }}
+                </div>
+              }
+            </div>
+            <div class="mb-6">
+              <label for="category" class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Catégorie</label>
+              <div class="relative">
+                <select id="category" formControlName="category"
+                        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 pr-8 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
+                        [ngClass]="{'ring-2 ring-red-500': category?.invalid && (category?.untouched || submitted), 'ring-2 ring-green-500': category?.valid && category?.touched}">
+                  <option value="1">SUV</option>
+                  @if (category?.invalid && (category?.dirty || !category?.untouched || submitted)) {
+                    <div class="text-red-500 text-xs italic">
+                      {{ getErrorMessage('category') }}
+                    </div>
+                  }
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M7 10l5 5 5-5z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="mb-6">
+              <label for="emission"
+                     class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Emission</label>
+              <input id="emission" type="number" min="0" formControlName="emission" placeholder="20"
+                     class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
+                     [ngClass]="{'ring-2 ring-red-500': emission?.invalid && (!emission?.untouched), 'ring-2 ring-green-500': emission?.valid}">
+              @if (emission?.invalid && (emission?.dirty || !emission?.untouched || submitted)) {
+                <div class="text-red-500 text-xs italic">
+                  {{ getErrorMessage('emission') }}
+                </div>
+              }
+            </div>
+            <div class="mb-6">
+              <label for="service" class="tracking-wide text-grey-darker text-xs font-bold mb-2 mr-2">Service</label>
+              <input id="service" formControlName="service"
+                     type="checkbox" >
+            </div>
+          </div>
+          <div class="w-1/2">
+            <div class="mb-6">
+              <label for="brand" class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Marque</label>
+              <div class="relative">
+                <select id="brand" formControlName="brand"
+                        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 pr-8 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
+                        [ngClass]="{'ring-2 ring-red-500': brand?.invalid && (brand?.untouched || submitted), 'ring-2 ring-green-500': brand?.valid && brand?.touched}">
+                  <option value="1">Tesla</option>
+                  @if (brand?.invalid && (brand?.dirty || !brand?.untouched || submitted)) {
+                    <div class="text-red-500 text-xs italic">
+                      {{ getErrorMessage('brand') }}
+                    </div>
+                  }
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M7 10l5 5 5-5z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="mb-6">
+              <label for="model" class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Modèle</label>
+              <input type="text" id="model" formControlName="model" placeholder="208"
+                     class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
+                     [ngClass]="{'ring-2 ring-red-500': model?.invalid && (!model?.untouched), 'ring-2 ring-green-500': model?.valid}">
+              @if (model?.invalid && (model?.dirty || !model?.untouched || submitted)) {
+                <div class="text-red-500 text-xs italic">
+                  {{ getErrorMessage('model') }}
+                </div>
+              }
+            </div>
+
+            <div class="mb-6">
+              <label for="motorization" class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Motorisation</label>
+              <div class="relative">
+                <select id="motorization" formControlName="motorization"
+                        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 pr-8 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
+                        [ngClass]="{'ring-2 ring-red-500': motorization?.invalid && (motorization?.untouched || submitted), 'ring-2 ring-green-500': motorization?.valid && motorization?.touched}">
+                  <option value="1">Électrique</option>
+                  @if (motorization?.invalid && (motorization?.dirty || !motorization?.untouched || submitted)) {
+                    <div class="text-red-500 text-xs italic">
+                      {{ getErrorMessage('motorization') }}
+                    </div>
+                  }
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M7 10l5 5 5-5z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+
+<!--            <div class="mb-6">-->
+<!--              <label for="status" class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Status</label>-->
+<!--              <div class="relative">-->
+<!--                <select id="status" formControlName="status"-->
+<!--                        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 pr-8 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"-->
+<!--                        [ngClass]="{'ring-2 ring-red-500': status?.invalid && (status?.untouched || submitted), 'ring-2 ring-green-500': status?.valid && status?.touched}">-->
+<!--                  <option value="{{StatusVehicle.AVAILABLE}}">Disponible</option>-->
+<!--                  <option value="{{StatusVehicle.UNAVAILABLE}}">Indisponible</option>-->
+<!--                  <option value="{{StatusVehicle.MAINTENANCE}}">En réparation</option>-->
+<!--                  @if (status?.invalid && (status?.dirty || !status?.untouched || submitted)) {-->
+<!--                    <div class="text-red-500 text-xs italic">-->
+<!--                      {{ getErrorMessage('status') }}-->
+<!--                    </div>-->
+<!--                  }-->
+<!--                </select>-->
+<!--                &lt;!&ndash; Chevron icon &ndash;&gt;-->
+<!--                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">-->
+<!--                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">-->
+<!--                    <path d="M7 10l5 5 5-5z"/>-->
+<!--                  </svg>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+
+          </div>
+        </div>
+        <div class="justify center flex space-x-4">
+          <button type="submit"
+                  class="mt-4 w-full bg-red-600 text-white py-2 px-6 rounded-md hover:opacity-80">
+            Annuler
+          </button>
+          <button type="submit"
+                  class="mt-4 w-full bg-driveGreen text-white py-2 px-6 rounded-md hover:opacity-80">
+            Valider
+          </button>
+        </div>
+      </form>
+
+      <app-visualisation-ajout-vehicule [formValues]="ajoutVehiculeForm.value"></app-visualisation-ajout-vehicule>
+    </div>
+  </div>
+</div>
+
+
+

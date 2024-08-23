@@ -1,0 +1,53 @@
+<div class="card">
+  <p-table [value]="reservations" [tableStyle]="{'min-width': '60rem'}">
+    <ng-template pTemplate="caption">
+      <div class="flex align-items-center justify-between border-b-2">
+        Liste des réservations
+<!--        <p-button icon="pi pi-plus-circle" label="Nouvelle réservation" class="p-button-success" />-->
+        <a routerLink="/reserver-vehicule" class="text-driveGreen">Nouvelle Réservation
+         <i class="pi pi-plus-circle text-driveGreen "></i>
+        </a>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Marque</th>
+        <th>Modèle</th>
+        <th>Immatriculation</th>
+        <th>Date heure début</th>
+        <th>Date heure fin</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-reservation>
+      <tr>
+        <td>{{reservation.vehicle.model.brand.name}}</td>
+        <td>{{reservation.vehicle.model.name}}</td>
+        <td>{{reservation.vehicle.registration}}</td>
+        <td><input type="datetime-local" [value]="reservation.dateTimeStart" disabled ></td>
+        <td><input type="datetime-local" [value]="reservation.dateTimeEnd" disabled ></td>
+        <td>
+        <p-toast />
+        <p-confirmPopup #confirmPopupRef>
+          <ng-template pTemplate="headless" let-message let-test>
+            <div class="border-round p-3">
+              <span>{{ message.message }}</span>
+              <div class="flex align-items-center gap-2 mt-3">
+                <p-button (onClick)="accept()" label="Supprimer" size="small" />
+                <p-button (onClick)="reject()" label="Annuler" [outlined]="true" size="small" />
+              </div>
+            </div>
+          </ng-template>
+        </p-confirmPopup>
+        <p-button (onClick)="confirm($event,reservation.id)" class="mt-2 text-white py-2 px-6 rounded-md hover:bg-red-500 text-center bg-red-500 font-semibold" severity="danger" label="Supprimer" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        Au total il y a  {{reservations ? reservations.length : 0 }} réservation(s).
+      </div>
+    </ng-template>
+  </p-table>
+  <ngx-sonner-toaster richColors  />
+</div>

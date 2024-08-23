@@ -1,7 +1,7 @@
-import {Brand} from "@models/brand";
+import {Brand} from "@models/brand.model";
 
 export interface Model {
-  id: number;
+  id?: number;
   name: string;
   brand: Brand;
 }

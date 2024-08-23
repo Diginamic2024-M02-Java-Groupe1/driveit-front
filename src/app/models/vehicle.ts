@@ -1,21 +1,17 @@
-import {StatusVehicle} from "@models/enums/status-vehicle";
-import {Collaborator} from "@models/collaborator";
-import {Motorization} from "@models/motorization";
-import {Model} from "@models/model";
-import {Category} from "@models/category";
-import {Carpooling} from "@models/carpooling";
+import {StatusVehicle} from "@models/enums/status-vehicle.enum";
+
 
 export interface Vehicle {
-  id: number;
+  id?: number;
   registration: string;
   numberOfSeats: number;
-  service: boolean;
+  service?: boolean;
   emission: number;
-  status: StatusVehicle;
-  collaborator: Collaborator[];
-  carpooling: Carpooling[];
-  motorization: Motorization;
-  model: Model;
-  category: Category;
+  status?: StatusVehicle;
+  motorizationId: number;
+  model: string;
+  categoryId: number;
+  brandId: number;
+  url: string;
 
 }
