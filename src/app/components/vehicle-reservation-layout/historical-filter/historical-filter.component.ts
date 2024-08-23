@@ -28,6 +28,7 @@ export class HistoricalFilterComponent implements OnInit{
 
   filterForm!: FormGroup;
   statusOptions = [
+    { value: StatusFilter.ALL, label: 'Tous' },
     { value: StatusFilter.PAST, label: 'Passé' },
     { value: StatusFilter.IN_PROGRESS, label: 'En cours' },
     { value: StatusFilter.INCOMING, label: 'À venir' }

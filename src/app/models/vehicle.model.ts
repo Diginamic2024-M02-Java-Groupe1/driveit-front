@@ -6,17 +6,17 @@ import {Category} from "@models/category.model";
 import {Carpooling} from "@models/carpooling.model";
 
 export interface Vehicle {
-  id: number;
+  id?: number;
   registration: string;
-  numberOfSeats?: number;
-  service?: boolean;
-  emission?: number;
-  url?:string;
-  status?: StatusVehicle;
-  collaborator?: Collaborator[];
-  carpooling?: Carpooling[];
-  motorization?: Motorization;
-  model?: Model;
-  category?: Category;
+  numberOfSeats: number;
+  service: boolean;
+  emission: number;
+  url:string;
+  status: StatusVehicle;
+  collaborator: Collaborator[];
+  carpooling: Carpooling[];
+  motorization: Motorization;
+  model: Model;
+  category: Category;
 
 }
