@@ -1,15 +1,11 @@
-<!--<mat-drawer-container class="w-full h-full">-->
-<!--  <mat-drawer #drawer class="w-64 bg-primary p-4" mode="over">-->
-<!--    <div class="flex justify-end">-->
-<!--      <button type="button" (click)="drawer.toggle()">-->
-<!--        <ng-icon name="heroXMark" size="32" class="text-text"></ng-icon>-->
-<!--      </button>-->
-<!--    </div>-->
-<!--    <div class="card flex justify-content-center">-->
-<!--      <p-panelMenu [model]="links" styleClass="w-full md:w-20rem" />-->
-<!--    </div>-->
-<!--  </mat-drawer>-->
-<!--  <div class="flex w-full h-full justify-center items-center">-->
-<!--  <router-outlet/>-->
-<!--  </div>-->
-<!--</mat-drawer-container>-->
+<div class="card flex flex-wrap justify-content-center gap-2">
+  <p-sidebar [(visible)]="sidebarVisible" position="right">
+    <ng-template pTemplate="header">
+      <h2 class="text-lg">Menu</h2>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <p-panelMenu [model]="links" styleClass="w-full" />
+    </ng-template>
+  </p-sidebar>
+  <ng-content></ng-content>
+</div>

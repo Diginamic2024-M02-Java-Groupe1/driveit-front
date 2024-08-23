@@ -1,28 +1,28 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgIconComponent, provideIcons} from "@ng-icons/core";
 import {heroBars3, heroXMark} from "@ng-icons/heroicons/outline";
 import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {DrawerService} from "@services/drawer.service";
 import {PanelMenuModule} from "primeng/panelmenu";
 import {MenuItem} from "primeng/api";
+import {Subscription} from "rxjs";
+import {SidebarModule} from "primeng/sidebar";
+import {MenubarModule} from "primeng/menubar";
+import {Ripple} from "primeng/ripple";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [RouterOutlet, NgIconComponent, PanelMenuModule, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, NgIconComponent, PanelMenuModule, RouterLink, RouterLinkActive, SidebarModule, MenubarModule, Ripple, NgClass],
   providers: [provideIcons({heroBars3, heroXMark})],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
 })
-export class MenuComponent implements AfterViewInit, OnInit {
-  // @ViewChild('drawer') drawer!: MatDrawer;
+export class MenuComponent implements OnInit, OnDestroy {
   links: MenuItem[] | undefined;
-
-  // links = [
-  //   {name: 'Home', url: '/'},
-  //   {name: 'Ajouter un véhicule de service', url: '/ajoutVehicule'},
-  //   {name: 'Reserver Vehicule', url: '/reserver-vehicule'},
-  // ];
+  sidebarVisible = false;
+  private subscription: Subscription | undefined;
 
   constructor(private drawerService: DrawerService) {
   }
@@ -33,7 +33,7 @@ export class MenuComponent implements AfterViewInit, OnInit {
         label: 'Admin',
         icon: 'pi pi-fw pi-cog',
         items: [
-          {label: 'Véhicules de service', icon: 'pi pi-fw pi-plus', routerLink: '/vehicules', routerLinkActiveOptions: {exact: true}},
+          {label: 'Véhicules de service', icon: 'pi pi-fw pi-car', routerLink: '/vehicules', routerLinkActiveOptions: {exact: true}},
         ]
       },
       {
@@ -44,10 +44,16 @@ export class MenuComponent implements AfterViewInit, OnInit {
           {label: 'Ajouter un véhicule de service', icon: 'pi pi-fw pi-plus', routerLink: '/ajoutVehicule', routerLinkActiveOptions: {exact: true}},
         ]
       }
-    ]
+    ];
+
+    this.subscription = this.drawerService.sidebarVisible$.subscribe(visible => {
+      this.sidebarVisible = visible;
+    });
   }
 
-  ngAfterViewInit(): void {
-    // this.drawerService.setDrawer(this.drawer);
+  ngOnDestroy(): void {
+    if(this.subscription){
+      this.subscription.unsubscribe();
+    }
   }
 }

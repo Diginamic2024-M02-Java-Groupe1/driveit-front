@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
-import {NgIconComponent, provideIcons} from "@ng-icons/core";
-import {heroArrowRightOnRectangle, heroBars3, heroUser} from "@ng-icons/heroicons/outline";
 import {DrawerService} from "@services/drawer.service";
+import {ToolbarModule} from "primeng/toolbar";
+import {Button} from "primeng/button";
+import {InputTextModule} from "primeng/inputtext";
+import {ImageModule} from "primeng/image";
+import {TooltipModule} from "primeng/tooltip";
 
 interface Link {
   name: string;
@@ -16,21 +19,28 @@ interface Link {
   imports: [
     RouterLink,
     RouterLinkActive,
-    NgIconComponent,
+    ToolbarModule,
+    Button,
+    InputTextModule,
+    ImageModule,
+    TooltipModule,
   ],
-  providers: [provideIcons({heroUser,heroArrowRightOnRectangle,heroBars3})],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
-export class NavbarComponent {
-  links: Link[] = [
-    {"name": "Profile", "url": "/profile", "icon": heroUser},
-    {"name": "Logout", "url": "/logout", "icon": heroArrowRightOnRectangle},
-  ];
+export class NavbarComponent implements OnInit {
+  links: Link[] | undefined;
 
   constructor(private drawerService: DrawerService) {}
 
-  // toggleMenu() {
-  //   this.drawerService.toggleDrawer();
-  // }
+  ngOnInit(): void {
+    this.links = [
+      { "name": "Profile", "url": "/profile", "icon": 'pi pi-user' },
+      { "name": "Logout", "url": "/logout", "icon": 'pi pi-sign-out' },
+    ];
+  }
+
+  openMenu() {
+    this.drawerService.setDrawerVisibility(true);
+  }
 }

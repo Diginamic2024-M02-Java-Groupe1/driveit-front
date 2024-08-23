@@ -12,17 +12,17 @@ export const routes: Routes = [
   {
     path: '',
     component: HomeLayoutComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
-      // {
-      //   path: '',
-      //   redirectTo: 'reserver-vehicule',
-      //   pathMatch: 'full'
-      // },
+      {
+        path: '',
+        redirectTo: 'reserver-vehicule',
+        pathMatch: 'full'
+      },
       {
         path: 'reserver-vehicule',
         component: ResaVehicleComponent,
-        // canActivate: [AuthGuard]
+        canActivate: [AuthGuard]
       },
       {
         path: 'ajoutVehicule',
