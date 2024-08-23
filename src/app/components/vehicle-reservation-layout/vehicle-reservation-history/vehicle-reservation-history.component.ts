@@ -11,6 +11,7 @@ import {ToastModule} from "primeng/toast";
 import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {RouterLink} from "@angular/router";
+import {NgxSonnerToaster, toast} from "ngx-sonner";
 
 @Component({
   selector: 'app-vehicle-reservation-history',
@@ -25,6 +26,7 @@ import {RouterLink} from "@angular/router";
     ToastModule,
     ConfirmPopupModule,
     RouterLink,
+    NgxSonnerToaster,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './vehicle-reservation-history.component.html',
@@ -82,10 +84,12 @@ export class VehicleReservationHistoryComponent implements OnInit {
       acceptButtonStyleClass: 'p-button-danger p-button-sm',
       accept: () => {
         this.deleteReservation(reserveId);
-        this.messageService.add({ severity: 'info', summary: 'Confirmé', detail: 'Vous avez accepté', life: 3000 });
+        toast.success('Réservation Supprimée')
+        // this.messageService.add({ severity: 'info', summary: 'Confirmé', detail: 'Vous avez accepté', life: 3000 });
       },
       reject: () => {
-        this.messageService.add({ severity: 'error', summary: 'Annuler', detail: 'Vous avez annulé', life: 3000 });
+        // this.messageService.add({ severity: 'error', summary: 'Annuler', detail: 'Vous avez annulé', life: 3000 });
+        toast.error('Annuler')
       }
     });
   }
