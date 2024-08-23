@@ -3,11 +3,12 @@ import {NgClass} from '@angular/common';
 import {FormGroup, FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormControl} from '@angular/forms';
 import {
   VisualisationAjoutVehiculeComponent
-} from "@components/ajout-vehicle-service/visualisation-ajout-vehicule/visualisation-ajout-vehicule.component";
+} from "@components/vehicle-service/ajout-vehicule/visualisation-ajout-vehicule/visualisation-ajout-vehicule.component";
 import {InputMaskModule} from 'primeng/inputmask';
 import {VehicleDataService} from "@services/ajoutVehiculeService/vehicle-data.service";
 import {Vehicle} from "@models/vehicle";
-import {StatusVehicle} from "@models/enums/status-vehicle";
+import {StatusVehicle} from "@models/enums/status-vehicle.enum";
+
 
 
 @Component({
@@ -38,7 +39,7 @@ export class FormComponent implements OnInit {
       emission: new FormControl('', [Validators.required, Validators.min(0)]),
       status: new FormControl(StatusVehicle.AVAILABLE, [Validators.required]),
       url: new FormControl('', [Validators.required]),
-      service: new FormControl('', [Validators.required]),
+      service: new FormControl(true, [Validators.required]),
     });
   }
 
@@ -84,8 +85,8 @@ export class FormComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    console.log(this.ajoutVehiculeForm.value);
-    if (true) {
+
+    if (this.ajoutVehiculeForm.valid) {  // Vérifiez si le formulaire est valide
       const vehicle: Vehicle = {
         registration: this.ajoutVehiculeForm.get('registration')?.value,
         numberOfSeats: this.ajoutVehiculeForm.get('numberOfSeats')?.value,
@@ -96,19 +97,20 @@ export class FormComponent implements OnInit {
         brandId: this.ajoutVehiculeForm.get('brand')?.value,
         categoryId: this.ajoutVehiculeForm.get('category')?.value,
         model: this.ajoutVehiculeForm.get('model')?.value,
-      }
-      console.log(vehicle);
+      };
 
-      this.vehicleService.insertVehicle(vehicle).subscribe(
-        response => {
-          console.log('Le véhicule a été ajouté avec succès.', response);
-        },
-        error => {
-          console.error('Erreur lors de l\'ajout du véhicule.', error);
+      this.vehicleService.insertVehicle(vehicle).subscribe((data: string) => {
+        if (data.length) {
+          console.log(data);
+          alert(data);
+        } else {
+          console.error(data);
+          alert(data);
         }
-      );
+      });
     } else {
       console.log('Le formulaire est invalide.');
+      alert('Veuillez corriger les erreurs dans le formulaire.');
     }
   }
 

@@ -1,10 +1,11 @@
-import {StatusVehicle} from "@models/enums/status-vehicle";
+import {StatusVehicle} from "@models/enums/status-vehicle.enum";
+
 
 export interface Vehicle {
   id?: number;
   registration: string;
   numberOfSeats: number;
-  service: boolean;
+  service?: boolean;
   emission: number;
   status?: StatusVehicle;
   motorizationId: number;
