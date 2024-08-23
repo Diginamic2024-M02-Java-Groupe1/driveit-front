@@ -1,22 +1,23 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Vehicle} from "@models/vehicle";
+import { Observable} from "rxjs";
+import {environment} from "@env/environment";
+import {AuthService} from "@services/auth.service";
 
 @Injectable({
   providedIn: 'root',
 })
 export class VehicleDataService {
-  immatriculation: string = '';
-  nbPlaces: string = '';
-  category: string = '';
-  pollution: string = '';
-  brand: string = '';
-  model: string = '';
-  motorization: string = '';
-  status: string = '';
+  private apiURL = environment.api;
 
-  imageUrl: string | ArrayBuffer | null | undefined;
+  constructor(private http: HttpClient, private authService: AuthService) {
+  }
 
-  onUrlInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.imageUrl = input.value;
+  insertVehicle(vehicle: Vehicle): Observable<string> {
+    // const headers = new HttpHeaders({
+    //   'Content-Type': 'application/json',
+    // });
+    return this.http.post(`${this.apiURL}/vehicule/service`, vehicle, { responseType: 'text'}); //headers: headers,
   }
 }
