@@ -1,20 +1,15 @@
 import { Injectable } from '@angular/core';
-import {MatDrawer} from "@angular/material/sidenav";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DrawerService {
 
-  private drawer: MatDrawer | null = null;
+  private sidebarVisibleSubject = new BehaviorSubject<boolean>(false);
+  sidebarVisible$ = this.sidebarVisibleSubject.asObservable();
 
-  setDrawer(drawer: MatDrawer) {
-    this.drawer = drawer;
-  }
-
-  toggleDrawer() {
-      if (this.drawer) {
-      this.drawer.toggle();
-      }
+  setDrawerVisibility(visible: boolean) {
+    this.sidebarVisibleSubject.next(visible);
   }
 }

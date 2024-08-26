@@ -6,6 +6,7 @@ import {CurrentUser} from "@models/current-user.model";
 
 interface LoginResponse {
   token: string;
+  expiresIn: number;
 }
 
 @Injectable({
