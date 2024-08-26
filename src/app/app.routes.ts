@@ -10,6 +10,7 @@ import {FormComponent} from "@components/vehicle-service/ajout-vehicule/ajoutFor
 import {
   VehicleReservationLayoutComponent
 } from "@components/vehicle-reservation-layout/vehicle-reservation-layout.component";
+import {VerifyComponent} from "@components/auth/verify/verify.component";
 
 
 export const routes: Routes = [
@@ -56,8 +57,12 @@ export const routes: Routes = [
       {
         path: 'register',
         component: RegisterComponent,
-      }
+      },
     ]
+  },
+  {
+    path: 'verify',
+    component: VerifyComponent,
   },
   {
     path: '**',
