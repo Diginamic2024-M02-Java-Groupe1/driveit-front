@@ -6,12 +6,21 @@
 <!--      <select formControlName="status" class="appearance-none pl-4 block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 px-1 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1">-->
 <!--        <option *ngFor="let option of statusOptions" [value]="option.value">{{ option.label }}</option>-->
 <!--      </select>-->
-      <p-treeSelect
+<!--      <p-treeSelect-->
+<!--        class="md:w-20rem"-->
+<!--        containerStyleClass="w-full appearance-none bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"-->
+<!--        formControlName="status"-->
+<!--        [options]="statusOptions"-->
+<!--        placeholder="Statut de la réservation"-->
+<!--        />-->
+      <p-dropdown
         class="md:w-20rem"
         containerStyleClass="w-full appearance-none bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
         formControlName="status"
         [options]="statusOptions"
-        placeholder="Choisissez" />
+        optionLabel="label"
+        [placeholder]="statusOptions[2].label"
+        />
     </div>
 
 <!--    <label class="control-label">Date du trajet</label>-->

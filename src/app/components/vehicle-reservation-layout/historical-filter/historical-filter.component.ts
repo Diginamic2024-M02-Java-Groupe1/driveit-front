@@ -6,7 +6,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {NgForOf, NgStyle} from "@angular/common";
 import {VehicleReservationHistoryService} from "@services/vehicle-reservation-history.service";
 import {StatusFilter} from "@models/enums/status-filter.enum";
-import {TreeSelectModule} from "primeng/treeselect";
+import {DropdownModule} from "primeng/dropdown";
 
 @Component({
   selector: 'app-historical-filter',
@@ -18,7 +18,7 @@ import {TreeSelectModule} from "primeng/treeselect";
     ReactiveFormsModule,
     NgStyle,
     NgForOf,
-    TreeSelectModule
+    DropdownModule
   ],
   templateUrl: './historical-filter.component.html',
   styleUrl: './historical-filter.component.scss'
@@ -39,13 +39,12 @@ export class HistoricalFilterComponent implements OnInit{
   }
   ngOnInit() {
     this.filterForm = new FormGroup({
-      // startDateTime: new FormControl<Date | null>(null,),
-      status: new FormControl<StatusFilter | null>(null, Validators.required)
+      status: new FormControl<StatusFilter>(StatusFilter.IN_PROGRESS, Validators.required)
     });
-
     this.filterForm.get('status')?.valueChanges.subscribe((value) => {
       const statusFilter =value.value;
       this.filterChanged.emit(statusFilter);
+
     });
   }
 

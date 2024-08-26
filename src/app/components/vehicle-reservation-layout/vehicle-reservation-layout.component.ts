@@ -8,6 +8,7 @@ import {
 import {StatusFilter} from "@models/enums/status-filter.enum";
 import {AuthService} from "@services/auth.service";
 
+
 @Component({
   selector: 'app-vehicle-reservation-layout',
   standalone: true,
@@ -20,7 +21,7 @@ import {AuthService} from "@services/auth.service";
 })
 export class VehicleReservationLayoutComponent implements OnInit {
 
-  statusFilter: StatusFilter = StatusFilter.ALL;
+  statusFilter: StatusFilter = StatusFilter.IN_PROGRESS;
   idCollabo!: number;
 
   constructor(private authService: AuthService) {
@@ -31,7 +32,7 @@ export class VehicleReservationLayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.authService.getCurrentUser().subscribe(user => {
+      this.authService.getCurrentUser().subscribe((user: { id: number; }) => {
         this.idCollabo = user.id ;
       });
     }

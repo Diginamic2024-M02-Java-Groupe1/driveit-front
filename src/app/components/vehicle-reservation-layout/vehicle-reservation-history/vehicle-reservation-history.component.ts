@@ -38,10 +38,10 @@ export class VehicleReservationHistoryComponent implements OnInit {
   @Input() statusChoice!: StatusFilter;
   @ViewChild(ConfirmPopup)confirmPopup!: ConfirmPopup;
   reservations!: ResaVehicle[];
+  private isInitialized = false;
 
   constructor(private resaService: ResaVehicleService,
-              private confirmationService:ConfirmationService,
-              private messageService: MessageService) {
+              private confirmationService:ConfirmationService) {
   }
 
   accept(): void {
@@ -53,13 +53,23 @@ export class VehicleReservationHistoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isInitialized = true;
+    this.loadReservationsIfReady();
   }
 
   ngOnChanges(changes:SimpleChanges): void {
-    if (changes['idCollabo'] && changes['idCollabo'].currentValue) {
-      this.loadReservations(this.idCollabo);
-    }
-    if (changes['statusChoice'] && changes['statusChoice'].currentValue) {
+    // if (changes['idCollabo'] && changes['idCollabo'].currentValue) {
+    //   console.log('idCollabo changed',this.idCollabo);
+    //   this.loadReservations(this.idCollabo);
+    // }
+    // if (changes['statusChoice'] && changes['statusChoice'].currentValue) {
+    //   this.loadReservations(this.idCollabo);
+    // }
+    this.loadReservationsIfReady();
+  }
+
+  private loadReservationsIfReady(): void {
+    if (this.isInitialized && this.idCollabo) {
       this.loadReservations(this.idCollabo);
     }
   }
@@ -69,7 +79,6 @@ export class VehicleReservationHistoryComponent implements OnInit {
       console.error('idCollabo is not set');
       return;
     }
-
     const statusChoice = this.statusChoice;
     this.resaService.getReservations(idUser, statusChoice).subscribe((reservations: ResaVehicle[]) => {
       this.reservations = reservations;
