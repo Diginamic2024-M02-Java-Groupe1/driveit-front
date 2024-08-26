@@ -47,7 +47,7 @@ export class VerifyComponent implements OnInit {
     ).subscribe({
       next: (data) => {
         toast.success(data);
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/auth/login']).then();
       },
       error: (error) => {
         toast.error(error);

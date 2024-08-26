@@ -1,53 +1,86 @@
-<div class="card">
-  <p-table [value]="reservations" [tableStyle]="{'min-width': '60rem'}">
-    <ng-template pTemplate="caption">
-      <div class="flex align-items-center justify-between border-b-2">
-        Liste des réservations
-<!--        <p-button icon="pi pi-plus-circle" label="Nouvelle réservation" class="p-button-success" />-->
-        <a routerLink="/reserver-vehicule" class="text-driveGreen">Nouvelle Réservation
-         <i class="pi pi-plus-circle text-driveGreen "></i>
-        </a>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Marque</th>
-        <th>Modèle</th>
-        <th>Immatriculation</th>
-        <th>Date heure début</th>
-        <th>Date heure fin</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-reservation>
-      <tr>
-        <td>{{reservation.vehicle.model.brand.name}}</td>
-        <td>{{reservation.vehicle.model.name}}</td>
-        <td>{{reservation.vehicle.registration}}</td>
-        <td><input type="datetime-local" [value]="reservation.dateTimeStart" disabled ></td>
-        <td><input type="datetime-local" [value]="reservation.dateTimeEnd" disabled ></td>
-        <td>
-        <p-toast />
-        <p-confirmPopup #confirmPopupRef>
-          <ng-template pTemplate="headless" let-message let-test>
-            <div class="border-round p-3">
-              <span>{{ message.message }}</span>
-              <div class="flex align-items-center gap-2 mt-3">
-                <p-button (onClick)="accept()" label="Supprimer" size="small" />
-                <p-button (onClick)="reject()" label="Annuler" [outlined]="true" size="small" />
-              </div>
-            </div>
-          </ng-template>
-        </p-confirmPopup>
-        <p-button (onClick)="confirm($event,reservation.id)" severity="danger" label="Supprimer" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="summary">
-      <div class="flex align-items-center justify-content-between">
-        Au total il y a  {{reservations ? reservations.length : 0 }} réservation(s).
-      </div>
-    </ng-template>
-  </p-table>
-  <ngx-sonner-toaster richColors  />
+<div class="w-screen px-4">
+
+  <div class="card">
+    <p-toolbar styleClass="gap-2">
+      <ng-template pTemplate="left">
+        <h2 class="m-0">Liste des réservations</h2>
+      </ng-template>
+      <ng-template pTemplate="right">
+        <p-button
+          routerLink="/reserver-vehicule"
+          severity="success"
+          label="Nouvelle"
+          icon="pi pi-plus"
+          class="mr-2"
+        />
+      </ng-template>
+    </p-toolbar>
+
+    <!--  <div class="p-toolbar-group-center">-->
+    <!--    <span class="p-input-icon-left">-->
+    <!--        <i class="pi pi-search"></i>-->
+    <!--        <input pInputText placeholder="Search" />-->
+    <!--    </span>-->
+    <!--  </div>-->
+
+    <app-historical-filter (filterChanged)="onFilterChanged($event)"></app-historical-filter>
+    <p-table [value]="reservations" [tableStyle]="{'min-width': '60rem'}" [rows]="10"
+             [paginator]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Marque</th>
+          <th>Modèle</th>
+          <th>Immatriculation</th>
+          <th>Date heure début</th>
+          <th>Date heure fin</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-reservation>
+        <tr>
+          <td>{{ reservation.vehicle.model.brand.name }}</td>
+          <td>{{ reservation.vehicle.model.name }}</td>
+          <td>{{ reservation.vehicle.registration }}</td>
+          <td><input type="datetime-local" [value]="reservation.dateTimeStart" disabled></td>
+          <td><input type="datetime-local" [value]="reservation.dateTimeEnd" disabled></td>
+          <td>
+            <p-toast/>
+            <p-confirmPopup #confirmPopupRef>
+              <ng-template pTemplate="headless" let-message let-test>
+                <div class="border-round p-3">
+                  <span>{{ message.message }}</span>
+                  <div class="flex align-items-center gap-2 mt-3">
+                    <p-button (onClick)="accept()" label="Supprimer" size="small"/>
+                    <p-button (onClick)="reject()" label="Annuler" [outlined]="true" size="small"/>
+                  </div>
+                </div>
+              </ng-template>
+            </p-confirmPopup>
+            <p-button
+              icon="pi pi-pencil"
+              class="mr-2"
+              [rounded]="true"
+              [outlined]="true"
+              severity="success"
+               />
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              [rounded]="true"
+              [outlined]="true"
+              (onClick)="confirm($event,reservation.id)" />
+
+
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+          Au total il y a  {{ reservations ? reservations.length : 0 }} réservation(s).
+        </div>
+      </ng-template>
+    </p-table>
+    <ngx-sonner-toaster richColors/>
+  </div>
 </div>
+

@@ -7,6 +7,7 @@ import {NgForOf, NgStyle} from "@angular/common";
 import {VehicleReservationHistoryService} from "@services/vehicle-reservation-history.service";
 import {StatusFilter} from "@models/enums/status-filter.enum";
 import {DropdownModule} from "primeng/dropdown";
+import {InputTextModule} from "primeng/inputtext";
 
 @Component({
   selector: 'app-historical-filter',
@@ -18,7 +19,8 @@ import {DropdownModule} from "primeng/dropdown";
     ReactiveFormsModule,
     NgStyle,
     NgForOf,
-    DropdownModule
+    DropdownModule,
+    InputTextModule
   ],
   templateUrl: './historical-filter.component.html',
   styleUrl: './historical-filter.component.scss'

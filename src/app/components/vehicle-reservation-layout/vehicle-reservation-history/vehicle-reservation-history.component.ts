@@ -12,6 +12,14 @@ import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {RouterLink} from "@angular/router";
 import {NgxSonnerToaster, toast} from "ngx-sonner";
+import {ToolbarModule} from "primeng/toolbar";
+import {InputTextModule} from "primeng/inputtext";
+import {DropdownModule} from "primeng/dropdown";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {
+  HistoricalFilterComponent
+} from "@components/vehicle-reservation-layout/historical-filter/historical-filter.component";
+import {AuthService} from "@services/auth.service";
 
 @Component({
   selector: 'app-vehicle-reservation-history',
@@ -27,6 +35,12 @@ import {NgxSonnerToaster, toast} from "ngx-sonner";
     ConfirmPopupModule,
     RouterLink,
     NgxSonnerToaster,
+    ToolbarModule,
+    InputTextModule,
+    DropdownModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HistoricalFilterComponent,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './vehicle-reservation-history.component.html',
@@ -34,14 +48,13 @@ import {NgxSonnerToaster, toast} from "ngx-sonner";
 })
 export class VehicleReservationHistoryComponent implements OnInit {
 
-  @Input() idCollabo!: number;
-  @Input() statusChoice!: StatusFilter;
-  @ViewChild(ConfirmPopup)confirmPopup!: ConfirmPopup;
+  @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
   reservations!: ResaVehicle[];
-  private isInitialized = false;
+  statusFilter: StatusFilter = StatusFilter.IN_PROGRESS;
 
   constructor(private resaService: ResaVehicleService,
-              private confirmationService:ConfirmationService) {
+              private confirmationService: ConfirmationService,
+              private authService: AuthService) {
   }
 
   accept(): void {
@@ -53,34 +66,18 @@ export class VehicleReservationHistoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isInitialized = true;
-    this.loadReservationsIfReady();
+    this.loadReservations();
   }
 
-  ngOnChanges(changes:SimpleChanges): void {
-    // if (changes['idCollabo'] && changes['idCollabo'].currentValue) {
-    //   console.log('idCollabo changed',this.idCollabo);
-    //   this.loadReservations(this.idCollabo);
-    // }
-    // if (changes['statusChoice'] && changes['statusChoice'].currentValue) {
-    //   this.loadReservations(this.idCollabo);
-    // }
-    this.loadReservationsIfReady();
+  onFilterChanged(status: StatusFilter) {
+    this.statusFilter = status;
+    this.loadReservations();
   }
 
-  private loadReservationsIfReady(): void {
-    if (this.isInitialized && this.idCollabo) {
-      this.loadReservations(this.idCollabo);
-    }
-  }
 
-  loadReservations(idUser:number): void {
-    if (!idUser) {
-      console.error('idCollabo is not set');
-      return;
-    }
-    const statusChoice = this.statusChoice;
-    this.resaService.getReservations(idUser, statusChoice).subscribe((reservations: ResaVehicle[]) => {
+  loadReservations(): void {
+    const statusChoice = this.statusFilter;
+    this.resaService.getReservations(statusChoice).subscribe((reservations: ResaVehicle[]) => {
       this.reservations = reservations;
     });
   }
@@ -111,7 +108,7 @@ export class VehicleReservationHistoryComponent implements OnInit {
 
     this.resaService.deleteReservationVehicle(id).subscribe({
       next: () => {
-        this.loadReservations(this.idCollabo);
+        this.loadReservations();
       },
       error: (error) => {
         console.error('Erreur pour la suppression de la réservation', error);
