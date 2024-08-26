@@ -3,12 +3,20 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {AuthService} from "@services/auth.service";
 import {toast} from "ngx-sonner";
 import {Router} from "@angular/router";
+import {PasswordModule} from "primeng/password";
+import {InputGroupModule} from "primeng/inputgroup";
+import {InputGroupAddonModule} from "primeng/inputgroupaddon";
+import {InputTextModule} from "primeng/inputtext";
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PasswordModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
@@ -44,7 +52,7 @@ export class RegisterComponent implements OnInit {
       next: () => {
         this.authService.setMail(this.registerForm.value.email);
         toast.success('Registration successful');
-        this.router.navigate(['/verify']);
+        this.router.navigate(['/verify']).then();
       },
       error: (error) => {
         toast.error(error);
