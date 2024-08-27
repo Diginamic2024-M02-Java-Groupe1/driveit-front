@@ -10,69 +10,72 @@ import {Vehicle} from "@models/vehicle";
 import {StatusVehicle} from "@models/enums/status-vehicle.enum";
 import {toast} from "ngx-sonner";
 import {DropdownModule} from "primeng/dropdown";
+import {HttpErrorResponse} from "@angular/common/http";
+import {InputTextModule} from "primeng/inputtext";
+import {AutoCompleteCompleteEvent, AutoCompleteModule} from "primeng/autocomplete";
 
 
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule, FormsModule, VisualisationAjoutVehiculeComponent, InputMaskModule, NgForOf, NgIf, DropdownModule],
+  imports: [NgClass, ReactiveFormsModule, FormsModule, VisualisationAjoutVehiculeComponent, InputMaskModule, NgForOf, NgIf, DropdownModule, InputTextModule, AutoCompleteModule],
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnInit {
-  protected readonly toast = toast;
-  protected readonly StatusVehicle = StatusVehicle;
   protected ajoutVehiculeForm!: FormGroup;
   submitted: boolean = false;
+  selectedCategory: any;
+  filteredCategories: any[] = [];
 
 
   categorieTab = [
-    {value: '1', text: 'SUV'},
-    {value: '2', text: 'Berline'},
-    {value: '3', text: 'Citadine'},
-    {value: '4', text: 'Utilitaire'},
-    {value: '5', text: 'Coupé'},
-    {value: '6', text: 'Cabriolet'},
-    {value: '7', text: 'Monospace'},
-    {value: '8', text: 'Break'},
-    {value: '9', text: '4x4'},
-    {value: '10', text: 'Pick-up'},
+    {value: 'SUV'},
+    {value: 'Berline'},
+    {value: 'Citadine'},
+    {value: 'Utilitaire'},
+    {value: 'Coupé'},
+    {value: 'Cabriolet'},
+    {value: 'Monospace'},
+    {value: 'Break'},
+    {value: '4x4'},
+    {value: 'Pick-up'},
   ];
 
   brandTab = [
-    {value: '1', text: 'Audi'},
-    {value: '2', text: 'BMW'},
-    {value: '3', text: 'Citroën'},
-    {value: '4', text: 'Dacia'},
-    {value: '5', text: 'Fiat'},
-    {value: '6', text: 'Ford'},
-    {value: '7', text: 'Mercedes'},
-    {value: '8', text: 'Peugeot'},
-    {value: '9', text: 'Renault'},
-    {value: '10', text: 'Toyota'},
+    {value: 'Audi'},
+    {value: 'BMW'},
+    {value: 'Citroën'},
+    {value: 'Dacia'},
+    {value: 'Fiat'},
+    {value: 'Ford'},
+    {value: 'Mercedes'},
+    {value: 'Peugeot'},
+    {value: 'Renault'},
+    {value: 'Toyota'},
   ];
 
   motorizationTab = [
-    {value: '1', text: 'Essence'},
-    {value: '2', text: 'Diesel'},
-    {value: '3', text: 'Hybride'},
-    {value: '4', text: 'Electrique'},
-    {value: '5', text: 'GPL'},
-    {value: '6', text: 'Hydrogène'},
+    // {value: 'Essence', label: 'EssenceMoteur'} //est appelé avec optionLabel pour afficher un label à la place de la value tout en gardant la value en base de données
+    {value: 'Essence'},
+    {value: 'Diesel'},
+    {value: 'Hybride'},
+    {value: 'Electrique'},
+    {value: 'GPL'},
+    {value: 'Hydrogène'},
   ];
-
 
   constructor(
     private fb: FormBuilder,
-    private vehicleService: VehicleDataService
+    private vehicleService: VehicleDataService,
   ) {
     this.ajoutVehiculeForm = new FormGroup({
       registration: new FormControl('', [Validators.required]),
       numberOfSeats: new FormControl('', [Validators.required, Validators.min(1)]),
-      category: new FormControl(0, [Validators.required]), // Initialize with a number
-      brand: new FormControl(0, [Validators.required]), // Initialize with a number
+      category: new FormControl('', [Validators.required]), // Initialize with a number
+      brand: new FormControl('', [Validators.required]), // Initialize with a number
       model: new FormControl('', [Validators.required]),
-      motorization: new FormControl(0, [Validators.required]), // Initialize with a number
+      motorization: new FormControl('', [Validators.required]), // Initialize with a number
       emission: new FormControl('', [Validators.required, Validators.min(0)]),
       status: new FormControl(StatusVehicle.AVAILABLE, [Validators.required]),
       url: new FormControl('', [Validators.required]),
@@ -131,9 +134,9 @@ export class FormComponent implements OnInit {
         service: this.ajoutVehiculeForm.get('service')?.value,
         emission: this.ajoutVehiculeForm.get('emission')?.value,
         url: this.ajoutVehiculeForm.get('url')?.value,
-        motorizationId: Number(this.ajoutVehiculeForm.get('motorization')?.value), // Ensure it's an integer
-        brandId: Number(this.ajoutVehiculeForm.get('brand')?.value), // Ensure it's an integer
-        categoryId: Number(this.ajoutVehiculeForm.get('category')?.value), // Ensure it's an integer
+        motorization: this.ajoutVehiculeForm.get('motorization')?.value,
+        brand: this.ajoutVehiculeForm.get('brand')?.value,
+        category: this.ajoutVehiculeForm.get('category')?.value,
         model: this.ajoutVehiculeForm.get('model')?.value,
       };
 
@@ -143,7 +146,10 @@ export class FormComponent implements OnInit {
       toast.promise(promise, {
         loading: 'Loading...',
         success: (data) => `${data}`,
-        error: 'Error',
+        error: (error)=> {
+          console.error(error);
+          return "error";
+        }
       });
 
     } else {
@@ -171,9 +177,11 @@ export class FormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.ajoutVehiculeForm.valueChanges.subscribe(value => {
-      console.log('Form changes', value);
-    });
+    this.ajoutVehiculeForm.valueChanges.subscribe();
+    // this.vehicleService.getCategories().then((categories) => { //TODO créer une méthode get pour requêter en base de données les catégories
+    //   this.categorieTab = categories
+    // })
+    this.categorieTab;
   }
 
   onUrlInput(event: Event) {
@@ -181,4 +189,29 @@ export class FormComponent implements OnInit {
     this.ajoutVehiculeForm.get('urlImage')?.setValue(input.value);
   }
 
+  addNewCategory(newCategoryLabel: string) {
+    if (newCategoryLabel.trim().length > 0) {
+      const newCategoryValue = newCategoryLabel.toLowerCase().replace(/\s+/g, '-');
+
+      // Vérifier si la catégorie existe déjà
+      if (!this.categorieTab.some(category => category.value === newCategoryValue)) {
+        // Ajouter la nouvelle catégorie
+        this.categorieTab.push({ value: newCategoryValue });
+        this.selectedCategory = newCategoryValue; // Mise à jour de la sélection
+      }
+    }
+  }
+
+  filterCategory($event: AutoCompleteCompleteEvent) {
+      let filtered: any[] = [];
+      let query = $event.query;
+
+      for (let i=0; i<(this.categorieTab as any).length; i++) {
+          let category = this.categorieTab[i];
+          if (category.value.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+              filtered.push(category);
+          }
+      }
+      this.filteredCategories = filtered;
+  }
 }

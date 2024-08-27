@@ -15,6 +15,6 @@ export class VehicleDataService {
   }
 
   insertVehicle(vehicle: Vehicle): Observable<string> {
-    return this.http.post(`${this.apiURL}/vehicule/service`, vehicle, { responseType: 'text'});
+    return this.http.post(`${this.apiURL}/vehicules/service`, vehicle, { responseType: 'text'});
   }
 }

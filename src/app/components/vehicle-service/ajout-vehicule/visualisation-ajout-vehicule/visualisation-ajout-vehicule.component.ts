@@ -21,10 +21,7 @@ export class VisualisationAjoutVehiculeComponent implements OnInit{
 
   }
   ngOnInit(): void {
-    this.formValues = this.formValues || {};
-    console.log(this.formValues.brand);
-    console.log(this.formValues.motorization);
-    console.log(this.formValues.category);
+    //todo pour chacun des selects, faire en sorte que les formcontrol récupère les valeurs en base on init
   }
 
 

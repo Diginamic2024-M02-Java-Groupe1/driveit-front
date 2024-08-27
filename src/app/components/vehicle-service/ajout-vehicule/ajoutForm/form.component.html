@@ -57,21 +57,24 @@
                 <label for="category"
                        class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Catégorie</label>
                 <div class="relative">
-                  <p-dropdown
-                    inputId="dropdown"
+                  <p-autoComplete
                     id="category"
                     formControlName="category"
-                    [options]="categorieTab"
-                    optionLabel="text"
-                  placeholder="Sélectionnez une catégorie"
+                    [dropdown]="true"
+                    [suggestions]="filteredCategories"
+                    (completeMethod)="filterCategory($event)"
+                    optionLabel="value"
+                    optionValue="value"
+                    placeholder="Sélectionnez une catégorie"
                     styleClass=" w-full bg-grey-lighter text-grey-darker py-1 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
-                  [ngClass]="{
+                    [ngClass]="{
                   'ring-2 ring-red-500': ajoutVehiculeForm.get('category')?.invalid && ajoutVehiculeForm.get('category')?.touched,
                   'ring-2 ring-green-500': ajoutVehiculeForm.get('category')?.valid && ajoutVehiculeForm.get('category')?.touched
                   }">
-                  </p-dropdown>
-
-                  <div *ngIf="ajoutVehiculeForm.get('category')?.invalid && (ajoutVehiculeForm.get('category')?.dirty || ajoutVehiculeForm.get('category')?.touched || submitted)" class="text-red-500 text-xs italic">
+                  </p-autoComplete>
+                  <div
+                    *ngIf="ajoutVehiculeForm.get('category')?.invalid && (ajoutVehiculeForm.get('category')?.dirty || ajoutVehiculeForm.get('category')?.touched || submitted)"
+                    class="text-red-500 text-xs italic">
                     {{ getErrorMessage('category') }}
                   </div>
                 </div>
@@ -104,7 +107,8 @@
                     id="brand"
                     formControlName="brand"
                     [options]="brandTab"
-                    optionLabel="text"
+                    optionValue="value"
+                    optionLabel="value"
                     placeholder="Sélectionnez une marque"
                     styleClass=" w-full bg-grey-lighter text-grey-darker hover:outline-none py-1 focus:outline-none focus:ring-indigo-500 focus:ring-1"
                     [ngClass]="{
@@ -113,7 +117,9 @@
                   }">
                   </p-dropdown>
 
-                  <div *ngIf="ajoutVehiculeForm.get('brand')?.invalid && (ajoutVehiculeForm.get('brand')?.dirty || ajoutVehiculeForm.get('brand')?.touched || submitted)" class="text-red-500 text-xs italic">
+                  <div
+                    *ngIf="ajoutVehiculeForm.get('brand')?.invalid && (ajoutVehiculeForm.get('brand')?.dirty || ajoutVehiculeForm.get('brand')?.touched || submitted)"
+                    class="text-red-500 text-xs italic">
                     {{ getErrorMessage('brand') }}
                   </div>
                 </div>
@@ -139,7 +145,8 @@
                     id="motorization"
                     formControlName="motorization"
                     [options]="motorizationTab"
-                    optionLabel="text"
+                    optionValue="value"
+                    optionLabel="value"
                     placeholder="Sélectionnez une motorisation"
                     styleClass=" w-full bg-grey-lighter text-grey-darker py-1 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
                     [ngClass]="{
@@ -148,7 +155,9 @@
                   }">
                   </p-dropdown>
 
-                  <div *ngIf="ajoutVehiculeForm.get('motorisation')?.invalid && (ajoutVehiculeForm.get('motorisation')?.dirty || ajoutVehiculeForm.get('motorisation')?.touched || submitted)" class="text-red-500 text-xs italic">
+                  <div
+                    *ngIf="ajoutVehiculeForm.get('motorisation')?.invalid && (ajoutVehiculeForm.get('motorisation')?.dirty || ajoutVehiculeForm.get('motorisation')?.touched || submitted)"
+                    class="text-red-500 text-xs italic">
                     {{ getErrorMessage('motorisation') }}
                   </div>
                 </div>
