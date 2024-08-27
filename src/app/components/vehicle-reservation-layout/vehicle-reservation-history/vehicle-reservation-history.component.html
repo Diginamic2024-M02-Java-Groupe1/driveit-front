@@ -1,53 +1,175 @@
-<div class="card">
-  <p-table [value]="reservations" [tableStyle]="{'min-width': '60rem'}">
-    <ng-template pTemplate="caption">
-      <div class="flex align-items-center justify-between border-b-2">
-        Liste des réservations
-<!--        <p-button icon="pi pi-plus-circle" label="Nouvelle réservation" class="p-button-success" />-->
-        <a routerLink="/reserver-vehicule" class="text-driveGreen">Nouvelle Réservation
-         <i class="pi pi-plus-circle text-driveGreen "></i>
-        </a>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Marque</th>
-        <th>Modèle</th>
-        <th>Immatriculation</th>
-        <th>Date heure début</th>
-        <th>Date heure fin</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-reservation>
-      <tr>
-        <td>{{reservation.vehicle.model.brand.name}}</td>
-        <td>{{reservation.vehicle.model.name}}</td>
-        <td>{{reservation.vehicle.registration}}</td>
-        <td><input type="datetime-local" [value]="reservation.dateTimeStart" disabled ></td>
-        <td><input type="datetime-local" [value]="reservation.dateTimeEnd" disabled ></td>
-        <td>
-        <p-toast />
-        <p-confirmPopup #confirmPopupRef>
-          <ng-template pTemplate="headless" let-message let-test>
-            <div class="border-round p-3">
-              <span>{{ message.message }}</span>
-              <div class="flex align-items-center gap-2 mt-3">
-                <p-button (onClick)="accept()" label="Supprimer" size="small" />
-                <p-button (onClick)="reject()" label="Annuler" [outlined]="true" size="small" />
-              </div>
+<div class="w-screen px-4">
+
+  <div class="card">
+    <p-toolbar styleClass="gap-2">
+      <ng-template pTemplate="left">
+        <h2 class="m-0">Liste des réservations</h2>
+      </ng-template>
+      <ng-template pTemplate="right">
+        <p-button
+          routerLink="/vehicles/service/booking"
+          severity="success"
+          label="Nouvelle"
+          icon="pi pi-plus"
+          class="mr-2"
+          styleClass="bg-driveGreen hover:bg-emerald-500"
+        />
+      </ng-template>
+    </p-toolbar>
+
+    <!--  <div class="p-toolbar-group-center">-->
+    <!--    <span class="p-input-icon-left">-->
+    <!--        <i class="pi pi-search"></i>-->
+    <!--        <input pInputText placeholder="Search" />-->
+    <!--    </span>-->
+    <!--  </div>-->
+
+    <app-historical-filter (filterChanged)="onFilterChanged($event)" (searchChanged)="onSearchTermChanged($event)"></app-historical-filter>
+    <p-table [value]="reservations"
+             [tableStyle]="{'min-width': '60rem'}"
+             [rows]="10"
+             [paginator]="true"
+              styleClass="p-datatable-striped">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Marque</th>
+          <th>Modèle</th>
+          <th>Immatriculation</th>
+          <th>Date heure début</th>
+          <th>Date heure fin</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-reservation>
+        <tr>
+          <td>{{ reservation.vehicle.model.brand.name }}</td>
+          <td>{{ reservation.vehicle.model.name }}</td>
+          <td>{{ reservation.vehicle.registration }}</td>
+          <td><input type="datetime-local" [value]="reservation.dateTimeStart" disabled></td>
+          <td><input type="datetime-local" [value]="reservation.dateTimeEnd" disabled></td>
+          <td>
+            <p-toast/>
+<!--            <p-confirmPopup #confirmPopupRef>-->
+<!--              <ng-template pTemplate="headless" let-message let-test>-->
+<!--                <div class="border-round p-3">-->
+<!--                  <span>{{ message.message }}</span>-->
+<!--                  <div class="flex align-items-center gap-2 mt-3">-->
+<!--                    <p-button (onClick)="accept()" label="Supprimer" size="small"/>-->
+<!--                    <p-button (onClick)="reject()" label="Annuler" [outlined]="true" size="small"/>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </ng-template>-->
+<!--            </p-confirmPopup>-->
+            <p-button
+              icon="pi pi-pencil"
+              class="mr-2"
+              [rounded]="true"
+              [outlined]="true"
+              severity="success"
+              (onClick)="editReservation(reservation)"
+               />
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              [rounded]="true"
+              [outlined]="true"
+              (onClick)="confirm($event,reservation.id)" />
+
+
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+          Au total il y a  {{ reservations ? reservations.length : 0 }} réservation(s).
+        </div>
+      </ng-template>
+    </p-table>
+
+    <p-dialog
+      [(visible)]="reservationDialog"
+      [style]="{ width: '650px', height: '650px' }"
+      header="Modification de la réservation pour {{reservation?.vehicle?.registration}}"
+      [modal]="true"
+      styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <img
+          [src]="reservation.vehicle.url"
+          alt="Image du véhicule"
+          class="block m-auto pb-3"
+          *ngIf="reservation.vehicle.url" />
+        <div class="formgrid grid">
+          <div class="field col">
+            <label for="previousDateStart">Date et heure de début</label>
+            <p-calendar [(ngModel)]="reservation.dateTimeStart" id="dateTimeStart" [showTime]="true" hourFormat="24"
+                        name="dateStart"
+                        id="previousDateStart"
+                        stepMinute="15"
+                        dateFormat="dd.mm.yy">
+              <ng-template pTemplate="date" let-date>
+                <span [ngStyle]="{textDecoration: (date.day < 21 && date.day > 10) ? 'line-through' : 'inherit'}">
+                  {{ date.day }}
+                </span>
+              </ng-template>
+            </p-calendar>
+          </div>
+          <div class="field col">
+            <label for="previousDateEnd">Date et heure de fin</label>
+            <p-calendar [(ngModel)]="reservation.dateTimeEnd" id="dateTimeEnd" [showTime]="true" hourFormat="24"
+                        name="dateStart"
+                        id="previousDateEnd"
+                        stepMinute="15"
+                        dateFormat="dd.mm.yy">
+              <ng-template pTemplate="date" let-date>
+                <span [ngStyle]="{textDecoration: (date.day < 21 && date.day > 10) ? 'line-through' : 'inherit'}">
+                  {{ date.day }}
+                </span>
+              </ng-template>
+            </p-calendar>
+<!--            <label for="previousDateEnd">Date et heure de fin</label>-->
+<!--            <input-->
+<!--              type="datetime-local"-->
+<!--              pInputText-->
+<!--              id="previousDateEnd"-->
+<!--              [(ngModel)]="reservation.dateTimeEnd"-->
+<!--               />-->
+          </div>
+        </div>
+        <h3 class="text-center">Réservations pour ce véhicule</h3>
+<!--        <textarea [value]="reservationsText" rows="10" cols="50" readonly></textarea>-->
+        <div *ngFor="let reservation of showReservations" class="justify-center border-2 mt-4 border-amber-950 rounded-m p-4">
+          <div class="field-col">
+            <label>Immatriculation:</label>
+            <input type="text" [value]="reservation.vehicle.registration" readonly />
+          </div>
+          <div class="flex">
+            <div class="field-col">
+            <label>Date début:</label>
+            <input type="datetime-local" [value]="reservation.dateTimeStart"  readonly />
             </div>
-          </ng-template>
-        </p-confirmPopup>
-        <p-button (onClick)="confirm($event,reservation.id)" class="mt-2 text-white py-2 px-6 rounded-md hover:bg-red-500 text-center bg-red-500 font-semibold" severity="danger" label="Supprimer" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="summary">
-      <div class="flex align-items-center justify-content-between">
-        Au total il y a  {{reservations ? reservations.length : 0 }} réservation(s).
-      </div>
-    </ng-template>
-  </p-table>
-  <ngx-sonner-toaster richColors  />
+            <div class="field-col">
+            <label>Date fin:</label>
+            <input type="datetime-local" [value]="reservation.dateTimeEnd" readonly />
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Cancel"
+          icon="pi pi-times"
+          [text]="true"
+          (onClick)="hideDialog()" />
+        <p-button
+          label="Save"
+          icon="pi pi-check"
+          [text]="true"
+          (onClick)="saveProduct()" />
+      </ng-template>
+    </p-dialog>
+    <ngx-sonner-toaster richColors/>
+    <p-confirmDialog [style]="{ width: '450px' }" />
+  </div>
 </div>
+
