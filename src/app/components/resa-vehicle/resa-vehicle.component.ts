@@ -78,7 +78,6 @@ export class ResaVehicleComponent implements OnInit {
     this.resaVehicleService.reserveVehicle(1, reservationData).subscribe({
       next: (data) => {
         this.onFilter();
-        toast.success('Réservation effectuée')
       },
       error: (error) => {
         console.error('Error reserving vehicle', error);

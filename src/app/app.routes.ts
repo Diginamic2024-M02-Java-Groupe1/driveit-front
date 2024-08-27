@@ -10,6 +10,7 @@ import {FormComponent} from "@components/vehicle-service/ajout-vehicule/ajoutFor
 import {
   VehicleReservationLayoutComponent
 } from "@components/vehicle-reservation-layout/vehicle-reservation-layout.component";
+import {CovoiturageFormComponent} from "@components/covoiturage-form/covoiturage-form.component";
 import {VerifyComponent} from "@components/auth/verify/verify.component";
 
 
@@ -39,6 +40,11 @@ export const routes: Routes = [
         component: VehicleReservationLayoutComponent,
         canActivate: [AuthGuard]
       },
+      {
+        path:'creation-covoiturage',
+        component: CovoiturageFormComponent,
+        canActivate: [AuthGuard]
+      },
     ],
   },
   {
@@ -57,7 +63,7 @@ export const routes: Routes = [
       {
         path: 'register',
         component: RegisterComponent,
-      },
+      }
     ]
   },
   {
