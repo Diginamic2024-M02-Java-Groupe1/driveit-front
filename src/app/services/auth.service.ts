@@ -72,6 +72,6 @@ export class AuthService {
     if (!email) {
       email = this.email;
     }
-    return this.http.post<string>(`${this.url}/resend-verification`, {email});
+    return this.http.post<string>(`${this.url}/resend-verification`, email, {responseType: 'text' as 'json'});
   }
 }

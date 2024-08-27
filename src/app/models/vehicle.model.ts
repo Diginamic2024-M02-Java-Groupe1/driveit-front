@@ -4,6 +4,7 @@ import {Motorization} from "@models/motorization.model";
 import {Model} from "@models/model.model";
 import {Category} from "@models/category.model";
 import {Carpooling} from "@models/carpooling.model";
+import {Brand} from "@models/brand.model";
 
 export interface Vehicle {
   id?: number;
@@ -18,5 +19,5 @@ export interface Vehicle {
   motorization: Motorization;
   model: Model;
   category: Category;
-
+  brand: Brand;
 }

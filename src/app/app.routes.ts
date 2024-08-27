@@ -7,13 +7,10 @@ import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component
 import {LoginComponent} from "@components/auth/login/login.component";
 import {RegisterComponent} from "@components/auth/register/register.component";
 import {FormComponent} from "@components/vehicle-service/ajout-vehicule/ajoutForm/form.component";
+
+import {CovoiturageFormComponent} from "@components/covoiturage-form/covoiturage-form.component";
 import {VerifyComponent} from "@components/auth/verify/verify.component";
-import {
-  VehicleReservationHistoryComponent
-} from "@components/vehicle-reservation-layout/vehicle-reservation-history/vehicle-reservation-history.component";
-import {
-  VehicleReservationModifyComponent
-} from "@components/vehicle-reservation-modify/vehicle-reservation-modify.component";
+import {VehicleReservationHistoryComponent} from "@components/vehicle-reservation-layout/vehicle-reservation-history/vehicle-reservation-history.component";
 
 
 export const routes: Routes = [
@@ -42,6 +39,11 @@ export const routes: Routes = [
         component: VehicleReservationHistoryComponent,
         canActivate: [AuthGuard]
       },
+      {
+        path:'creation-covoiturage',
+        component: CovoiturageFormComponent,
+        canActivate: [AuthGuard]
+      },
     ],
   },
   {
@@ -60,7 +62,7 @@ export const routes: Routes = [
       {
         path: 'register',
         component: RegisterComponent,
-      },
+      }
     ]
   },
   {
