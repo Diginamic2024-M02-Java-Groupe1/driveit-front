@@ -7,11 +7,10 @@ import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component
 import {LoginComponent} from "@components/auth/login/login.component";
 import {RegisterComponent} from "@components/auth/register/register.component";
 import {FormComponent} from "@components/vehicle-service/ajout-vehicule/ajoutForm/form.component";
-import {
-  VehicleReservationLayoutComponent
-} from "@components/vehicle-reservation-layout/vehicle-reservation-layout.component";
+
 import {CovoiturageFormComponent} from "@components/covoiturage-form/covoiturage-form.component";
 import {VerifyComponent} from "@components/auth/verify/verify.component";
+import {VehicleReservationHistoryComponent} from "@components/vehicle-reservation-layout/vehicle-reservation-history/vehicle-reservation-history.component";
 
 
 export const routes: Routes = [
@@ -22,22 +21,22 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'reserver-vehicule',
+        redirectTo: 'vehicles/service/booking',
         pathMatch: 'full'
       },
       {
-        path: 'reserver-vehicule',
+        path: 'vehicles/service/booking',
         component: ResaVehicleComponent,
         canActivate: [AuthGuard]
       },
       {
-        path: 'ajoutVehicule',
+        path: 'vehicles/add',
         component: FormComponent,
         canActivate: [AuthGuard]
       },
       {
-        path:'VehicleReserveHistory',
-        component: VehicleReservationLayoutComponent,
+        path:'vehicles/service/booking/history',
+        component: VehicleReservationHistoryComponent,
         canActivate: [AuthGuard]
       },
       {
