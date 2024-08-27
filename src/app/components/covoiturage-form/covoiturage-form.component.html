@@ -1,0 +1,108 @@
+<div class="h-full flex w-screen">
+  <div class="px-8 py-6 mx-0 lg:mx-16">
+    <form [formGroup]="carpoolingForm" (ngSubmit)="submit()">
+      <div class="-mx-3 mb-2 flex flex-col gap-4">
+        <div class="px-3 mb-6 md:mb-0">
+          <label class="block tracking-wide text-grey-darker text-xs font-bold mb-2">
+            Adresse de départ
+          </label>
+          <div class="grid grid-cols-6 lg:grid-cols-12 grid-rows-1 gap-3" formGroupName="departureAddress">
+            <input type="text" pInputText class="col-span-1" placeholder="40" formControlName="number"
+                   [ngClass]="getErrorClass('departureAddress.number')">
+            <p-dropdown
+              [options]="['rue', 'avenue', 'boulevard',  'impasse', 'allée', 'place']"
+              formControlName="type"
+              [ngClass]="getErrorClass('departureAddress.type')"
+              class="col-span-2">
+            </p-dropdown>
+            <input type="text" pInputText class="col-span-3 lg:col-span-4" placeholder="de la Paix" formControlName="street"
+                   [ngClass]="getErrorClass('departureAddress.street')">
+            <input type="text" pInputText class="col-span-3" placeholder="Montpellier" formControlName="city"
+                   [ngClass]="getErrorClass('departureAddress.city')">
+            <input type="text" pInputText class="col-span-3 lg:col-span-2" placeholder="34070" formControlName="zipcode"
+                   [ngClass]="getErrorClass('departureAddress.zipcode')">
+          </div>
+
+        </div>
+        <div class="px-3 mb-6 md:mb-0">
+          <label class="block tracking-wide text-grey-darker text-xs font-bold mb-2">
+            Adresse d'arrivée
+          </label>
+          <div class="grid grid-cols-6 lg:grid-cols-12 grid-rows-1 gap-3" formGroupName="arrivalAddress">
+            <input type="text" pInputText class="col-span-1" placeholder="40" formControlName="number"
+                   [ngClass]="getErrorClass('arrivalAddress.number')">
+            <p-dropdown
+              [options]="['rue', 'avenue', 'boulevard',  'impasse', 'allée', 'place']"
+              formControlName="type"
+              [ngClass]="getErrorClass('arrivalAddress.type')"
+              class="col-span-2">
+            </p-dropdown>
+            <input type="text" pInputText class="col-span-3 lg:col-span-4" placeholder="de la Paix" formControlName="street"
+                   [ngClass]="getErrorClass('arrivalAddress.street')">
+            <input type="text" pInputText class="col-span-3" placeholder="Montpellier" formControlName="city"
+                   [ngClass]="getErrorClass('arrivalAddress.city')">
+            <input type="text" pInputText class="col-span-3 lg:col-span-2" placeholder="34070" formControlName="zipcode"
+                   [ngClass]="getErrorClass('arrivalAddress.zipcode')">
+          </div>
+        </div>
+        <div class="flex">
+          <div class="px-3 mb-6 md:mb-0 w-full">
+            <label class="block tracking-wide text-grey-darker text-xs font-bold mb-2">
+              Heure & Date de départ
+            </label>
+            <div class="flex gap-4 ">
+              <p-calendar
+                [iconDisplay]="'input'"
+                [showTime]="true"
+                hourFormat="24"
+                dateFormat="dd/mm/yy"
+                [showIcon]="true"
+                placeholder="08/12/2021"
+                styleClass="w-full"
+                class="w-full"
+                formControlName="departureDateTime"
+                inputId="icondisplay"/>
+            </div>
+          </div>
+          <div class="px-3 mb-6 md:mb-0 w-full">
+            <label class="block tracking-wide text-grey-darker text-xs font-bold mb-2">
+              Heure & Date d'arrivée
+            </label>
+            <div class="flex gap-4 ">
+              <p-calendar
+                [iconDisplay]="'input'"
+                [showTime]="true"
+                hourFormat="24"
+                dateFormat="dd/mm/yy"
+                [showIcon]="true"
+                placeholder="08/12/2021"
+                styleClass="w-full"
+                class="w-full"
+                formControlName="arrivalDateTime"
+                inputId="icondisplay"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-3 mb-6 md:mb-0">
+          <label class="block tracking-wide text-grey-darker text-xs font-bold mb-2">
+            Véhicule
+          </label>
+          <p-dropdown
+            [options]="groupedVehicles"
+            formControlName="vehicle"
+            placeholder="Veuillez choisir un véhicule"
+            [group]="true">
+          </p-dropdown>
+        </div>
+      </div>
+      <div class="flex items-center justify-between">
+        <div class="flex justify-center">
+          <p-button class="mt-4 w-full text-white rounded-md hover:opacity-50" type="submit"
+                    label="Créer un covoiturage"/>
+        </div>
+      </div>
+    </form>
+    <p-toast/>
+  </div>
+</div>
