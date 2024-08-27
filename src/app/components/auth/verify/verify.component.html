@@ -1,0 +1,16 @@
+<form id="verifyForm" [formGroup]="verifyForm" (ngSubmit)="onSubmit()" class="w-full h-full flex flex-col space-y-4 items-center justify-center bg-white">
+      <h2 class="text-2xl font-bold mb-4">Verify Code</h2>
+    <div class="text-center">
+      <p class="mb-4 text-gray-700">Please check your email <span class="font-bold">{{email}}</span> for the verification code.</p>
+      <div class="mb-4">
+        <h3 class="block text-gray-700 text-sm font-bold mb-2">Enter Verification Code</h3>
+        <div class="flex justify-center">
+          <p-inputOtp id="code" formControlName="code" [integerOnly]="true" [length]="6" [autofocus]="true" />
+        </div>
+      </div>
+    </div>
+  <div class="flex justify-content-between align-self-stretch">
+    <p-button label="Resend Code" [link]="true" class="p-0" (click)="resendCode()"/>
+    <p-button type="submit" label="Submit Code"/>
+  </div>
+</form>

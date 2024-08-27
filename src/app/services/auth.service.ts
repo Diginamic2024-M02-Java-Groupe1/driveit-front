@@ -16,6 +16,7 @@ export class AuthService {
 
   private url: string = environment.auth;
   private urlApi: string = environment.api;
+  private email: string | null = null;
 
   constructor(private http: HttpClient) { }
 
@@ -33,6 +34,18 @@ export class AuthService {
 
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.url}/login`, {email, password});
+  }
+
+  setMail(email: string): void {
+    this.email = email;
+  }
+
+  getMail(): string | null {
+    return this.email;
+  }
+
+  register(firstName: string, lastName: string, email: string, password: string): Observable<string> {
+    return this.http.post<string>(`${this.url}/register`, {firstName, lastName, email, password});
   }
 
   getToken(): string | null {
@@ -53,5 +66,16 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
+  }
+
+  verifyAccount(email: string | null, verificationCode: string): Observable<string> {
+    return this.http.post<string>(`${this.url}/verify`, {email, verificationCode}, {responseType: 'text' as 'json'});
+  }
+
+  resendVerificationCode(email: string | null): Observable<string> {
+    if (!email) {
+      email = this.email;
+    }
+    return this.http.post<string>(`${this.url}/resend-verification`, email, {responseType: 'text' as 'json'});
   }
 }

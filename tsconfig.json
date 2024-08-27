@@ -11,7 +11,8 @@
       "@models/*": ["src/app/models/*"],
       "@pipes/*": ["src/app/pipes/*"],
       "@services/*": ["src/app/services/*"],
-      "@utils/*": ["src/app/utils/*"]
+      "@utils/*": ["src/app/utils/*"],
+      "@validators/*": ["src/app/validators/*"]
     },
     "outDir": "./dist/out-tsc",
     "strict": true,
