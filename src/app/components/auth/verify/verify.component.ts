@@ -5,8 +5,8 @@ import {InputTextModule} from "primeng/inputtext";
 import {Button} from "primeng/button";
 import {AuthService} from "@services/auth.service";
 import {toast} from "ngx-sonner";
-import {lastValueFrom} from "rxjs";
 import {Router} from "@angular/router";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-verify',
@@ -45,23 +45,24 @@ export class VerifyComponent implements OnInit {
       this.email,
       this.verifyForm.value.code
     ).subscribe({
-      next: (data) => {
+      next: (data:string) => {
         toast.success(data);
         this.router.navigate(['/auth/login']).then();
       },
-      error: (error) => {
-        toast.error(error);
-      },
-      complete: () => {
-        console.log('Verification process completed');
+      error: (errorResponse:HttpErrorResponse) => {
+        toast.error(errorResponse.error);
       }
     });
   }
 
   resendCode() {
-    toast.promise(lastValueFrom(this.authService.resendVerificationCode(this.email)), {
-      success: 'Verification code sent successfully',
-      error: 'Failed to send verification code'
+    this.authService.resendVerificationCode(this.email).subscribe({
+      next: (data:string) => {
+        toast.success(data);
+      },
+      error: (errorResponse: HttpErrorResponse) => {
+        toast.error(errorResponse.error);
+      }
     });
   }
 }
