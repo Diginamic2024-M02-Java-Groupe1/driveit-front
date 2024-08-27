@@ -38,8 +38,7 @@ export class LoginComponent implements OnInit {
         if (response.token) {
           this.authService.saveToken(response.token);
           this.authService.saveUserCredentials(this.email?.value, this.password?.value);
-          console.log('Login successful');
-          this.router.navigate(['']);
+          this.router.navigate(['']).then();
         }
       });
     } else {
