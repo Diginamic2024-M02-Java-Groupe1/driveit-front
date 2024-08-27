@@ -20,6 +20,10 @@ import {
   HistoricalFilterComponent
 } from "@components/vehicle-reservation-layout/historical-filter/historical-filter.component";
 import {AuthService} from "@services/auth.service";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {DialogModule} from "primeng/dialog";
+import {CalendarModule} from "primeng/calendar";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-vehicle-reservation-history',
@@ -41,6 +45,9 @@ import {AuthService} from "@services/auth.service";
     FormsModule,
     ReactiveFormsModule,
     HistoricalFilterComponent,
+    ConfirmDialogModule,
+    DialogModule,
+    CalendarModule,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './vehicle-reservation-history.component.html',
@@ -50,7 +57,13 @@ export class VehicleReservationHistoryComponent implements OnInit {
 
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
   reservations!: ResaVehicle[];
+  reservation!: ResaVehicle;
+  showReservations: ResaVehicle[] = [];
+  reservationsText: string = '';
   statusFilter: StatusFilter = StatusFilter.IN_PROGRESS;
+  searchValue: string = '';
+  reservationDialog: boolean = false;
+  submitted: boolean = false;
 
   constructor(private resaService: ResaVehicleService,
               private confirmationService: ConfirmationService,
@@ -65,6 +78,11 @@ export class VehicleReservationHistoryComponent implements OnInit {
     this.confirmPopup.reject();
   }
 
+  hideDialog() {
+    this.reservationDialog = false;
+    this.submitted = false;
+  }
+
   ngOnInit(): void {
     this.loadReservations();
   }
@@ -74,13 +92,71 @@ export class VehicleReservationHistoryComponent implements OnInit {
     this.loadReservations();
   }
 
+  onSearchTermChanged(searchTerm: string) {
+    this.searchValue = searchTerm;
+    this.loadReservations();
+  }
 
   loadReservations(): void {
     const statusChoice = this.statusFilter;
-    this.resaService.getReservations(statusChoice).subscribe((reservations: ResaVehicle[]) => {
-      this.reservations = reservations;
+    this.resaService.getMyReservations(statusChoice).subscribe((reservations: ResaVehicle[]) => {
+      this.reservations = reservations.filter(reservation =>
+        reservation.vehicle.registration.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+        reservation.vehicle.model.brand.name.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+        reservation.vehicle.model.name.toLowerCase().includes(this.searchValue.toLowerCase())
+      );
     });
   }
+
+  editReservation(reservation: ResaVehicle): void {
+    this.reservation = {
+      ...reservation,
+      dateTimeStart: new Date(reservation.dateTimeStart),
+      dateTimeEnd: new Date(reservation.dateTimeEnd)
+    };
+    this.reservationDialog = true;
+  }
+
+  showReservationsForVehicle(vehicleId: number): void {
+    this.resaService.getAllReservationsForThisVehicle(vehicleId).subscribe({
+      next: (data: ResaVehicle[]) => {
+        this.showReservations = data;
+        this.reservationsText = data.map(reservation =>
+          `Immatriculation: ${reservation.vehicle.registration}, Date début: ${reservation.dateTimeStart}, Date fin: ${reservation.dateTimeEnd}`
+        ).join('\n');
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error.error);
+        toast.error(error.error);
+      }
+    });
+  }
+
+  saveProduct() {
+    this.submitted = true;
+    if (this.reservation.id !== undefined) {
+      const idResa: number = this.reservation.id;
+
+      this.resaService.updateReservationVehicle(idResa, this.reservation).subscribe({
+        next: () => {
+          this.loadReservations();
+          toast.success('Réservation Modifiée');
+          this.reservationDialog = false;
+        },
+        error: (error: HttpErrorResponse) => {
+
+          toast.error(error.error);
+          if (this.reservation.vehicle.id !== undefined) {
+            this.showReservationsForVehicle(this.reservation.vehicle.id);
+          }
+        }
+      });
+    } else {
+      console.error('Reservation ID is undefined');
+    }
+
+  }
+
 
   confirm(event: Event, reserveId: number): void {
     this.confirmationService.confirm({
@@ -109,9 +185,11 @@ export class VehicleReservationHistoryComponent implements OnInit {
     this.resaService.deleteReservationVehicle(id).subscribe({
       next: () => {
         this.loadReservations();
+        toast.success('Réservation Supprimée');
       },
-      error: (error) => {
-        console.error('Erreur pour la suppression de la réservation', error);
+      error: (error: HttpErrorResponse) => {
+        console.error(error.error);
+        toast.error(error.error);
       }
     });
   }

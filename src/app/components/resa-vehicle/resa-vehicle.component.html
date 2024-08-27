@@ -1,5 +1,5 @@
 <!-- src/app/components/resa-vehicle/resa-vehicle.component.html -->
-<div class="grid grid-cols-1 md:grid-cols-3 bg-amber-50 py-2 px-2">
+<div class="grid grid-cols-1 md:grid-cols-3 bg-amber-50 py-2 px-2 border-2 rounded-2xl">
   <div class="md:mx-auto md:my-auto">
     <div class="flex w-full mx-auto justify-center items-center bg-white space-y-8">
       <div class="w-full">
@@ -10,6 +10,7 @@
           <div class="relative">
             <p-calendar formControlName="startDateTime" id="dateTimeStart" [showTime]="true" hourFormat="24"
                         name="dateStart"
+                        stepMinute="15"
                         dateFormat="dd.mm.yy">
               <ng-template pTemplate="date" let-date>
                 <span [ngStyle]="{textDecoration: (date.day < 21 && date.day > 10) ? 'line-through' : 'inherit'}">
@@ -23,6 +24,7 @@
           <div class="relative">
             <p-calendar formControlName="endDateTime" id="dateTimeEnd" [showTime]="true" hourFormat="24"
                         name="dateEnd"
+                        stepMinute="15"
                         dateFormat="dd.mm.yy">
 <!--                        class="appearance-none pl-4 block w-full bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl py-3 px-1 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"-->
               <ng-template pTemplate="date" let-date>
@@ -67,7 +69,7 @@
                   <p>Places :{{ vehicle.numberOfSeats }} </p>
 
                   <button
-                    class="mt-2 text-white py-2 px-6 rounded-md hover:bg-emerald-500 text-center bg-emerald-500 font-semibold"
+                    class="mt-2 text-white py-2 px-6 rounded-md hover:bg-emerald-500 text-center bg-driveGreen font-semibold"
                     (click)="reserveVehicle(vehicle)">
                     Réserver
                   </button>

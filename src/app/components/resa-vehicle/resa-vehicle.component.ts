@@ -10,6 +10,7 @@ import {ResaVehicleService} from "@services/resa-vehicle.service";
 import {ResaVehicle} from "@models/resa-vehicle.model";
 import {CalendarModule} from "primeng/calendar";
 import {NgxSonnerToaster, toast} from "ngx-sonner";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-resa-vehicle',
@@ -57,7 +58,7 @@ export class ResaVehicleComponent implements OnInit {
       const {startDateTime, endDateTime} = this.filterForm.value;
       const startDate = startDateTime.toISOString();
       const endDate = endDateTime.toISOString();
-      this.resaVehicleService.getFilteredVehicles(startDate, endDate).subscribe({
+      this.resaVehicleService.getAvailableVehicles(startDate, endDate).subscribe({
         next: (data: ResaVehicle[]) => {
           this.filteredVehicles = data;
           this.showCarousel = true;
@@ -80,8 +81,8 @@ export class ResaVehicleComponent implements OnInit {
         this.onFilter();
         toast.success('Réservation effectuée')
       },
-      error: (error) => {
-        console.error('Error reserving vehicle', error);
+      error: (error:HttpErrorResponse) => {
+        toast.error(error.error);
       }
     });
   }

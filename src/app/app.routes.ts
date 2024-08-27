@@ -11,6 +11,9 @@ import {VerifyComponent} from "@components/auth/verify/verify.component";
 import {
   VehicleReservationHistoryComponent
 } from "@components/vehicle-reservation-layout/vehicle-reservation-history/vehicle-reservation-history.component";
+import {
+  VehicleReservationModifyComponent
+} from "@components/vehicle-reservation-modify/vehicle-reservation-modify.component";
 
 
 export const routes: Routes = [

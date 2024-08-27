@@ -16,28 +16,39 @@ export class ResaVehicleService {
   constructor(private http: HttpClient) {
   }
 
-  getFilteredVehicles(dateTimeStart: string, dateTimeEnd: string): Observable<ResaVehicle[]> {
+  getAvailableVehicles(dateTimeStart: string, dateTimeEnd: string): Observable<ResaVehicle[]> {
     let params = new HttpParams()
       .set('dateStart', dateTimeStart)
       .set('dateEnd', dateTimeEnd);
-    return this.http.get<ResaVehicle[]>(`${this.apiURL}/vehicules/location/filtrer`, {params});
+    return this.http.get<ResaVehicle[]>(`${this.apiURL}/vehicles/rental/reserve`, {params});
   }
 
-  getReservations(statusChoice: StatusFilter): Observable<ResaVehicle[]> {
+  getMyReservations(statusChoice: StatusFilter): Observable<ResaVehicle[]> {
     let params = new HttpParams()
       .set('status', statusChoice);
-    return this.http.get<ResaVehicle[]>(`${this.apiURL}/vehicules/location/reservation`, {params});
+    return this.http.get<ResaVehicle[]>(`${this.apiURL}/vehicles/rental/my-reservations`, {params});
   }
 
+  getAllReservationsForThisVehicle(vehicleId: number): Observable<ResaVehicle[]> {
+    let params = new HttpParams()
+      .set('vehicleId', vehicleId);
+    return this.http.get<ResaVehicle[]>(`${this.apiURL}/vehicles/rental/vehicle-reservations`, {params});
+  }
 
   reserveVehicle(reservationVehicle: ResaVehicle): Observable<string> {
-    return this.http.post(`${this.apiURL}/vehicules/location/reserver`, reservationVehicle, {
+    return this.http.post(`${this.apiURL}/vehicles/rental/reserve`, reservationVehicle, {
+      responseType: 'text'
+    });
+  }
+
+  updateReservationVehicle(id:number,reservationVehicle: ResaVehicle): Observable<string> {
+    return this.http.put(`${this.apiURL}/vehicles/rental/reserve/${id}`, reservationVehicle, {
       responseType: 'text'
     });
   }
 
   deleteReservationVehicle(id: number): Observable<string> {
-    return this.http.delete(`${this.apiURL}/vehicules/location/supprimer/${id}`, { responseType: 'text' });
+    return this.http.delete(`${this.apiURL}/vehicles/rental/reserve/${id}`, { responseType: 'text' });
   }
 
 
