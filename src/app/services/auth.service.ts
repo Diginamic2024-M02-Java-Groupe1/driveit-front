@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable,} from "rxjs";
+import {Observable, tap} from "rxjs";
 import {environment} from "@env/environment";
 
 interface LoginResponse {
@@ -14,9 +14,7 @@ interface LoginResponse {
 export class AuthService {
 
   private url: string = environment.auth;
-  private urlApi: string = environment.api;
   private email: string | null = null;
-  // private currentUser: CurrentUser | null = null;
 
   constructor(private http: HttpClient) { }
 
@@ -73,5 +71,13 @@ export class AuthService {
       email = this.email;
     }
     return this.http.post<string>(`${this.url}/resend-verification`, email, {responseType: 'text' as 'json'});
+  }
+
+  refreshToken(): Observable<LoginResponse> {
+    return this.http.get<LoginResponse>(`${this.url}/refresh-token`).pipe(
+      tap((response: LoginResponse) => {
+        this.saveToken(response.token);
+      })
+    );
   }
 }
