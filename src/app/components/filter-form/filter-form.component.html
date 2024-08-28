@@ -1,0 +1,17 @@
+<form [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+  @for(field of filterFields(); track $index){
+    <div>
+      @if(field.type === "text"){
+        <p-floatLabel>
+          <input pInputText id="username" [formControlName]="field.name" />
+          <label [for]="field.name">{{field.label}}</label>
+        </p-floatLabel>
+      }
+      @if(field.type === "number"){
+        <label [for]="field.name">{{field.label}}</label>
+        <p-inputNumber [inputId]="field.name" [formControlName]="field.name" />
+      }
+    </div>
+  }
+  <button type="submit">Submit</button>
+</form>
