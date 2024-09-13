@@ -9,7 +9,7 @@ import {StatusFilter} from "@models/enums/status-filter.enum";
 @Injectable({
   providedIn: 'root'
 })
-export class ResaVehicleService {
+export class BookingVehicleService {
 
   private apiURL = environment.api;
 

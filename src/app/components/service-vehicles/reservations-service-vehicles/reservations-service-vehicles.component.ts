@@ -6,7 +6,7 @@ import {TagModule} from 'primeng/tag';
 import {ButtonModule} from 'primeng/button';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Vehicle} from "@models/vehicle.model";
-import {ResaVehicleService} from "@services/resa-vehicle.service";
+import {BookingVehicleService} from "@services/booking-vehicle.service";
 import {ResaVehicle} from "@models/resa-vehicle.model";
 import {CalendarModule} from "primeng/calendar";
 import {NgxSonnerToaster, toast} from "ngx-sonner";
@@ -40,7 +40,7 @@ export class ReservationsServiceVehiclesComponent implements OnInit {
   currentDateNumb: number = 0;
   currentDate!: Date;
 
-  constructor(private resaVehicleService: ResaVehicleService) {
+  constructor(private resaVehicleService: BookingVehicleService) {
     this.filterForm = new FormGroup({
       startDateTime: new FormControl<Date | null>(null, Validators.required),
       endDateTime: new FormControl<Date | null>(null, Validators.required)

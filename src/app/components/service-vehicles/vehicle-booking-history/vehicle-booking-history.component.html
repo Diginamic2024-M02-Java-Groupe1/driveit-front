@@ -24,7 +24,7 @@
     <!--    </span>-->
     <!--  </div>-->
 
-    <app-historical-filter (filterChanged)="onFilterChanged($event)" (searchChanged)="onSearchTermChanged($event)"></app-historical-filter>
+    <app-history-filter (filterChanged)="onFilterChanged($event)" (searchChanged)="onSearchTermChanged($event)"></app-history-filter>
     <p-table [value]="reservations"
              [tableStyle]="{'min-width': '60rem'}"
              [rows]="10"
@@ -63,7 +63,7 @@
               severity="danger"
               [rounded]="true"
               [outlined]="true"
-              (onClick)="confirm($event,reservation.id)" />
+              (onClick)="confirmPopUpDelete($event,reservation.id)" />
             }
           </td>
         </tr>
@@ -77,7 +77,7 @@
 
     <p-dialog
       *ngIf="reservationToEdit"
-      [(visible)]="reservationDialog"
+      [(visible)]="isDialogEdit"
       [style]="{ width: '650px', height: '750px' }"
       header="Modification de la réservation pour {{reservationToEdit.vehicle.registration}}"
       [modal]="true"
@@ -143,7 +143,7 @@
           label="Save"
           icon="pi pi-check"
           [text]="true"
-          (onClick)="saveReservation()" />
+          (onClick)="confirmDialogEdit()" />
       </ng-template>
     </p-dialog>
     <ngx-sonner-toaster richColors/>
