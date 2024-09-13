@@ -26,7 +26,7 @@ import {CalendarModule} from "primeng/calendar";
 import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
-  selector: 'app-vehicle-reservation-history',
+  selector: 'app-vehicle-booking-history',
   standalone: true,
   imports: [
     TagModule,
@@ -50,10 +50,10 @@ import {HttpErrorResponse} from "@angular/common/http";
 
   ],
   providers: [ConfirmationService, MessageService,DatePipe],
-  templateUrl: './vehicle-reservation-history.component.html',
-  styleUrl: './vehicle-reservation-history.component.scss'
+  templateUrl: './vehicle-booking-history.component.html',
+  styleUrl: './vehicle-booking-history.component.scss'
 })
-export class VehicleReservationHistoryComponent implements OnInit {
+export class VehicleBookingHistoryComponent implements OnInit {
 
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
   reservations!: ResaVehicle[];
@@ -125,7 +125,7 @@ export class VehicleReservationHistoryComponent implements OnInit {
       next: (data: ResaVehicle[]) => {
         this.showReservations = data;
         this.reservationsText = data.map(reservation =>
-          `Immatriculation: ${reservation.vehicle.registration}, Date début: ${reservation.dateTimeStart}, Date fin: ${reservation.dateTimeEnd}`
+          `Immatriculation: ${reservation.vehicle.registration}, Date début: ${this.formatDate(reservation.dateTimeStart.toString())}, Date fin: ${reservation.dateTimeEnd}`
         ).join('\n');
       },
       error: (error: HttpErrorResponse) => {

@@ -76,9 +76,10 @@
     </p-table>
 
     <p-dialog
+      *ngIf="reservationToEdit"
       [(visible)]="reservationDialog"
       [style]="{ width: '650px', height: '750px' }"
-      header="Modification de la réservation pour {{reservationToEdit?.vehicle?.registration}}"
+      header="Modification de la réservation pour {{reservationToEdit.vehicle.registration}}"
       [modal]="true"
       class="h-auto"
       styleClass="p-fluid">

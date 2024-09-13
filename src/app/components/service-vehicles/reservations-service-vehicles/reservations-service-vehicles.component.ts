@@ -14,7 +14,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {dateRangeValidator} from "@validators/date-range.validator";
 
 @Component({
-  selector: 'app-resa-vehicle',
+  selector: 'app-reservations-service-vehicles',
   standalone: true,
   imports: [
     RouterLink,
@@ -29,10 +29,10 @@ import {dateRangeValidator} from "@validators/date-range.validator";
     CalendarModule,
     NgxSonnerToaster,
   ],
-  templateUrl: './resa-vehicle.component.html',
-  styleUrl: './resa-vehicle.component.scss'
+  templateUrl: './reservations-service-vehicles.component.html',
+  styleUrl: './reservations-service-vehicles.component.scss'
 })
-export class ResaVehicleComponent implements OnInit {
+export class ReservationsServiceVehiclesComponent implements OnInit {
 
   filteredVehicles: ResaVehicle[] = [];
   showCarousel: boolean = false;
