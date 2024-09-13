@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
 import {RouterLink} from "@angular/router";
 import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import {CarouselModule} from 'primeng/carousel';
@@ -11,6 +11,7 @@ import {ResaVehicle} from "@models/resa-vehicle.model";
 import {CalendarModule} from "primeng/calendar";
 import {NgxSonnerToaster, toast} from "ngx-sonner";
 import {HttpErrorResponse} from "@angular/common/http";
+import {dateRangeValidator} from "@validators/date-range.validator";
 
 @Component({
   selector: 'app-resa-vehicle',
@@ -36,22 +37,27 @@ export class ResaVehicleComponent implements OnInit {
   filteredVehicles: ResaVehicle[] = [];
   showCarousel: boolean = false;
   filterForm: FormGroup;
+  currentDateNumb: number = 0;
+  currentDate!: Date;
 
   constructor(private resaVehicleService: ResaVehicleService) {
-    this.filterForm = new FormGroup(
-      {
-        startDateTime: new FormControl<Date | null>(null, Validators.required),
-        endDateTime: new FormControl<Date | null>(null, Validators.required)
-      }
-    )
+    this.filterForm = new FormGroup({
+      startDateTime: new FormControl<Date | null>(null, Validators.required),
+      endDateTime: new FormControl<Date | null>(null, Validators.required)
+    }, { validators: dateRangeValidator() });
   }
+
 
   ngOnInit() {
     this.filterForm.valueChanges.subscribe(() => {
       this.showCarousel = false;
+      if (this.filterForm.hasError('dateRangeInvalid')) {
+        toast.error('La date de fin doit être postérieure à la date de début.');
+      }
     });
+    this.currentDateNumb = new Date().getDate();
+    this.currentDate = new Date();
   }
-
 
   onFilter() {
     if (this.filterForm.valid) {
@@ -79,8 +85,9 @@ export class ResaVehicleComponent implements OnInit {
     this.resaVehicleService.reserveVehicle(reservationData).subscribe({
       next: (data) => {
         this.onFilter();
+        toast.success('Véhicule réservé avec succès');
       },
-      error: (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         toast.error(error.error);
       }
     });

@@ -36,6 +36,7 @@
         class="md:w-20rem"
         containerStyleClass="w-full appearance-none bg-grey-lighter text-grey-darker border-2 border-grey-lighter rounded-2xl hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1"
         formControlName="status"
+        minDate="date.now()"
         [options]="statusOptions"
         optionLabel="label"
         [placeholder]="statusOptions[2].label"

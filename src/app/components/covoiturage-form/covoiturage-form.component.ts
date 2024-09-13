@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {OwlDateTimeModule, OwlNativeDateTimeModule} from "@danielmoncada/angular-datetime-picker";
+// import {OwlDateTimeModule, OwlNativeDateTimeModule} from "@danielmoncada/angular-datetime-picker";
 import {MatCard, MatCardContent} from "@angular/material/card";
 import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
 import {NgClass, NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
@@ -24,9 +24,9 @@ import {ToastModule} from "primeng/toast";
   selector: 'app-covoiturage-form',
   standalone: true,
   imports: [
-    OwlDateTimeModule,
+    // OwlDateTimeModule,
     ReactiveFormsModule,
-    OwlNativeDateTimeModule,
+    // OwlNativeDateTimeModule,
     MatCard,
     MatRadioGroup,
     MatRadioButton,

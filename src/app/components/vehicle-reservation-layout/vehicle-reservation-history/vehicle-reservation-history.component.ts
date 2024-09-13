@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, SimpleChange, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {TagModule} from "primeng/tag";
 import {RatingModule} from "primeng/rating";
 import {ButtonModule} from "primeng/button";
@@ -34,7 +34,6 @@ import {HttpErrorResponse} from "@angular/common/http";
     ButtonModule,
     CommonModule,
     TableModule,
-    DatePipe,
     ToastModule,
     ConfirmPopupModule,
     RouterLink,
@@ -48,8 +47,9 @@ import {HttpErrorResponse} from "@angular/common/http";
     ConfirmDialogModule,
     DialogModule,
     CalendarModule,
+
   ],
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService, MessageService,DatePipe],
   templateUrl: './vehicle-reservation-history.component.html',
   styleUrl: './vehicle-reservation-history.component.scss'
 })
@@ -57,28 +57,31 @@ export class VehicleReservationHistoryComponent implements OnInit {
 
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
   reservations!: ResaVehicle[];
-  reservation!: ResaVehicle;
+  reservationToEdit!: ResaVehicle;
   showReservations: ResaVehicle[] = [];
   reservationsText: string = '';
   statusFilter: StatusFilter = StatusFilter.IN_PROGRESS;
   searchValue: string = '';
   reservationDialog: boolean = false;
   submitted: boolean = false;
+  currentDate: Date = new Date();
+
 
   constructor(private resaService: ResaVehicleService,
               private confirmationService: ConfirmationService,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private datePipe: DatePipe) {
   }
 
-  accept(): void {
-    this.confirmPopup.accept();
+  formatDate(date: string): string {
+    return this.datePipe.transform(date, 'dd-MM-yy à HH\'H\'mm') || '';
   }
 
-  reject(): void {
-    this.confirmPopup.reject();
+  compareDates(date1: string, date2: Date): boolean {
+    return new Date(date1) > date2;
   }
 
-  hideDialog() {
+    hideDialog() {
     this.reservationDialog = false;
     this.submitted = false;
   }
@@ -109,7 +112,7 @@ export class VehicleReservationHistoryComponent implements OnInit {
   }
 
   editReservation(reservation: ResaVehicle): void {
-    this.reservation = {
+    this.reservationToEdit = {
       ...reservation,
       dateTimeStart: new Date(reservation.dateTimeStart),
       dateTimeEnd: new Date(reservation.dateTimeEnd)
@@ -126,28 +129,30 @@ export class VehicleReservationHistoryComponent implements OnInit {
         ).join('\n');
       },
       error: (error: HttpErrorResponse) => {
-        console.error(error.error);
         toast.error(error.error);
       }
     });
   }
 
-  saveProduct() {
+  saveReservation() {
     this.submitted = true;
-    if (this.reservation.id !== undefined) {
-      const idResa: number = this.reservation.id;
-
-      this.resaService.updateReservationVehicle(idResa, this.reservation).subscribe({
+    if (this.reservationToEdit.dateTimeEnd <= this.reservationToEdit.dateTimeStart) {
+      toast.error('La date de fin doit être postérieure à la date de début.');
+      return;
+    }
+    if (this.reservationToEdit.id !== undefined) {
+      const idResa: number = this.reservationToEdit.id;
+      this.resaService.updateReservationVehicle(idResa, this.reservationToEdit).subscribe({
         next: () => {
           this.loadReservations();
           toast.success('Réservation Modifiée');
           this.reservationDialog = false;
         },
-        error: (error: HttpErrorResponse) => {
 
+        error: (error: HttpErrorResponse) => {
           toast.error(error.error);
-          if (this.reservation.vehicle.id !== undefined) {
-            this.showReservationsForVehicle(this.reservation.vehicle.id);
+          if (this.reservationToEdit.vehicle.id !== undefined) {
+            this.showReservationsForVehicle(this.reservationToEdit.vehicle.id);
           }
         }
       });
@@ -167,10 +172,8 @@ export class VehicleReservationHistoryComponent implements OnInit {
       accept: () => {
         this.deleteReservation(reserveId);
         toast.success('Réservation Supprimée')
-        // this.messageService.add({ severity: 'info', summary: 'Confirmé', detail: 'Vous avez accepté', life: 3000 });
       },
       reject: () => {
-        // this.messageService.add({ severity: 'error', summary: 'Annuler', detail: 'Vous avez annulé', life: 3000 });
         toast.error('Annuler')
       }
     });
@@ -193,4 +196,6 @@ export class VehicleReservationHistoryComponent implements OnInit {
       }
     });
   }
+
+  protected readonly Date = Date;
 }
