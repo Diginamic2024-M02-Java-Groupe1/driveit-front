@@ -10,8 +10,6 @@ import {SidebarModule} from "primeng/sidebar";
 import {MenubarModule} from "primeng/menubar";
 import {Ripple} from "primeng/ripple";
 import {NgClass} from "@angular/common";
-import {MatSidenavModule} from "@angular/material/sidenav";
-import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'app-menu',
