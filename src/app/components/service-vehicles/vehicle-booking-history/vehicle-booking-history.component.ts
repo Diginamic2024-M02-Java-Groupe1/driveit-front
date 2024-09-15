@@ -218,7 +218,7 @@ export class VehicleBookingHistoryComponent implements OnInit {
     return new Date(date1) > date2;
   }
 
-  /**
+  /**²
    * Filter the reservations by status
    * @param status : StatusFilter : status to filter
    */

@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, SimpleChange, SimpleChanges} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {RouterLink} from "@angular/router";
 import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import {CarouselModule} from 'primeng/carousel';
@@ -34,9 +34,11 @@ import {dateRangeValidator} from "@validators/date-range.validator";
 })
 export class ReservationsServiceVehiclesComponent implements OnInit {
 
-  filteredVehicles: ResaVehicle[] = [];
-  showCarousel: boolean = false;
+  /** form to filter vehicles **/
   filterForm: FormGroup;
+  showCarousel: boolean = false;
+  filteredVehicles: ResaVehicle[] = [];
+
   currentDateNumb: number = 0;
   currentDate!: Date;
 
@@ -44,7 +46,7 @@ export class ReservationsServiceVehiclesComponent implements OnInit {
     this.filterForm = new FormGroup({
       startDateTime: new FormControl<Date | null>(null, Validators.required),
       endDateTime: new FormControl<Date | null>(null, Validators.required)
-    }, { validators: dateRangeValidator() });
+    }, {validators: dateRangeValidator()});
   }
 
 
@@ -59,6 +61,9 @@ export class ReservationsServiceVehiclesComponent implements OnInit {
     this.currentDate = new Date();
   }
 
+  /**
+   * Fetches available vehicles for the selected date range
+   */
   onFilter() {
     if (this.filterForm.valid) {
       const {startDateTime, endDateTime} = this.filterForm.value;
@@ -76,6 +81,10 @@ export class ReservationsServiceVehiclesComponent implements OnInit {
     }
   }
 
+  /**
+   * Reserves a vehicle for the selected date range
+   * @param vehicle : Vehicle : vehicle to reserve
+   */
   reserveVehicle(vehicle: Vehicle) {
     const reservationData: ResaVehicle = {
       dateTimeStart: this.filterForm.get('startDateTime')?.value.toISOString(),
