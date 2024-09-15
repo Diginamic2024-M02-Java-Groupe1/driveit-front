@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthComponent } from '@components/auth/auth.component';
-import { ResaVehicleComponent } from '@components/resa-vehicle/resa-vehicle.component';
+import { ReservationsServiceVehiclesComponent } from '@components/service-vehicles/reservations-service-vehicles/reservations-service-vehicles.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotFoundComponent } from '@components/not-found/not-found.component';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
@@ -10,7 +10,7 @@ import {FormComponent} from "@components/vehicle-service/ajout-vehicule/ajoutFor
 
 import {CovoiturageFormComponent} from "@components/covoiturage-form/covoiturage-form.component";
 import {VerifyComponent} from "@components/auth/verify/verify.component";
-import {VehicleReservationHistoryComponent} from "@components/vehicle-reservation-layout/vehicle-reservation-history/vehicle-reservation-history.component";
+import {VehicleBookingHistoryComponent} from "@components/service-vehicles/vehicle-booking-history/vehicle-booking-history.component";
 
 
 export const routes: Routes = [
@@ -26,7 +26,7 @@ export const routes: Routes = [
       },
       {
         path: 'vehicles/service/booking',
-        component: ResaVehicleComponent,
+        component: ReservationsServiceVehiclesComponent,
         canActivate: [AuthGuard]
       },
       {
@@ -36,7 +36,7 @@ export const routes: Routes = [
       },
       {
         path:'vehicles/service/booking/history',
-        component: VehicleReservationHistoryComponent,
+        component: VehicleBookingHistoryComponent,
         canActivate: [AuthGuard]
       },
       {

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResaVehicleComponent } from './resa-vehicle.component';
+import { HistoryFilterComponent } from './history-filter.component';
 
-describe('ResaVehicleComponent', () => {
-  let component: ResaVehicleComponent;
-  let fixture: ComponentFixture<ResaVehicleComponent>;
+describe('HistoricalFilterComponent', () => {
+  let component: HistoryFilterComponent;
+  let fixture: ComponentFixture<HistoryFilterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResaVehicleComponent]
+      imports: [HistoryFilterComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ResaVehicleComponent);
+    fixture = TestBed.createComponent(HistoryFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
