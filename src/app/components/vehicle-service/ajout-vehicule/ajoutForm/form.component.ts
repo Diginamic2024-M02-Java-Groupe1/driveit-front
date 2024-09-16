@@ -1,5 +1,5 @@
-import {Component, input, OnInit} from '@angular/core';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {FormGroup, FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormControl} from '@angular/forms';
 import {
   VisualisationAjoutVehiculeComponent
@@ -10,7 +10,6 @@ import {Vehicle} from "@models/vehicle";
 import {StatusVehicle} from "@models/enums/status-vehicle.enum";
 import {toast} from "ngx-sonner";
 import {DropdownModule} from "primeng/dropdown";
-import {HttpErrorResponse} from "@angular/common/http";
 import {InputTextModule} from "primeng/inputtext";
 import {AutoCompleteCompleteEvent, AutoCompleteModule} from "primeng/autocomplete";
 
@@ -18,15 +17,16 @@ import {AutoCompleteCompleteEvent, AutoCompleteModule} from "primeng/autocomplet
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule, FormsModule, VisualisationAjoutVehiculeComponent, InputMaskModule, NgForOf, NgIf, DropdownModule, InputTextModule, AutoCompleteModule],
+  imports: [NgClass, ReactiveFormsModule, FormsModule, VisualisationAjoutVehiculeComponent, InputMaskModule, NgForOf, NgIf, DropdownModule, InputTextModule, AutoCompleteModule, NgStyle],
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss']
+  styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit {
   protected ajoutVehiculeForm!: FormGroup;
   submitted: boolean = false;
-  selectedCategory: any;
   filteredCategories: any[] = [];
+  filteredMotorizations: any[] = [];
+  filteredBrands: any[] = [];
 
 
   categorieTab = [
@@ -64,6 +64,7 @@ export class FormComponent implements OnInit {
     {value: 'GPL'},
     {value: 'Hydrogène'},
   ];
+
 
   constructor(
     private fb: FormBuilder,
@@ -189,18 +190,6 @@ export class FormComponent implements OnInit {
     this.ajoutVehiculeForm.get('urlImage')?.setValue(input.value);
   }
 
-  addNewCategory(newCategoryLabel: string) {
-    if (newCategoryLabel.trim().length > 0) {
-      const newCategoryValue = newCategoryLabel.toLowerCase().replace(/\s+/g, '-');
-
-      // Vérifier si la catégorie existe déjà
-      if (!this.categorieTab.some(category => category.value === newCategoryValue)) {
-        // Ajouter la nouvelle catégorie
-        this.categorieTab.push({ value: newCategoryValue });
-        this.selectedCategory = newCategoryValue; // Mise à jour de la sélection
-      }
-    }
-  }
 
   filterCategory($event: AutoCompleteCompleteEvent) {
       let filtered: any[] = [];
@@ -213,5 +202,33 @@ export class FormComponent implements OnInit {
           }
       }
       this.filteredCategories = filtered;
+  }
+
+  filterMotorization($event: AutoCompleteCompleteEvent) {
+    let filtered: any[] = [];
+    let query = $event.query;
+
+    for (let i=0; i<(this.motorizationTab as any).length; i++) {
+      let motorization = this.motorizationTab[i];
+      if (motorization.value.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtered.push(motorization);
+      }
+    }
+    this.filteredMotorizations = filtered;
+
+  }
+
+  filterBrand($event: AutoCompleteCompleteEvent) {
+    let filtered: any[] = [];
+    let query = $event.query;
+
+    for (let i=0; i<(this.brandTab as any).length; i++) {
+      let brand = this.brandTab[i];
+      if (brand.value.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtered.push(brand);
+      }
+    }
+    this.filteredBrands = filtered;
+
   }
 }

@@ -12,11 +12,11 @@
 </div>
 <div *ngIf="formValues">
   <p><strong>Immatriculation : </strong> {{ formValues?.registration }}</p>
-  <p><strong>Marque : </strong>{{ formValues?.brand?.text }}</p>
+  <p><strong>Marque : </strong>{{ formValues?.brand }}</p>
   <p><strong>Modèle : </strong>{{ formValues?.model }}</p>
-  <p><strong>Catégorie : </strong>{{ formValues?.category?.value }}</p>
+  <p><strong>Catégorie : </strong>{{ formValues?.category }}</p>
   <p><strong>Nombre de places : </strong> {{ formValues?.numberOfSeats }}</p>
-  <p><strong>Motorisation : </strong>{{ formValues?.motorization?.text }}</p>
+  <p><strong>Motorisation : </strong>{{ formValues?.motorization }}</p>
   <p><strong>Emission : </strong>{{ formValues?.emission }}</p>
   <p><strong>Statut : </strong>{{ formValues?.status }}</p>
   <p><strong>Service : </strong>{{ formValues?.service ? 'Oui' : 'Non' }}</p>
