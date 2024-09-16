@@ -9,7 +9,7 @@ import {DropdownModule} from "primeng/dropdown";
 import {InputTextModule} from "primeng/inputtext";
 
 @Component({
-  selector: 'app-historical-filter',
+  selector: 'app-history-filter',
   standalone: true,
   imports: [
     CalendarModule,
@@ -21,10 +21,10 @@ import {InputTextModule} from "primeng/inputtext";
     DropdownModule,
     InputTextModule
   ],
-  templateUrl: './historical-filter.component.html',
-  styleUrl: './historical-filter.component.scss'
+  templateUrl: './history-filter.component.html',
+  styleUrl: './history-filter.component.scss'
 })
-export class HistoricalFilterComponent implements OnInit{
+export class HistoryFilterComponent implements OnInit{
   @Output() filterChanged = new EventEmitter<StatusFilter>();
   @Output() searchChanged = new EventEmitter<string>();
 
@@ -57,11 +57,8 @@ export class HistoricalFilterComponent implements OnInit{
 
 
   onFilter(){
-
-    // if(this.filterForm.valid){
     const statusFilter = this.filterForm.get('status')?.value.value;
       this.filterChanged.emit(statusFilter);
-    // }
   }
 
 }

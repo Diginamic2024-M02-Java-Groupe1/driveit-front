@@ -24,7 +24,7 @@
     <!--    </span>-->
     <!--  </div>-->
 
-    <app-historical-filter (filterChanged)="onFilterChanged($event)" (searchChanged)="onSearchTermChanged($event)"></app-historical-filter>
+    <app-history-filter (filterChanged)="onFilterChanged($event)" (searchChanged)="onSearchTermChanged($event)"></app-history-filter>
     <p-table [value]="reservations"
              [tableStyle]="{'min-width': '60rem'}"
              [rows]="10"
@@ -45,37 +45,26 @@
           <td>{{ reservation.vehicle.model.brand.name }}</td>
           <td>{{ reservation.vehicle.model.name }}</td>
           <td>{{ reservation.vehicle.registration }}</td>
-          <td><input type="datetime-local" [value]="reservation.dateTimeStart" disabled></td>
-          <td><input type="datetime-local" [value]="reservation.dateTimeEnd" disabled></td>
+          <td><input type="text" [value]="formatDate(reservation.dateTimeStart)" disabled></td>
+          <td><input type="text" [value]="formatDate(reservation.dateTimeEnd)" disabled></td>
           <td>
             <p-toast/>
-<!--            <p-confirmPopup #confirmPopupRef>-->
-<!--              <ng-template pTemplate="headless" let-message let-test>-->
-<!--                <div class="border-round p-3">-->
-<!--                  <span>{{ message.message }}</span>-->
-<!--                  <div class="flex align-items-center gap-2 mt-3">-->
-<!--                    <p-button (onClick)="accept()" label="Supprimer" size="small"/>-->
-<!--                    <p-button (onClick)="reject()" label="Annuler" [outlined]="true" size="small"/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </ng-template>-->
-<!--            </p-confirmPopup>-->
-            <p-button
-              icon="pi pi-pencil"
-              class="mr-2"
-              [rounded]="true"
-              [outlined]="true"
-              severity="success"
-              (onClick)="editReservation(reservation)"
-               />
+            @if(compareDates(reservation.dateTimeEnd, currentDate)){
+              <p-button
+                icon="pi pi-pencil"
+                class="mr-2"
+                [rounded]="true"
+                [outlined]="true"
+                severity="success"
+                (onClick)="editReservation(reservation)"
+                 />
             <p-button
               icon="pi pi-trash"
               severity="danger"
               [rounded]="true"
               [outlined]="true"
-              (onClick)="confirm($event,reservation.id)" />
-
-
+              (onClick)="confirmPopUpDelete($event,reservation.id)" />
+            }
           </td>
         </tr>
       </ng-template>
@@ -87,56 +76,45 @@
     </p-table>
 
     <p-dialog
-      [(visible)]="reservationDialog"
-      [style]="{ width: '650px', height: '650px' }"
-      header="Modification de la réservation pour "
+      *ngIf="reservationToEdit"
+      [(visible)]="isDialogEdit"
+      [style]="{ width: '650px', height: '750px' }"
+      header="Modification de la réservation pour {{reservationToEdit.vehicle.registration}}"
       [modal]="true"
+      class="h-auto"
       styleClass="p-fluid">
       <ng-template pTemplate="content">
         <img
-          [src]="reservation.vehicle.url"
+          [src]="reservationToEdit.vehicle.url"
           alt="Image du véhicule"
           class="block m-auto pb-3"
-          *ngIf="reservation.vehicle.url" />
-        <div class="formgrid grid">
+          *ngIf="reservationToEdit.vehicle.url" />
+        <div class="form grid grid-cols-2 gap-4">
           <div class="field col">
             <label for="previousDateStart">Date et heure de début</label>
-            <p-calendar [(ngModel)]="reservation.dateTimeStart" id="dateTimeStart" [showTime]="true" hourFormat="24"
-                        name="dateStart"
-                        id="previousDateStart"
-                        stepMinute="15"
-                        dateFormat="dd.mm.yy">
-              <ng-template pTemplate="date" let-date>
-                <span [ngStyle]="{textDecoration: (date.day < 21 && date.day > 10) ? 'line-through' : 'inherit'}">
-                  {{ date.day }}
-                </span>
-              </ng-template>
-            </p-calendar>
+            @if (reservationToEdit.dateTimeStart < currentDate){
+              <input type="text" class="border-solid border border-gray-200 py-2 px-3 rounded" [value]="formatDate(reservationToEdit.dateTimeStart.toString())"  disabled />
+            } @else {
+
+              <p-calendar [(ngModel)]="reservationToEdit.dateTimeStart" id="dateTimeStart" [showTime]="true" hourFormat="24"
+                          name="dateStart"
+                          id="previousDateStart"
+                          [minDate]="currentDate"
+                          dateFormat="dd-mm-yy">
+              </p-calendar>
+            }
           </div>
           <div class="field col">
             <label for="previousDateEnd">Date et heure de fin</label>
-            <p-calendar [(ngModel)]="reservation.dateTimeEnd" id="dateTimeEnd" [showTime]="true" hourFormat="24"
+            <p-calendar [(ngModel)]="reservationToEdit.dateTimeEnd" id="dateTimeEnd" [showTime]="true" hourFormat="24"
                         name="dateStart"
                         id="previousDateEnd"
-                        stepMinute="15"
-                        dateFormat="dd.mm.yy">
-              <ng-template pTemplate="date" let-date>
-                <span [ngStyle]="{textDecoration: (date.day < 21 && date.day > 10) ? 'line-through' : 'inherit'}">
-                  {{ date.day }}
-                </span>
-              </ng-template>
+                        [minDate]="currentDate"
+                        dateFormat="dd-mm-yy">
             </p-calendar>
-<!--            <label for="previousDateEnd">Date et heure de fin</label>-->
-<!--            <input-->
-<!--              type="datetime-local"-->
-<!--              pInputText-->
-<!--              id="previousDateEnd"-->
-<!--              [(ngModel)]="reservation.dateTimeEnd"-->
-<!--               />-->
           </div>
         </div>
-        <h3 class="text-center">Réservations pour ce véhicule</h3>
-<!--        <textarea [value]="reservationsText" rows="10" cols="50" readonly></textarea>-->
+        <h3 class="text-center mt-6">Réservations pour ce véhicule</h3>
         <div *ngFor="let reservation of showReservations" class="justify-center border-2 mt-4 border-amber-950 rounded-m p-4">
           <div class="field-col">
             <label>Immatriculation:</label>
@@ -165,7 +143,7 @@
           label="Save"
           icon="pi pi-check"
           [text]="true"
-          (onClick)="saveProduct()" />
+          (onClick)="confirmDialogEdit()" />
       </ng-template>
     </p-dialog>
     <ngx-sonner-toaster richColors/>

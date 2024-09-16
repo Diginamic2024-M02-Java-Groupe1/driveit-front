@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VehicleReservationHistoryComponent } from './vehicle-reservation-history.component';
+import { VehicleBookingHistoryComponent } from './vehicle-booking-history.component';
 
 describe('VehicleReservationHistoryComponent', () => {
-  let component: VehicleReservationHistoryComponent;
-  let fixture: ComponentFixture<VehicleReservationHistoryComponent>;
+  let component: VehicleBookingHistoryComponent;
+  let fixture: ComponentFixture<VehicleBookingHistoryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [VehicleReservationHistoryComponent]
+      imports: [VehicleBookingHistoryComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(VehicleReservationHistoryComponent);
+    fixture = TestBed.createComponent(VehicleBookingHistoryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
