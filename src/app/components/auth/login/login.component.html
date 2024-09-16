@@ -3,8 +3,8 @@
   <div class="px-8 py-6">
     <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()">
       <div class="mb-6">
-        <label class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Email</label>
-        <input type="text" formControlName="email" placeholder="Email" class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1" [ngClass]="{'ring-2 ring-red-500': email?.invalid && (!email?.untouched || submitted), 'ring-2 ring-green-500': email?.valid}">
+        <label for="loginEmail" class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Email</label>
+        <input id="loginEmail" type="text" formControlName="email" placeholder="Email" class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1" [ngClass]="{'ring-2 ring-red-500': email?.invalid && (!email?.untouched || submitted), 'ring-2 ring-green-500': email?.valid}">
         @if(email?.invalid && (email?.dirty || !email?.untouched || submitted)){
           <div class="text-red-500 text-xs italic">
             {{ getErrorMessage('email') }}
@@ -12,8 +12,8 @@
         }
       </div>
       <div class="mb-6">
-        <label class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Mot de passe</label>
-        <input type="password" formControlName="password" placeholder="Password" class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1" [ngClass]="{'ring-2 ring-red-500': password?.invalid && (!password?.untouched || submitted), 'ring-2 ring-green-500': password?.valid}">
+        <label for="loginPassword" class="block tracking-wide text-grey-darker text-xs font-bold mb-2">Mot de passe</label>
+        <input id="loginPassword" type="password" formControlName="password" placeholder="Password" class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1" [ngClass]="{'ring-2 ring-red-500': password?.invalid && (!password?.untouched || submitted), 'ring-2 ring-green-500': password?.valid}">
         @if(password?.invalid && (password?.dirty || !password?.untouched || submitted)){
           <div class="text-red-500 text-xs italic">
             {{ getErrorMessage('password') }}

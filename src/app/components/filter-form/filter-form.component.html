@@ -1,17 +1,45 @@
-<form [formGroup]="filterForm" (ngSubmit)="onSubmit()">
-  @for(field of filterFields(); track $index){
-    <div>
+<form [formGroup]="filterForm" (ngSubmit)="onSubmit()" class="card flex flex-col container mx-auto items-start space-y-6">
+  <h2 class="text-xl font-bold">Critères</h2>
+  <div class="flex flex-col space-y-8">
+    @for(field of filterFields(); track $index){
       @if(field.type === "text"){
         <p-floatLabel>
-          <input pInputText id="username" [formControlName]="field.name" />
+          <input pInputText [id]="field.name" [formControlName]="field.name" [autocomplete]="true"/>
           <label [for]="field.name">{{field.label}}</label>
         </p-floatLabel>
       }
       @if(field.type === "number"){
-        <label [for]="field.name">{{field.label}}</label>
-        <p-inputNumber [inputId]="field.name" [formControlName]="field.name" />
+        <p-floatLabel>
+          <p-inputNumber [inputId]="field.name" [formControlName]="field.name" />
+          <label [for]="field.name">{{field.label}}</label>
+        </p-floatLabel>
       }
-    </div>
-  }
-  <button type="submit">Submit</button>
+      @if(field.type === "date"){
+        <p-floatLabel>
+          <p-calendar
+            [formControlName]="field.name"
+            [inputId]="field.name"
+            [showIcon]="true"
+            [minDate]="today"
+          />
+          <label [for]="field.name">{{field.label}}</label>
+        </p-floatLabel>
+      }
+      @if(field.type === "select"){
+        <p-floatLabel>
+          <p-dropdown
+            [formControlName]="field.name"
+            [options]="field.options"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            filterBy="value"
+            [inputId]="field.name"
+          />
+          <label [for]="field.name">{{field.label}}</label>
+        </p-floatLabel>
+      }
+    }
+  </div>
+  <p-button type="submit" label="Rechercher"/>
 </form>
