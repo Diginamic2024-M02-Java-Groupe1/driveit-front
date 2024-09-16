@@ -15,9 +15,6 @@ export class VehicleDataService {
   }
 
   insertVehicle(vehicle: Vehicle): Observable<string> {
-    // const headers = new HttpHeaders({
-    //   'Content-Type': 'application/json',
-    // });
-    return this.http.post(`${this.apiURL}/vehicule/service`, vehicle, { responseType: 'text'}); //headers: headers,
+    return this.http.post(`${this.apiURL}/vehicules/service`, vehicle, { responseType: 'text'});
   }
 }

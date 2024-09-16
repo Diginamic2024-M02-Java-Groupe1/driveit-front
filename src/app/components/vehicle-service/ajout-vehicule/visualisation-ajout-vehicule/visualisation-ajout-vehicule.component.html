@@ -1,22 +1,23 @@
 <h3>Visualisation du véhicule</h3>
 <div
   class="relative order-first md:order-last w-28 h-28 flex justify-center items-center border border-dashed border-grey-400 col-span-2 m-2 rounded-lg bg-no-repeat bg-center bg-origin-padding bg-cover ml-8"
-  [style.background-image]="'url(' + formValues.url + ')'">
-  <span *ngIf="!formValues.url" class="text-grey-400 opacity-75">
-    <svg class="w-14 h-14" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.7" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+  [style.background-image]="formValues?.url ? 'url(' + formValues.url + ')' : ''">
+  <span *ngIf="!formValues?.url" class="text-grey-400 opacity-75">
+    <svg class="w-14 h-14" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.7"
+         stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round"
+            d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
     </svg>
   </span>
 </div>
 <div *ngIf="formValues">
-  <p><strong>Immatriculation : </strong> {{ formValues.registration }}</p>
-  <p><strong>Marque : </strong>{{ formValues.brand }}</p>
-  <p><strong>Modèle : </strong>{{ formValues.model }}</p>
-  <p><strong>Catégorie : </strong>{{ formValues.category }}</p>
-  <p><strong>Nombre de places : </strong> {{ formValues.numberOfSeats }}</p>
-  <p><strong>Motorisation : </strong>{{ formValues.motorization }}</p>
-  <p><strong>Emission : </strong>{{ formValues.emission }}</p>
-  <p><strong>Statut : </strong>{{ formValues.status }}</p>
-  <p><strong>Service : </strong>{{ formValues.service ? 'Oui' : 'Non' }}</p>
+  <p><strong>Immatriculation : </strong> {{ formValues?.registration }}</p>
+  <p><strong>Marque : </strong>{{ formValues?.brand }}</p>
+  <p><strong>Modèle : </strong>{{ formValues?.model }}</p>
+  <p><strong>Catégorie : </strong>{{ formValues?.category }}</p>
+  <p><strong>Nombre de places : </strong> {{ formValues?.numberOfSeats }}</p>
+  <p><strong>Motorisation : </strong>{{ formValues?.motorization }}</p>
+  <p><strong>Emission : </strong>{{ formValues?.emission }}</p>
+  <p><strong>Statut : </strong>{{ formValues?.status }}</p>
+  <p><strong>Service : </strong>{{ formValues?.service ? 'Oui' : 'Non' }}</p>
 </div>
-

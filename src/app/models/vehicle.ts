@@ -8,10 +8,10 @@ export interface Vehicle {
   service?: boolean;
   emission: number;
   status?: StatusVehicle;
-  motorizationId: number;
+  motorization: string;
   model: string;
-  categoryId: number;
-  brandId: number;
+  category: string;
+  brand: string;
   url: string;
 
 }

@@ -5,12 +5,13 @@ import {NavbarComponent} from "@components/navbar/navbar.component";
 import {MenuComponent} from "@components/menu/menu.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
+import {DropdownModule} from "primeng/dropdown";
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgxSonnerToaster, NavbarComponent, MenuComponent, ReactiveFormsModule, FormsModule, CommonModule],
+  imports: [RouterOutlet, NgxSonnerToaster, NavbarComponent, MenuComponent, ReactiveFormsModule, FormsModule, CommonModule, DropdownModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

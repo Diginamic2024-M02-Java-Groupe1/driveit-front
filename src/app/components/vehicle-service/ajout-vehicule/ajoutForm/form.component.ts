@@ -1,5 +1,5 @@
-import {Component, input, OnInit} from '@angular/core';
-import {NgClass} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
 import {FormGroup, FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormControl} from '@angular/forms';
 import {
   VisualisationAjoutVehiculeComponent
@@ -8,39 +8,81 @@ import {InputMaskModule} from 'primeng/inputmask';
 import {VehicleDataService} from "@services/ajoutVehiculeService/vehicle-data.service";
 import {Vehicle} from "@models/vehicle";
 import {StatusVehicle} from "@models/enums/status-vehicle.enum";
-
+import {toast} from "ngx-sonner";
+import {DropdownModule} from "primeng/dropdown";
+import {InputTextModule} from "primeng/inputtext";
+import {AutoCompleteCompleteEvent, AutoCompleteModule} from "primeng/autocomplete";
 
 
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule, FormsModule, VisualisationAjoutVehiculeComponent, InputMaskModule],
+  imports: [NgClass, ReactiveFormsModule, FormsModule, VisualisationAjoutVehiculeComponent, InputMaskModule, NgForOf, NgIf, DropdownModule, InputTextModule, AutoCompleteModule, NgStyle],
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss']
+  styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit {
-  // vehicleNew: Vehicle= {} as Vehicle;
   protected ajoutVehiculeForm!: FormGroup;
   submitted: boolean = false;
-  vehicles: Vehicle[] = [];
+  filteredCategories: any[] = [];
+  filteredMotorizations: any[] = [];
+  filteredBrands: any[] = [];
+
+
+  categorieTab = [
+    {value: 'SUV'},
+    {value: 'Berline'},
+    {value: 'Citadine'},
+    {value: 'Utilitaire'},
+    {value: 'Coupé'},
+    {value: 'Cabriolet'},
+    {value: 'Monospace'},
+    {value: 'Break'},
+    {value: '4x4'},
+    {value: 'Pick-up'},
+  ];
+
+  brandTab = [
+    {value: 'Audi'},
+    {value: 'BMW'},
+    {value: 'Citroën'},
+    {value: 'Dacia'},
+    {value: 'Fiat'},
+    {value: 'Ford'},
+    {value: 'Mercedes'},
+    {value: 'Peugeot'},
+    {value: 'Renault'},
+    {value: 'Toyota'},
+  ];
+
+  motorizationTab = [
+    // {value: 'Essence', label: 'EssenceMoteur'} //est appelé avec optionLabel pour afficher un label à la place de la value tout en gardant la value en base de données
+    {value: 'Essence'},
+    {value: 'Diesel'},
+    {value: 'Hybride'},
+    {value: 'Electrique'},
+    {value: 'GPL'},
+    {value: 'Hydrogène'},
+  ];
+
 
   constructor(
     private fb: FormBuilder,
-    private vehicleService: VehicleDataService
+    private vehicleService: VehicleDataService,
   ) {
-    // Validators.pattern('[A-Z]{2}-\\d{3}-[A-Z]{2}')]
     this.ajoutVehiculeForm = new FormGroup({
       registration: new FormControl('', [Validators.required]),
       numberOfSeats: new FormControl('', [Validators.required, Validators.min(1)]),
-      category: new FormControl('', [Validators.required]),
-      brand: new FormControl('', [Validators.required]),
+      category: new FormControl('', [Validators.required]), // Initialize with a number
+      brand: new FormControl('', [Validators.required]), // Initialize with a number
       model: new FormControl('', [Validators.required]),
-      motorization: new FormControl('', [Validators.required]),
+      motorization: new FormControl('', [Validators.required]), // Initialize with a number
       emission: new FormControl('', [Validators.required, Validators.min(0)]),
       status: new FormControl(StatusVehicle.AVAILABLE, [Validators.required]),
       url: new FormControl('', [Validators.required]),
       service: new FormControl(true, [Validators.required]),
     });
+
   }
 
   get registration() {
@@ -93,25 +135,30 @@ export class FormComponent implements OnInit {
         service: this.ajoutVehiculeForm.get('service')?.value,
         emission: this.ajoutVehiculeForm.get('emission')?.value,
         url: this.ajoutVehiculeForm.get('url')?.value,
-        motorizationId: this.ajoutVehiculeForm.get('motorization')?.value,
-        brandId: this.ajoutVehiculeForm.get('brand')?.value,
-        categoryId: this.ajoutVehiculeForm.get('category')?.value,
+        motorization: this.ajoutVehiculeForm.get('motorization')?.value,
+        brand: this.ajoutVehiculeForm.get('brand')?.value,
+        category: this.ajoutVehiculeForm.get('category')?.value,
         model: this.ajoutVehiculeForm.get('model')?.value,
       };
 
-      this.vehicleService.insertVehicle(vehicle).subscribe((data: string) => {
-        if (data.length) {
-          console.log(data);
-          alert(data);
-        } else {
-          console.error(data);
-          alert(data);
+      const promise = this.vehicleService.insertVehicle(vehicle).toPromise();
+      // this.ajoutVehiculeForm.reset(); //todo reset form after a successful submit
+
+      toast.promise(promise, {
+        loading: 'Loading...',
+        success: (data) => `${data}`,
+        error: (error)=> {
+          console.error(error);
+          return "error";
         }
       });
+
     } else {
       console.log('Le formulaire est invalide.');
-      alert('Veuillez corriger les erreurs dans le formulaire.');
+      toast.warning('Veuillez compléter le formulaire.');
     }
+
+    console.log(this.ajoutVehiculeForm.value);
   }
 
 
@@ -131,9 +178,11 @@ export class FormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.ajoutVehiculeForm.valueChanges.subscribe(value => {
-      console.log('Form changes', value);
-    });
+    this.ajoutVehiculeForm.valueChanges.subscribe();
+    // this.vehicleService.getCategories().then((categories) => { //TODO créer une méthode get pour requêter en base de données les catégories
+    //   this.categorieTab = categories
+    // })
+    this.categorieTab;
   }
 
   onUrlInput(event: Event) {
@@ -141,5 +190,45 @@ export class FormComponent implements OnInit {
     this.ajoutVehiculeForm.get('urlImage')?.setValue(input.value);
   }
 
-  protected readonly StatusVehicle = StatusVehicle;
+
+  filterCategory($event: AutoCompleteCompleteEvent) {
+      let filtered: any[] = [];
+      let query = $event.query;
+
+      for (let i=0; i<(this.categorieTab as any).length; i++) {
+          let category = this.categorieTab[i];
+          if (category.value.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+              filtered.push(category);
+          }
+      }
+      this.filteredCategories = filtered;
+  }
+
+  filterMotorization($event: AutoCompleteCompleteEvent) {
+    let filtered: any[] = [];
+    let query = $event.query;
+
+    for (let i=0; i<(this.motorizationTab as any).length; i++) {
+      let motorization = this.motorizationTab[i];
+      if (motorization.value.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtered.push(motorization);
+      }
+    }
+    this.filteredMotorizations = filtered;
+
+  }
+
+  filterBrand($event: AutoCompleteCompleteEvent) {
+    let filtered: any[] = [];
+    let query = $event.query;
+
+    for (let i=0; i<(this.brandTab as any).length; i++) {
+      let brand = this.brandTab[i];
+      if (brand.value.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtered.push(brand);
+      }
+    }
+    this.filteredBrands = filtered;
+
+  }
 }
