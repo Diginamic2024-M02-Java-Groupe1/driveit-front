@@ -4,6 +4,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {NgClass} from "@angular/common";
 import {AuthService} from "@services/auth.service";
 import {Router} from "@angular/router";
+import {toast} from "ngx-sonner";
 
 @Component({
   selector: 'app-login',
@@ -32,7 +33,6 @@ export class LoginComponent implements OnInit {
 
   handleSubmit() {
     this.submitted = true;
-    console.log(this.loginForm.value);
     if (this.loginForm.valid) {
       this.authService.login(this.email?.value, this.password?.value).subscribe((response) => {
         if (response.token) {
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
         }
       });
     } else {
-      console.log('Form is invalid');
+      toast.error('Form is invalid');
     }
   }
 

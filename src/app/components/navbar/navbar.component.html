@@ -11,9 +11,12 @@
     </div>
     <div class="p-toolbar-group-end">
       @for(link of links; track $index){
-        <p-button icon="{{ link.icon }}" [routerLink]="link.url" routerLinkActive="active-link"  [pTooltip]="link.name" tooltipPosition="bottom" class="mr-2" />
+        @if(link.click){
+          <p-button icon="{{ link.icon }}" (click)="link.click()" [pTooltip]="link.name" tooltipPosition="bottom" class="mr-2" />
+        } @else {
+          <p-button icon="{{ link.icon }}" [routerLink]="link.url" routerLinkActive="active-link"  [pTooltip]="link.name" tooltipPosition="bottom" class="mr-2" />
+        }
       }
-      <p-button icon="pi pi-bars" (click)="openMenu()" />
     </div>
   </p-toolbar>
 </div>

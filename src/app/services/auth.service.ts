@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, tap} from "rxjs";
 import {environment} from "@env/environment";
@@ -58,8 +58,8 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  logout(): void {
-    localStorage.removeItem('token');
+  logout(): Observable<string> {
+    return this.http.post<string>(`${this.url}/logout`, {}, {responseType: 'text' as 'json'});
   }
 
   verifyAccount(email: string | null, verificationCode: string): Observable<string> {
