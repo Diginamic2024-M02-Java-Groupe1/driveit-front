@@ -12,6 +12,7 @@ import {CalendarModule} from "primeng/calendar";
 import {NgxSonnerToaster, toast} from "ngx-sonner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {dateRangeValidator} from "@validators/date-range.validator";
+import {LocalCalendarService} from "@services/local-calendar.service";
 
 @Component({
   selector: 'app-reservations-service-vehicles',
@@ -28,6 +29,7 @@ import {dateRangeValidator} from "@validators/date-range.validator";
     FormsModule,
     CalendarModule,
     NgxSonnerToaster,
+    NgOptimizedImage
   ],
   templateUrl: './reservations-service-vehicles.component.html',
   styleUrl: './reservations-service-vehicles.component.scss'
@@ -42,7 +44,8 @@ export class ReservationsServiceVehiclesComponent implements OnInit {
   currentDateNumb: number = 0;
   currentDate!: Date;
 
-  constructor(private resaVehicleService: BookingVehicleService) {
+  constructor(private readonly resaVehicleService: BookingVehicleService,
+              private readonly localCalendarService: LocalCalendarService) {
     this.filterForm = new FormGroup({
       startDateTime: new FormControl<Date | null>(null, Validators.required),
       endDateTime: new FormControl<Date | null>(null, Validators.required)
@@ -59,6 +62,7 @@ export class ReservationsServiceVehiclesComponent implements OnInit {
     });
     this.currentDateNumb = new Date().getDate();
     this.currentDate = new Date();
+    this.localCalendarService.setFrenchLocale();
   }
 
   /**

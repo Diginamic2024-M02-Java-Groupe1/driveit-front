@@ -11,6 +11,7 @@ import {FormComponent} from "@components/vehicle-service/ajout-vehicule/ajoutFor
 import {CovoiturageFormComponent} from "@components/covoiturage-form/covoiturage-form.component";
 import {VerifyComponent} from "@components/auth/verify/verify.component";
 import {VehicleBookingHistoryComponent} from "@components/service-vehicles/vehicle-booking-history/vehicle-booking-history.component";
+import {AdminGuard} from "./guards/admin.guard";
 
 
 export const routes: Routes = [

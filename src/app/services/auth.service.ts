@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, tap} from "rxjs";
 import {environment} from "@env/environment";
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 interface LoginResponse {
   token: string;
@@ -16,7 +17,7 @@ export class AuthService {
   private url: string = environment.auth;
   private email: string | null = null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private readonly jwtHelper : JwtHelperService) { }
 
   getUserCredentials(): {email: string, password: string} {
     return {
@@ -56,6 +57,15 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+  isAdmin(): boolean {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      return decodedToken?.role.includes('ROLE_ADMIN');
+    }
+    return false;
   }
 
   logout(): Observable<string> {

@@ -10,6 +10,7 @@ import {SidebarModule} from "primeng/sidebar";
 import {MenubarModule} from "primeng/menubar";
 import {Ripple} from "primeng/ripple";
 import {NgClass} from "@angular/common";
+import {AuthService} from "@services/auth.service";
 
 @Component({
   selector: 'app-menu',
@@ -24,7 +25,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   sidebarVisible = false;
   private subscription: Subscription | undefined;
 
-  constructor(private drawerService: DrawerService) {
+  constructor(private readonly drawerService: DrawerService, private readonly authService: AuthService) {
   }
 
   ngOnInit() {
@@ -46,6 +47,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         ]
       }
     ];
+
 
     this.subscription = this.drawerService.sidebarVisible$.subscribe(visible => {
       this.sidebarVisible = visible;
