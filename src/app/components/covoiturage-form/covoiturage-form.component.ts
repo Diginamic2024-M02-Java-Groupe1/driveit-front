@@ -13,6 +13,7 @@ import CarpoolingData from "@components/covoiturage-form/CarpoolingData";
 import {CarpoolingService} from "@services/carpooling.service";
 import {MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
+import {LocalCalendarService} from "@services/local-calendar.service";
 @Component({
   selector: 'app-covoiturage-form',
   standalone: true,
@@ -58,7 +59,8 @@ export class CovoiturageFormComponent implements OnInit {
     vehicle: new FormControl('', [Validators.required]),
   });
 
-  constructor(private vehicleService: VehicleService, private carpoolingService: CarpoolingService, private messageService: MessageService) {
+  constructor(private vehicleService: VehicleService, private carpoolingService: CarpoolingService, private messageService: MessageService,
+              private readonly localCalendarService: LocalCalendarService) {
     this.vehicleService.getVehicles().subscribe((vehicles) => {
       this.vehicles = vehicles;
       this.groupedVehicles = [
@@ -89,6 +91,7 @@ export class CovoiturageFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.localCalendarService.setFrenchLocale();
   }
 
 

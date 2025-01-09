@@ -6,7 +6,7 @@ import {TableModule} from "primeng/table";
 import {ResaVehicle} from "@models/resa-vehicle.model";
 import {BookingVehicleService} from "@services/booking-vehicle.service";
 import {StatusFilter} from "@models/enums/status-filter.enum";
-import {CommonModule, DatePipe} from "@angular/common";
+import {CommonModule, DatePipe, NgOptimizedImage} from "@angular/common";
 import {ToastModule} from "primeng/toast";
 import {ConfirmPopup, ConfirmPopupModule} from "primeng/confirmpopup";
 import {ConfirmationService, MessageService} from "primeng/api";
@@ -23,6 +23,7 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {DialogModule} from "primeng/dialog";
 import {CalendarModule} from "primeng/calendar";
 import {HttpErrorResponse} from "@angular/common/http";
+import {LocalCalendarService} from "@services/local-calendar.service";
 
 @Component({
   selector: 'app-vehicle-booking-history',
@@ -47,6 +48,7 @@ import {HttpErrorResponse} from "@angular/common/http";
     DialogModule,
     CalendarModule,
     HistoryFilterComponent,
+    NgOptimizedImage,
 
   ],
   providers: [ConfirmationService, MessageService,DatePipe],
@@ -75,13 +77,15 @@ export class VehicleBookingHistoryComponent implements OnInit {
   currentDate: Date = new Date();
 
 
-  constructor(private resaService: BookingVehicleService,
-              private confirmationService: ConfirmationService,
-              private datePipe: DatePipe) {
+  constructor(private readonly resaService: BookingVehicleService,
+              private readonly confirmationService: ConfirmationService,
+              private readonly datePipe: DatePipe,
+              private readonly localCalendarService: LocalCalendarService) {
   }
 
   ngOnInit(): void {
     this.loadReservations();
+    this.localCalendarService.setFrenchLocale();
   }
 
   /**
