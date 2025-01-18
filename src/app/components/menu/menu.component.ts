@@ -34,7 +34,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         label: 'Admin',
         icon: 'pi pi-fw pi-cog',
         items: [
-          {label: 'Véhicules de service', icon: 'pi pi-fw pi-car', routerLink: '/vehicules', routerLinkActiveOptions: {exact: true}},
+          {label: 'Véhicules de service', icon: 'pi pi-fw pi-car', routerLink: '/vehicles/list', routerLinkActiveOptions: {exact: true}},
         ]
       },
       {

@@ -1,20 +1,24 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Vehicle} from "@models/vehicle";
-import { Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {environment} from "@env/environment";
 import {AuthService} from "@services/auth.service";
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class VehicleDataService {
-  private apiURL = environment.api;
+    private apiURL = environment.api;
 
-  constructor(private http: HttpClient, private authService: AuthService) {
-  }
+    constructor(private http: HttpClient, private authService: AuthService) {
+    }
 
-  insertVehicle(vehicle: Vehicle): Observable<string> {
-    return this.http.post(`${this.apiURL}/vehicules/service`, vehicle, { responseType: 'text'});
-  }
+    insertVehicle(vehicle: Vehicle): Observable<string> {
+        return this.http.post(`${this.apiURL}/vehicules/service`, vehicle, {responseType: 'text'});
+    }
+
+    getVehicles(): Observable<Vehicle[]> {
+        return this.http.get<Vehicle[]>(`${this.apiURL}/vehicules`);
+    }
 }
