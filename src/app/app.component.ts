@@ -6,12 +6,14 @@ import {MenuComponent} from "@components/menu/menu.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {DropdownModule} from "primeng/dropdown";
+import {MessageService} from "primeng/api";
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, NgxSonnerToaster, NavbarComponent, MenuComponent, ReactiveFormsModule, FormsModule, CommonModule, DropdownModule],
+  providers: [MessageService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

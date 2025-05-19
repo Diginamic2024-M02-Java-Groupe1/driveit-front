@@ -1,23 +1,25 @@
 import {Component, OnInit} from '@angular/core';
-import {NgClass, NgForOf, NgIf, NgStyle} from '@angular/common';
-import {FormGroup, FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormControl} from '@angular/forms';
+import {NgClass, NgIf} from '@angular/common';
+import {FormGroup, FormsModule, ReactiveFormsModule, Validators, FormControl} from '@angular/forms';
 import {
     VisualisationAjoutVehiculeComponent
 } from "@components/vehicle-service/ajout-vehicule/visualisation-ajout-vehicule/visualisation-ajout-vehicule.component";
 import {InputMaskModule} from 'primeng/inputmask';
-import {VehicleDataService} from "@services/ajoutVehiculeService/vehicle-data.service";
-import {Vehicle} from "@models/vehicle";
 import {StatusVehicle} from "@models/enums/status-vehicle.enum";
 import {toast} from "ngx-sonner";
 import {DropdownModule} from "primeng/dropdown";
 import {InputTextModule} from "primeng/inputtext";
 import {AutoCompleteCompleteEvent, AutoCompleteModule} from "primeng/autocomplete";
+import {VehicleService} from "@services/vehicle/vehicle.service";
+import {Vehicle} from "@models/vehicle.model";
+import {HttpErrorResponse} from "@angular/common/http";
+import { Router } from '@angular/router';
 
 
 @Component({
     selector: 'app-form',
     standalone: true,
-    imports: [NgClass, ReactiveFormsModule, FormsModule, VisualisationAjoutVehiculeComponent, InputMaskModule, NgForOf, NgIf, DropdownModule, InputTextModule, AutoCompleteModule, NgStyle],
+    imports: [NgClass, ReactiveFormsModule, FormsModule, VisualisationAjoutVehiculeComponent, InputMaskModule, NgIf, DropdownModule, InputTextModule, AutoCompleteModule],
     templateUrl: './form.component.html',
     styleUrls: ['./form.component.scss'],
 })
@@ -27,7 +29,6 @@ export class FormComponent implements OnInit {
     filteredCategories: any[] = [];
     filteredMotorizations: any[] = [];
     filteredBrands: any[] = [];
-
 
     categorieTab = [
         {value: 'SUV'},
@@ -64,10 +65,9 @@ export class FormComponent implements OnInit {
         {value: 'Hydrogène'},
     ];
 
-
     constructor(
-        private fb: FormBuilder,
-        private vehicleService: VehicleDataService,
+        private vehicleService: VehicleService,
+        private router: Router,
     ) {
         this.ajoutVehiculeForm = new FormGroup({
             registration: new FormControl('', [Validators.required]),
@@ -143,21 +143,31 @@ export class FormComponent implements OnInit {
                 brand: this.ajoutVehiculeForm.get('brand')?.value,
                 category: this.ajoutVehiculeForm.get('category')?.value,
                 model: this.ajoutVehiculeForm.get('model')?.value,
+                status: this.ajoutVehiculeForm.get('status')?.value,
             };
 
-            const promise = this.vehicleService.insertVehicle(vehicle).toPromise();
-
-            toast.promise(promise, {
-                loading: 'Loading...',
-                success: (data) => `${data}`,
-                error: (error) => {
-                    console.error(error);
-                    return "error";
+            this.vehicleService.insertVehicleService(vehicle).subscribe({
+                next: (response) => {
+                    this.submitted = true
+                    toast.success(`Véhicule ${vehicle.registration} ajouté avec succès`);
+                    this.ajoutVehiculeForm.reset({
+                        registration: '',
+                        numberOfSeats: '',
+                        category: '',
+                        brand: '',
+                        model: '',
+                        motorization: '',
+                        emission: '',
+                        status: StatusVehicle.AVAILABLE,
+                        url: '',
+                        service: true
+                    });
+                    this.submitted = false;
+                },
+                error: (error: HttpErrorResponse) => {
+                    toast.error(error.error);
                 }
             });
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
 
         } else {
             toast.warning('Veuillez compléter le formulaire.');
@@ -182,7 +192,7 @@ export class FormComponent implements OnInit {
 
     ngOnInit(): void {
         this.ajoutVehiculeForm.valueChanges.subscribe();
-       //TODO créer une méthode get pour requêter en base de données les catégories
+        //TODO créer une méthode get pour requêter en base de données les catégories
     }
 
     onUrlInput(event: Event) {
