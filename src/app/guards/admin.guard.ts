@@ -1,27 +1,14 @@
-import { Injectable } from "@angular/core";
-import {CanActivate, Route, Router, UrlSegment} from "@angular/router";
-import { Observable } from "rxjs";
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 import {AuthService} from "@services/auth.service";
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AdminGuard implements CanActivate {
+export const AdminGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  constructor(private readonly authService: AuthService, private readonly router: Router) {}
-
-  canActivate(): Observable<boolean> {
-    return new Observable<boolean>(observer => {
-      const isAuthenticated = this.authService.isAuthenticated();
-      const isAdmin = this.authService.isAdmin();
-      if (isAuthenticated && isAdmin) {
-        observer.next(true);
-      } else {
-        this.router.navigate(['/']).then();
-        observer.next(false);
-      }
-      observer.complete();
-    });
+  const role = authService.getUserRole();
+  if (role !== 'ROLE_ADMIN') {
+    return router.createUrlTree(['/auth']);
   }
-
-}
+  return true;
+};

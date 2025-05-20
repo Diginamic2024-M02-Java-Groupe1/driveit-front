@@ -7,6 +7,7 @@ import {AuthService} from "@services/auth.service";
 import {toast} from "ngx-sonner";
 import {Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-verify',
@@ -28,11 +29,14 @@ export class VerifyComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route : ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.email = this.authService.getMail();
+    this.route.queryParams.subscribe(params => {
+      this.email = params['email'];
+    });
     this.verifyForm = this.fb.group(
       {
         code: ['', Validators.required]
