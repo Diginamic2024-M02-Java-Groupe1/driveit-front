@@ -1,5 +1,0 @@
-export enum StatusVehicle {
-  AVAILABLE = 'AVAILABLE',
-  UNAVAILABLE = 'UNAVAILABLE',
-  MAINTENANCE = 'MAINTENANCE'
-}
