@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, output} from '@angular/core';
 import {toast} from "ngx-sonner";
 import {TableModule} from "primeng/table";
 import {VehicleService} from "@services/vehicle/vehicle.service";
@@ -6,25 +6,26 @@ import {Vehicle} from "@models/vehicle.model";
 import {NgForOf, NgClass, NgOptimizedImage} from "@angular/common";
 import {Button} from "primeng/button";
 import {Router} from "@angular/router";
-import {FilterFormComponent} from "@components/filter-form/filter-form.component";
+import {EditVehicleComponent} from "@components/service-vehicles/edit-vehicle/edit-vehicle.component";
 
 @Component({
     selector: 'app-lister-vehicules',
     standalone: true,
-    imports: [
-        TableModule,
-        NgForOf,
-        NgClass,
-        NgOptimizedImage,
-        Button,
-        FilterFormComponent
-    ],
+  imports: [
+    TableModule,
+    NgForOf,
+    NgClass,
+    NgOptimizedImage,
+    Button,
+    EditVehicleComponent
+  ],
     templateUrl: './lister-vehicules.component.html',
     styleUrl: './lister-vehicules.component.scss'
 })
 export class ListerVehiculesComponent implements OnInit {
 
     vehicles: Vehicle[] = [];
+    isEditDialogVisible = false;
 
     constructor(
         private vehicleService: VehicleService,
@@ -57,7 +58,10 @@ export class ListerVehiculesComponent implements OnInit {
     }
 
     onSeeDetails(vehicle: Vehicle): void {
-        //TODO
+        if(vehicle.id) {
+          this.isEditDialogVisible = true;
+          // emit id vehicule
+        }
     }
 
     onDelete(vehicle: Vehicle): void {
@@ -77,9 +81,5 @@ export class ListerVehiculesComponent implements OnInit {
 
     onAddVehicle() {
         this.router.navigate(['vehicles/add']).then();
-    }
-
-    onFilter(value: any) {
-        console.log(value);
     }
 }

@@ -1,0 +1,8 @@
+<p-dialog [modal]="true" [(visible)]="isVisible" (onHide)="hideDialog()" [style]="{ width: '75rem' }">
+   <app-ajout-vehicule [hideFooterButtons]="true"/>
+    <div class="flex justify-center gap-2 mt-1">
+        <p-button label="Cancel" severity="danger" (click)="hideDialog()" />
+        <p-button label="Save" (click)="onSave()" />
+    </div>
+
+</p-dialog>

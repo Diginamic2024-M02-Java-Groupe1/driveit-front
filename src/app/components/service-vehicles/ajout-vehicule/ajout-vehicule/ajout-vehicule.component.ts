@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit, signal} from '@angular/core';
 import {NgClass, NgIf} from '@angular/common';
 import {FormGroup, FormsModule, ReactiveFormsModule, Validators, FormControl} from '@angular/forms';
 import {
     VisualisationAjoutVehiculeComponent
-} from "@components/vehicle-service/ajout-vehicule/visualisation-ajout-vehicule/visualisation-ajout-vehicule.component";
+} from "@components/service-vehicles/ajout-vehicule/visualisation-ajout-vehicule/visualisation-ajout-vehicule.component";
 import {InputMaskModule} from 'primeng/inputmask';
 import {StatusVehicle} from "@models/enums/status-vehicle.enum";
 import {toast} from "ngx-sonner";
@@ -17,18 +17,19 @@ import { Router } from '@angular/router';
 
 
 @Component({
-    selector: 'app-form',
+    selector: 'app-ajout-vehicule',
     standalone: true,
     imports: [NgClass, ReactiveFormsModule, FormsModule, VisualisationAjoutVehiculeComponent, InputMaskModule, NgIf, DropdownModule, InputTextModule, AutoCompleteModule],
-    templateUrl: './form.component.html',
-    styleUrls: ['./form.component.scss'],
+    templateUrl: './ajout-vehicule.component.html',
+    styleUrls: ['./ajout-vehicule.component.scss'],
 })
-export class FormComponent implements OnInit {
+export class AjoutVehiculeComponent implements OnInit {
     protected ajoutVehiculeForm!: FormGroup;
     submitted: boolean = false;
     filteredCategories: any[] = [];
     filteredMotorizations: any[] = [];
     filteredBrands: any[] = [];
+    @Input() hideFooterButtons: boolean = false;
 
     categorieTab = [
         {value: 'SUV'},

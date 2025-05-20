@@ -6,12 +6,12 @@ import { NotFoundComponent } from '@components/not-found/not-found.component';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
 import {LoginComponent} from "@components/auth/login/login.component";
 import {RegisterComponent} from "@components/auth/register/register.component";
-import {FormComponent} from "@components/vehicle-service/ajout-vehicule/ajoutForm/form.component";
+import {AjoutVehiculeComponent} from "@components/service-vehicles/ajout-vehicule/ajout-vehicule/ajout-vehicule.component";
 
 import {CovoiturageFormComponent} from "@components/covoiturage-form/covoiturage-form.component";
 import {VerifyComponent} from "@components/auth/verify/verify.component";
 import {VehicleBookingHistoryComponent} from "@components/service-vehicles/vehicle-booking-history/vehicle-booking-history.component";
-import {ListerVehiculesComponent} from "@components/vehicle-service/lister-vehicules/lister-vehicules.component";
+import {ListerVehiculesComponent} from "@components/service-vehicles/lister-vehicules/lister-vehicules.component";
 import {PassengerTripsComponent} from "@components/my-trips/passenger-trips/passenger-trips.component";
 
 
@@ -33,7 +33,7 @@ export const routes: Routes = [
       },
       {
         path: 'vehicles/add',
-        component: FormComponent,
+        component: AjoutVehiculeComponent,
         canActivate: [AuthGuard]
       },
       {

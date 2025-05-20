@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgIf} from '@angular/common';
-import {FormComponent} from "@components/vehicle-service/ajout-vehicule/ajoutForm/form.component";
+import {AjoutVehiculeComponent} from "@components/service-vehicles/ajout-vehicule/ajout-vehicule/ajout-vehicule.component";
 
 @Component({
   selector: 'app-visualisation-ajout-vehicule',
@@ -14,7 +14,7 @@ import {FormComponent} from "@components/vehicle-service/ajout-vehicule/ajoutFor
 export class VisualisationAjoutVehiculeComponent implements OnInit{
   @Input() formValues: any;
 
-  protected readonly FormComponent = FormComponent;
+  protected readonly FormComponent = AjoutVehiculeComponent;
 
   constructor() {
 

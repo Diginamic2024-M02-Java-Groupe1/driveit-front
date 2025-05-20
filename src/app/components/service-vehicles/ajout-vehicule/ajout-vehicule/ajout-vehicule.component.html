@@ -1,0 +1,204 @@
+<div class="w-full" [ngClass]="{'mt-20': !hideFooterButtons}">
+    <h1 class="text-2xl font-bold text-center mb-4">Ajouter un véhicule</h1>
+    <div class="flex justify-center w-full">
+        <div class="border border-gray-300 p-4 rounded-lg">
+            <div class="flex space-x-10 items-center">
+                <form [formGroup]="ajoutVehiculeForm" (ngSubmit)="onSubmit()"
+                      class="flex flex-col justify-center items-center">
+                    <div class="w-full">
+                        <label for="url"
+                               class="block tracking-wide text-xs font-bold mb-2">URL de l'image</label>
+                        <p-autoComplete type="text" formControlName="url" id="url"
+                                        placeholder="Entrez l'URL de l'image"
+                                        styleClass="w-full mb-4"
+                                        [ngClass]="{
+                            'invalid-field': ajoutVehiculeForm.get('url')?.invalid && ajoutVehiculeForm.get('url')?.touched,
+                            'valid-field': ajoutVehiculeForm.get('url')?.valid && ajoutVehiculeForm.get('url')?.touched
+                          }"
+                                        (input)="onUrlInput($event)"/>
+                        <div *ngIf="url?.invalid && (url?.dirty || url?.touched || submitted)"
+                             class="text-red-500 text-xs italic">
+                            {{ getErrorMessage('url') }}
+                        </div>
+                    </div>
+                    <div class="flex space-x-4 form-group">
+                        <div class="w-1/2">
+                            <div class="mb-6">
+                                <label for="registration" class="block tracking-wide text-xs font-bold mb-2">
+                                    Immatriculation
+                                </label>
+                                <p-inputMask
+                                        mask="aa-999-aa"
+                                        id="registration"
+                                        formControlName="registration"
+                                        placeholder="AB-123-CD"
+                                        styleClass=" placeholder-gray-300 italic"
+                                        [ngClass]="{
+                            'invalid-field': ajoutVehiculeForm.get('registration')?.invalid && ajoutVehiculeForm.get('registration')?.touched,
+                            'valid-field': ajoutVehiculeForm.get('registration')?.valid && ajoutVehiculeForm.get('registration')?.touched
+                          }">
+                                </p-inputMask>
+                                <div *ngIf="registration?.invalid && (registration?.dirty || registration?.touched || submitted)"
+                                     class="text-red-500 text-xs italic">
+                                    {{ getErrorMessage('registration') }}
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="numberOfSeats" class="block tracking-wide text-xs font-bold mb-2">Nombre de
+                                    places</label>
+                                <p-autoComplete type="number" min="0" id="numberOfSeats" formControlName="numberOfSeats"
+                                                placeholder="5"
+                                                styleClass="w-full"
+                                                [ngClass]="{
+                            'invalid-field': ajoutVehiculeForm.get('numberOfSeats')?.invalid && ajoutVehiculeForm.get('numberOfSeats')?.touched,
+                            'valid-field': ajoutVehiculeForm.get('numberOfSeats')?.valid && ajoutVehiculeForm.get('numberOfSeats')?.touched
+                          }"/>
+                                <div *ngIf="numberOfSeats?.invalid && (numberOfSeats?.dirty || !numberOfSeats?.untouched || submitted)"
+                                     class="text-red-500 text-xs italic">
+                                    {{ getErrorMessage('numberOfSeats') }}
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <label for="category"
+                                       class="block tracking-wide text-xs font-bold mb-2">Catégorie</label>
+                                <div class="relative">
+                                    <p-autoComplete
+                                            id="category"
+                                            formControlName="category"
+
+                                            [dropdown]="true"
+                                            [suggestions]="filteredCategories"
+                                            (completeMethod)="filterCategory($event)"
+                                            optionLabel="value"
+                                            optionValue="value"
+                                            placeholder="Sélectionnez une catégorie"
+
+                                            [ngClass]="{
+                            'invalid-field': ajoutVehiculeForm.get('category')?.invalid && ajoutVehiculeForm.get('category')?.touched,
+                            'valid-field': ajoutVehiculeForm.get('category')?.valid && ajoutVehiculeForm.get('category')?.touched
+                          }">
+                                    </p-autoComplete>
+                                    <div
+                                            *ngIf="ajoutVehiculeForm.get('category')?.invalid && (ajoutVehiculeForm.get('category')?.dirty || ajoutVehiculeForm.get('category')?.touched || submitted)"
+                                            class="text-red-500 text-xs italic">
+                                        {{ getErrorMessage('category') }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="emission"
+                                       class="block tracking-wide text-xs font-bold mb-2">Emission</label>
+                                <p-autoComplete id="emission" type="number" min="0" formControlName="emission"
+                                                placeholder="20"
+                                                styleClass="w-full"
+                                                [ngClass]="{
+                            'invalid-field': ajoutVehiculeForm.get('emission')?.invalid && ajoutVehiculeForm.get('emission')?.touched,
+                            'valid-field': ajoutVehiculeForm.get('emission')?.valid && ajoutVehiculeForm.get('emission')?.touched
+                          }"/>
+                                <div *ngIf="emission?.invalid && (emission?.dirty || !emission?.untouched || submitted)"
+                                     class="text-red-500 text-xs italic">
+                                    {{ getErrorMessage('emission') }}
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <label for="service" class="tracking-wide text-xs font-bold mb-2 mr-2">Service</label>
+                                <input id="service" formControlName="service"
+                                       type="checkbox">
+                            </div>
+                        </div>
+                        <div class="w-1/2">
+                            <div class="mb-6">
+                                <label for="brand" class="block tracking-wide text-xs font-bold mb-2">Marque</label>
+                                <div class="relative">
+                                    <p-autoComplete
+                                            id="brand"
+                                            formControlName="brand"
+                                            [dropdown]="true"
+                                            [suggestions]="filteredBrands"
+                                            (completeMethod)="filterBrand($event)"
+                                            optionLabel="value"
+                                            optionValue="value"
+                                            placeholder="Sélectionnez une marque"
+
+                                            [ngClass]="{
+    'invalid-field': ajoutVehiculeForm.get('brand')?.invalid && ajoutVehiculeForm.get('brand')?.touched,
+    'valid-field': ajoutVehiculeForm.get('brand')?.valid && ajoutVehiculeForm.get('brand')?.touched
+  }">
+                                    </p-autoComplete>
+
+
+                                    <div *ngIf="ajoutVehiculeForm.get('brand')?.invalid && (ajoutVehiculeForm.get('brand')?.dirty || ajoutVehiculeForm.get('brand')?.touched || submitted)"
+                                         class="text-red-500 text-xs italic">
+                                        {{ getErrorMessage('brand') }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <label for="model" class="block tracking-wide text-xs font-bold mb-2">Modèle</label>
+                                <p-autoComplete type="text" id="model" formControlName="model" placeholder="208"
+                                                styleClass="w-full"
+                                                [ngClass]="{
+    'invalid-field': ajoutVehiculeForm.get('model')?.invalid && ajoutVehiculeForm.get('model')?.touched,
+    'valid-field': ajoutVehiculeForm.get('model')?.valid && ajoutVehiculeForm.get('model')?.touched
+  }"/>
+                                <div *ngIf="model?.invalid && (model?.dirty || !model?.untouched || submitted)"
+                                     class="text-red-500 text-xs italic">
+                                    {{ getErrorMessage('model') }}
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="motorization"
+                                       class="block tracking-wide text-xs font-bold mb-2">Motorisation</label>
+                                <div class="relative">
+                                    <p-autoComplete
+                                            id="motorization"
+                                            formControlName="motorization"
+                                            [dropdown]="true"
+                                            [suggestions]="filteredMotorizations"
+                                            (completeMethod)="filterMotorization($event)"
+                                            optionLabel="value"
+                                            optionValue="value"
+                                            placeholder="Sélectionnez une motorisation"
+
+                                            [ngClass]="{
+                  'invalid-field': ajoutVehiculeForm.get('motorization')?.invalid && ajoutVehiculeForm.get('motorization')?.touched,
+                  'valid-field': ajoutVehiculeForm.get('motorization')?.valid && ajoutVehiculeForm.get('motorization')?.touched
+                }">
+                                    </p-autoComplete>
+
+                                    <div
+                                            *ngIf="ajoutVehiculeForm.get('motorization')?.invalid && (ajoutVehiculeForm.get('motorization')?.dirty || ajoutVehiculeForm.get('motorization')?.touched || submitted)"
+                                            class="text-red-500 text-xs italic">
+                                        {{ getErrorMessage('motorization') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (!hideFooterButtons) {
+                        <div class="justify center flex space-x-4">
+                            <button type="submit"
+                                    class="mt-4 w-full bg-red-600 text-white py-2 px-6 rounded-md hover:opacity-80">
+                                Annuler
+                            </button>
+                            <button type="submit"
+                                    class="mt-4 w-full bg-driveGreen text-white py-2 px-6 rounded-md hover:opacity-80">
+                                Valider
+                            </button>
+                        </div>
+                    }
+                </form>
+
+                <app-visualisation-ajout-vehicule
+                        [formValues]="ajoutVehiculeForm.value"></app-visualisation-ajout-vehicule>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
