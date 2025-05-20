@@ -1,0 +1,88 @@
+<!-- src/app/components/reservations-service-vehicles/reservations-service-vehicles.component.html -->
+<div class="grid grid-cols-1 w-screen md:grid-cols-3 py-6 px-2 rounded-2xl">
+  <div class="md:mx-auto md:my-auto">
+    <div class="flex w-full mx-auto justify-center items-center bg-white space-y-8">
+      <div class="w-full">
+        <form [formGroup]="filterForm" class="bg-white rounded-md shadow-2xl p-5" (ngSubmit)="onFilter()">
+          <h2 class="text-gray-800 font-bold text-xl mb-1">Filtrer les véhicules</h2>
+
+          <label for="dateTimeStart" class="control-label">Date et heure début :</label>
+          <div class="relative">
+            <p-calendar formControlName="startDateTime" id="dateTimeStart" [showTime]="true" hourFormat="24"
+                        name="dateStart"
+                        stepMinute="15"
+                        [firstDayOfWeek]="1"
+                        [minDate]="currentDate"
+                        dateFormat="dd.mm.yy">
+            </p-calendar>
+          </div>
+
+          <label for="dateTimeEnd" class="control-label">Date et heure fin :</label>
+          <div class="relative">
+            <p-calendar formControlName="endDateTime" id="dateTimeEnd" [showTime]="true" hourFormat="24"
+                        name="dateEnd"
+                        stepMinute="15"
+                        [firstDayOfWeek]="1"
+                        [minDate]="currentDate"
+                        dateFormat="dd.mm.yy">
+            </p-calendar>
+          </div>
+
+          <button type="submit"
+                  class="mt-4 w-full bg-driveGreen text-white py-2 px-6 rounded-md hover:bg-emerald-500">
+            Filtrer
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showCarousel" class="col-span-2 md:mx-auto md:my-auto">
+
+    @if (filteredVehicles.length > 0) {
+
+      <div class="w-full h-full px-2">
+        <p-carousel
+          [value]="filteredVehicles"
+          [numVisible]="2"
+          [numScroll]="2"
+          [circular]="false">
+          <ng-template let-vehicle pTemplate="item">
+            <div class="border-1 surface-border border-round p-1 text-sm">
+              <div class="mb-3">
+                <div class="grid grid-cols-2 gap-0.5">
+                  <div class="relative mx-auto">
+                    <img
+                      ngSrc="{{ vehicle.url }}"
+                      height="200"
+                      width="200"
+                      [alt]="vehicle.model.brand.name + ' ' + vehicle.model.name"
+                      class="w-full border-round"/>
+                  </div>
+
+                  <div class=" mx-auto my-auto">
+                    <p>Marque : {{ vehicle.model.brand.name }}</p>
+                    <p>Modèle : {{ vehicle.model.name }}</p>
+                    <p>{{ vehicle.registration }}</p>
+                    <p>Places :{{ vehicle.numberOfSeats }} </p>
+
+                    <button
+                      class="mt-2 text-white py-2 px-6 rounded-md hover:bg-emerald-500 text-center bg-driveGreen font-semibold"
+                      (click)="reserveVehicle(vehicle)">
+                      Réserver
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+    } @else {
+      <div class="w-full h-full px-2">
+        <p>Pas de véhicules disponibles </p>
+      </div>
+    }
+  </div>
+</div>

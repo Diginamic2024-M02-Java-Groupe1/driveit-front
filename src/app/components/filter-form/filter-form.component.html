@@ -1,0 +1,52 @@
+<form [formGroup]="filterForm" (ngSubmit)="onSubmit()"
+      class="card flex flex-col container mx-auto items-start space-y-6">
+    <h2 class="text-xl font-bold">Critères</h2>
+    <div class="flex flex-col space-y-8">
+        @for (config of filterConfig(); track $index) {
+            @if (config.type === "text") {
+                <p-floatLabel>
+                    <input pInputText [id]="config.name" [formControlName]="config.name" [autocomplete]="true"/>
+                    <label [for]="config.name">{{ config.label }}</label>
+                </p-floatLabel>
+            }
+            @if (config.type === "number") {
+                <p-floatLabel>
+                    <p-inputNumber [inputId]="config.name" [formControlName]="config.name"/>
+                    <label [for]="config.name">{{ config.label }}</label>
+                </p-floatLabel>
+            }
+            @if (config.type === "boolean") {
+                <div class="field-checkbox">
+                    <p-checkbox [formControlName]="config.name" [binary]="true" [inputId]="config.name"></p-checkbox>
+                    <label [for]="config.name">{{ config.label }}</label>
+                </div>
+            }
+            @if (config.type === "date") {
+                <p-floatLabel>
+                    <p-calendar
+                            [formControlName]="config.name"
+                            [inputId]="config.name"
+                            [showIcon]="true"
+                            [minDate]="today"
+                    />
+                    <label [for]="config.name">{{ config.label }}</label>
+                </p-floatLabel>
+            }
+            @if (config.type === "select") {
+                <p-floatLabel>
+                    <p-dropdown
+                            [formControlName]="config.name"
+                            [options]="config.options"
+                            optionLabel="label"
+                            optionValue="value"
+                            [filter]="true"
+                            filterBy="value"
+                            [inputId]="config.name"
+                    />
+                    <label [for]="config.name">{{ config.label }}</label>
+                </p-floatLabel>
+            }
+        }
+    </div>
+    <p-button type="submit" label="Rechercher"/>
+</form>
