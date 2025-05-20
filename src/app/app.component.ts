@@ -12,7 +12,7 @@ import {MessageService} from "primeng/api";
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgxSonnerToaster, NavbarComponent, MenuComponent, ReactiveFormsModule, FormsModule, CommonModule, DropdownModule],
+  imports: [RouterOutlet, NgxSonnerToaster, ReactiveFormsModule, FormsModule, CommonModule, DropdownModule],
   providers: [MessageService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

@@ -32,7 +32,7 @@ export class VerifyComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.email = this.authService.getMail();
+    this.email = this.authService.getPendingVerificationEmail();
     this.verifyForm = this.fb.group(
       {
         code: ['', Validators.required]
@@ -48,6 +48,7 @@ export class VerifyComponent implements OnInit {
       next: (data:string) => {
         toast.success(data);
         this.router.navigate(['/auth/login']).then();
+        this.authService.clearPendingVerificationEmail();
       },
       error: (errorResponse:HttpErrorResponse) => {
         toast.error(errorResponse.error);

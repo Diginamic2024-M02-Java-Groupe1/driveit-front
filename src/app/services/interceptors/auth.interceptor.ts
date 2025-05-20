@@ -1,41 +1,69 @@
-import {HttpHeaders, HttpInterceptorFn} from '@angular/common/http';
-import {AuthService} from "@services/auth.service";
-import {inject} from "@angular/core";
-import {catchError, switchMap, throwError} from "rxjs";
+import { Injectable } from '@angular/core';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
+import { AuthService } from '@services/auth.service';
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth = inject(AuthService);
-  const token = auth.getToken();
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  private isRefreshing = false;
+  private readonly refreshTokenSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  if (!token) {
-    return next(req)
+  constructor(private readonly authService: AuthService) {}
+
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    request = request.clone({
+      withCredentials: true
+    });
+
+    const isLogoutRequest = request.url.includes('/auth/logout');
+
+    if (isLogoutRequest) {
+      return next.handle(request);
+    }
+
+    return next.handle(request).pipe(
+      catchError(error => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          return this.handle401Error(request, next);
+        } else {
+          return throwError(() => error);
+        }
+      })
+    );
   }
 
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
+  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    if (!this.authService.isLoggedIn()) {
+      this.authService.logout();
+      return throwError(() => new Error('Utilisateur déconnecté'));
+    }
 
-  const newReq = req.clone({
-    headers
-  })
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshTokenSubject.next(false);
 
-  return next(newReq).pipe(
-    catchError(error => {
-      if (error.status === 403) {
-        return auth.refreshToken().pipe(
-          switchMap((response) => {
-            const newToken = response.token;
-            const newHeaders = new HttpHeaders({
-              Authorization: `Bearer ${newToken}`
-            });
-            const retryReq = req.clone({
-              headers: newHeaders
-            });
-            return next(retryReq);
-          })
-        );
-      }
-      return throwError(() => error);
-    })
-  );
-};
+      return this.authService.refreshToken().pipe(
+        switchMap(() => {
+          this.isRefreshing = false;
+          this.refreshTokenSubject.next(true);
+          return next.handle(request);
+        }),
+        catchError((err) => {
+          this.isRefreshing = false;
+          this.authService.logout();
+          return throwError(() => err);
+        }),
+        finalize(() => {
+          this.isRefreshing = false;
+        })
+      );
+    }
+
+    return this.refreshTokenSubject.pipe(
+      filter(refreshed => refreshed),
+      take(1),
+      switchMap(() => next.handle(request))
+    );
+  }
+}

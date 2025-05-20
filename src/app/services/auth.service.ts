@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable, tap} from "rxjs";
+import {BehaviorSubject, Observable, tap} from "rxjs";
 import {environment} from "@env/environment";
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { Router } from '@angular/router';
 
 interface LoginResponse {
   token: string;
@@ -15,61 +15,99 @@ interface LoginResponse {
 export class AuthService {
 
   private url: string = environment.auth;
-  private email: string | null = null;
+  private userData: any = null;
+  private readonly userDataSubject = new BehaviorSubject<any>(null);
 
-  constructor(private http: HttpClient, private readonly jwtHelper : JwtHelperService) { }
+  constructor(private readonly http: HttpClient, private readonly router: Router) {
+    const userDataStr = localStorage.getItem('userData');
+    if (userDataStr) {
+      this.userData = JSON.parse(userDataStr);
+      this.userDataSubject.next(this.userData);
+    }
+  }
 
-  getUserCredentials(): {email: string, password: string} {
-    return {
-      email: localStorage.getItem('userEmail') || '',
-      password: localStorage.getItem('userPassword') || ''
+  get user$() {
+    return this.userDataSubject.asObservable();
+  }
+
+  login(email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.url}/login`, { email, password })
+      .pipe(
+        tap(response => {
+          this.storeUserData(response);
+        })
+      );
+  }
+
+  refreshToken(): Observable<any> {
+    return this.http.post<any>(`${this.url}/refresh`, {})
+      .pipe(
+        tap(response => {
+          this.storeUserData(response);
+        })
+      );
+  }
+
+  logout(): void {
+    this.http.post(`${this.url}/logout`, {}).subscribe({
+      next: () => this.finalizeLogout(),
+      error:() => this.finalizeLogout()
+    });
+  }
+
+  private finalizeLogout(): void {
+    this.clearUserData();
+    this.router.navigate(['/auth/login']).then();
+  }
+
+  private storeUserData(response: any): void {
+    this.userData = {
+      role: response.role,
+      userId: response.userId,
+      nom: response.nom,
+      prenom: response.prenom
     };
+
+    localStorage.setItem('userData', JSON.stringify(this.userData));
+    this.userDataSubject.next(this.userData);
   }
 
-  saveUserCredentials(email: string, password: string): void {
-    localStorage.setItem('userEmail', email);
-    localStorage.setItem('userPassword', password);
-  }
-
-  login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.url}/login`, {email, password});
-  }
-
-  setMail(email: string): void {
-    this.email = email;
-  }
-
-  getMail(): string | null {
-    return this.email;
+  private clearUserData(): void {
+    this.userData = null;
+    localStorage.removeItem('userData');
+    this.userDataSubject.next(null);
   }
 
   register(firstName: string, lastName: string, email: string, password: string): Observable<string> {
     return this.http.post<string>(`${this.url}/register`, {firstName, lastName, email, password});
   }
 
-  getToken(): string | null {
-    return sessionStorage.getItem('token');
+  isLoggedIn(): boolean {
+    return !!this.userData;
   }
 
-  saveToken(token: string): void {
-    sessionStorage.setItem('token', token);
+  getUserRole(): string | undefined {
+    return this.userData?.role;
   }
 
-  isAuthenticated(): boolean {
-    return !!this.getToken();
+  getUserId(): string | undefined {
+    return this.userData?.userId;
   }
 
-  isAdmin(): boolean {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedToken = this.jwtHelper.decodeToken(token);
-      return decodedToken?.role.includes('ROLE_ADMIN');
-    }
-    return false;
+  getUserEmail(): string | null {
+    return this.userData?.email;
   }
 
-  logout(): Observable<string> {
-    return this.http.post<string>(`${this.url}/logout`, {}, {responseType: 'text' as 'json'});
+  storeUserEmail(email: string): void {
+    localStorage.setItem('pendingVerificationEmail', email);
+  }
+
+  getPendingVerificationEmail(): string | null {
+    return localStorage.getItem('pendingVerificationEmail');
+  }
+
+  clearPendingVerificationEmail(): void {
+    localStorage.removeItem('pendingVerificationEmail');
   }
 
   verifyAccount(email: string | null, verificationCode: string): Observable<string> {
@@ -77,17 +115,9 @@ export class AuthService {
   }
 
   resendVerificationCode(email: string | null): Observable<string> {
-    if (!email) {
-      email = this.email;
-    }
+    email ??= this.getUserEmail();
     return this.http.post<string>(`${this.url}/resend-verification`, email, {responseType: 'text' as 'json'});
   }
 
-  refreshToken(): Observable<LoginResponse> {
-    return this.http.get<LoginResponse>(`${this.url}/refresh-token`).pipe(
-      tap((response: LoginResponse) => {
-        this.saveToken(response.token);
-      })
-    );
-  }
+
 }
