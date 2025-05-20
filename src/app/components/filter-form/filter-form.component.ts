@@ -6,15 +6,16 @@ import {InputNumberModule} from "primeng/inputnumber";
 import {Button} from "primeng/button";
 import {CalendarModule} from "primeng/calendar";
 import {DropdownModule} from "primeng/dropdown";
+import {CheckboxModule} from "primeng/checkbox";
 
-interface FilterField {
+type FieldType = 'text' | 'number' | 'boolean' | 'date' | 'select';
+
+export interface GenericFilterConfig<T> {
   name: string;
-  type: string;
+  type: FieldType;
   label: string;
-  options?: {
-    label: string;
-    value: string;
-  }[];
+  defaultValue?: any;
+  options?: Array<{label: string, value: T}>;
 }
 
 @Component({
@@ -28,39 +29,42 @@ interface FilterField {
     Button,
     CalendarModule,
     DropdownModule,
+    CheckboxModule,
   ],
   templateUrl: './filter-form.component.html',
   styleUrl: './filter-form.component.scss'
 })
-export class FilterFormComponent implements OnInit{
-  filterFields = input.required<FilterField[]>();
+export class FilterFormComponent implements OnInit {
+  filterConfig = input.required<GenericFilterConfig<any>[]>();
   filterSubmit = output();
   today = new Date();
-
   filterForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
-  }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.filterForm = this.fb.group({});
-    this.filterFields()?.forEach(field => {
-      if (field.type === "text") {
-        this.filterForm.addControl(field.name, this.fb.control(''));
-      }
-      if (field.type === "number") {
-        this.filterForm.addControl(field.name, this.fb.control<number | null>(null));
-      }
-      if (field.type === "boolean") {
-        this.filterForm.addControl(field.name, this.fb.control(false));
-      }
-      if(field.type === "date"){
-        this.filterForm.addControl(field.name, this.fb.control<Date | null>(null));
-      }
-      if(field.type === "select"){
-        this.filterForm.addControl(field.name, this.fb.control(''));
-      }
+    this.initializeFormControls();
+  }
+
+  private initializeFormControls(): void {
+    this.filterConfig()?.forEach(config => {
+      const defaultValue = this.getDefaultValueForType(config.type, config.defaultValue);
+      this.filterForm.addControl(config.name, this.fb.control(defaultValue));
     });
+  }
+
+  private getDefaultValueForType(type: FieldType, customDefault?: any): any {
+    if (customDefault !== undefined) return customDefault;
+
+    switch (type) {
+      case 'text': return '';
+      case 'number': return null;
+      case 'boolean': return false;
+      case 'date': return null;
+      case 'select': return '';
+      default: return null;
+    }
   }
 
   onSubmit(): void {

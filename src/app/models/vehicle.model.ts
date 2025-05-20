@@ -12,10 +12,10 @@ export interface Vehicle {
   numberOfSeats: number;
   service: boolean;
   emission: number;
-  url:string;
+  url: string;
   status: StatusVehicle;
-  collaborator: Collaborator[];
-  carpooling: Carpooling[];
+  collaborator?: Collaborator[];
+  carpooling?: Carpooling[];
   motorization: Motorization;
   model: Model;
   category: Category;

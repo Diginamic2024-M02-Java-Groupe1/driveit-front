@@ -1,4 +1,4 @@
-<div class="card flex flex-wrap justify-content-center gap-2">
+<div class="card flex flex-wrap justify-center gap-2">
   <p-sidebar [(visible)]="sidebarVisible" position="right">
     <ng-template pTemplate="header">
       <h2 class="text-lg">Menu</h2>
@@ -7,5 +7,7 @@
       <p-panelMenu [model]="links" styleClass="w-full" />
     </ng-template>
   </p-sidebar>
-  <ng-content></ng-content>
+    <div class="card flex flex-wrap justify-center gap-2">
+        <ng-content></ng-content>
+    </div>
 </div>

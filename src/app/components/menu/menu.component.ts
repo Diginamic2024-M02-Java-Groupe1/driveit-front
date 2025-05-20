@@ -1,21 +1,18 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NgIconComponent, provideIcons} from "@ng-icons/core";
+import {provideIcons} from "@ng-icons/core";
 import {heroBars3, heroXMark} from "@ng-icons/heroicons/outline";
-import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {DrawerService} from "@services/drawer.service";
 import {PanelMenuModule} from "primeng/panelmenu";
 import {MenuItem} from "primeng/api";
 import {Subscription} from "rxjs";
 import {SidebarModule} from "primeng/sidebar";
 import {MenubarModule} from "primeng/menubar";
-import {Ripple} from "primeng/ripple";
-import {NgClass} from "@angular/common";
 import {AuthService} from "@services/auth.service";
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [RouterOutlet, NgIconComponent, PanelMenuModule, RouterLink, RouterLinkActive, SidebarModule, MenubarModule, Ripple, NgClass],
+  imports: [PanelMenuModule, SidebarModule, MenubarModule],
   providers: [provideIcons({heroBars3, heroXMark})],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
@@ -34,7 +31,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         label: 'Admin',
         icon: 'pi pi-fw pi-cog',
         items: [
-          {label: 'Véhicules de service', icon: 'pi pi-fw pi-car', routerLink: '/vehicules', routerLinkActiveOptions: {exact: true}},
+          {label: 'Véhicules de service', icon: 'pi pi-fw pi-car', routerLink: '/vehicles/list', routerLinkActiveOptions: {exact: true}},
         ]
       },
       {

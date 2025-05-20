@@ -1,1 +1,83 @@
-<p>lister-vehicules works!</p>
+<div class="w-full mt-20">
+    <h1 class="text-2xl font-bold text-center mb-4">Liste des véhicules de service</h1>
+    <div class="flex justify-end">
+        <p-button label="Ajouter un véhicule" text icon="pi pi-plus-circle" iconPos="right" (onClick)="onAddVehicle()"/>
+    </div>
+    <div class="overflow-x-auto max-h-[550px] rounded-lg shadow border border-gray-200 bg-white">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-100">
+            <tr>
+                <th class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase">Image</th>
+                <th class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase">Immatriculation</th>
+                <th class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase">Marque</th>
+                <th class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase">Modèle</th>
+                <th class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase">Catégorie</th>
+                <th class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase">Nombre de places</th>
+                <th class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase">Motorisation</th>
+                <th class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase">Émission</th>
+                <th class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase">Statut</th>
+                <th class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+            <tr *ngFor="let v of vehicles" class="hover:bg-gray-50">
+                <td class="px-3 py-2 text-center">
+                    @if (isValidUrl(v.url)) {
+                        <img
+                                ngSrc="{{v.url}}"
+                                height="200"
+                                width="200"
+                                alt="Image du véhicule"
+                                class="w-48 h-28 object-cover rounded-lg border border-grey-400 m-2"
+                        />
+                    } @else {
+                        <span class="text-grey-400 opacity-75">
+                        <svg class="w-48 h-28" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             stroke-width="0.7"
+                             stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                        </svg>
+                      </span>
+                    }
+                </td>
+                <td class="px-3 py-2 text-center">{{ v.registration }}</td>
+                <td class="px-3 py-2 text-center">{{ v.model.brand.name }}</td>
+                <td class="px-3 py-2 text-center">{{ v.model.name }}</td>
+                <td class="px-3 py-2 text-center">{{ v.category.name }}</td>
+                <td class="px-3 py-2 text-center">{{ v.numberOfSeats }}</td>
+                <td class="px-3 py-2 text-center">{{ v.motorization.name }}</td>
+                <td class="px-3 py-2 text-center">{{ v.emission }} CO<sub>2</sub>/km</td>
+                <td class="px-3 py-2 text-center">
+                    <span [ngClass]="{
+                      'bg-green-100 text-green-800': v.status === 'AVAILABLE',
+                      'bg-red-100 text-red-800': v.status === 'UNAVAILABLE'
+                    }" class="px-3 py-1 rounded text-xs font-semibold">
+                      {{ v.status }}
+                    </span>
+                </td>
+                <td class="px-3 py-2 text-center">
+                    <div class="flex flex-col items-center gap-2">
+                        <p-button
+                                label="Détails"
+                                severity="info"
+                                size="small"
+                                icon="pi pi-file-edit"
+                                iconPos="right"
+                                (click)="onSeeDetails(v)"
+                        />
+                        <p-button
+                                label="Supprimer"
+                                severity="danger"
+                                size="small"
+                                icon="pi pi-trash"
+                                iconPos="right"
+                                (click)="onDelete(v)"
+                        />
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
