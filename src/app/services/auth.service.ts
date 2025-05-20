@@ -1,139 +1,151 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, Observable, tap} from "rxjs";
 import {environment} from "@env/environment";
-import { Router } from '@angular/router';
-
-interface LoginResponse {
-  token: string;
-  expiresIn: number;
-}
+import {Router} from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AuthService {
+    private readonly url: string = environment.auth;
+    private userData: any = null;
+    private readonly userDataSubject = new BehaviorSubject<any>(null);
 
-  private url: string = environment.auth;
-  private userData: any = null;
-  private readonly userDataSubject = new BehaviorSubject<any>(null);
-  private pendingVerificationEmail: string | null = null;
+    private readonly http = inject(HttpClient);
+    private readonly router = inject(Router);
 
-
-  constructor(private readonly http: HttpClient, private readonly router: Router) {
-    const userDataStr = localStorage.getItem('userData');
-    if (userDataStr) {
-      this.userData = JSON.parse(userDataStr);
-      this.userDataSubject.next(this.userData);
+    constructor() {
     }
-  }
 
-  get user$() {
-    return this.userDataSubject.asObservable();
-  }
+    // async checkSession(): Promise<boolean> {
+    //     try {
+    //         const user = await this.http.get<any>(`${environment.api}/collaborators/me`, {withCredentials: true}).toPromise();
+    //         this.userData = {
+    //             role: user.authorities[0].authority,
+    //             userId: user.id,
+    //             nom: user.lastName,
+    //             prenom: user.firstName,
+    //         };
+    //         this.userDataSubject.next(this.userData);
+    //         return true;
+    //     } catch {
+    //         this.clearUserData();
+    //         return false;
+    //     }
+    // }
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.url}/login`, { email, password })
-      .pipe(
-        tap(response => {
-          this.storeUserData(response);
-        })
-      );
-  }
+    async checkSession(): Promise<boolean> {
+        try {
+            const user = await firstValueFrom(
+                this.http.get<any>(`${environment.api}/collaborators/me`, { withCredentials: true })
+            );
+            this.userData = {
+                role: user.authorities[0].authority,
+                userId: user.id,
+                nom: user.lastName,
+                prenom: user.firstName,
+            };
+            this.userDataSubject.next(this.userData);
+            return true;
+        } catch {
+            this.clearUserData();
+            return false;
+        }
+    }
 
-  refreshToken(): Observable<any> {
-    return this.http.post<any>(`${this.url}/refresh`, {})
-      .pipe(
-        tap(response => {
-          this.storeUserData(response);
-        })
-      );
-  }
+    register(firstName: string, lastName: string, email: string, password: string): Observable<string> {
+        return this.http.post<string>(`${this.url}/register`, {firstName, lastName, email, password});
+    }
 
-  logout(): void {
-    this.http.post(`${this.url}/logout`, {}).subscribe({
-      next: () => this.finalizeLogout(),
-      error:() => this.finalizeLogout()
-    });
-  }
+    verifyAccount(email: string | null, verificationCode: string): Observable<string> {
+        return this.http.post<string>(`${this.url}/verify`, {
+            email,
+            verificationCode
+        }, {responseType: 'text' as 'json'});
+    }
 
-  logoutWithForceRedirect(): void {
-    // D'abord nettoyer les données et rediriger
-    this.clearUserData();
-    window.location.href = '/auth/login';
+    resendVerificationCode(email: string | null): Observable<string> {
+        email ??= this.getUserEmail();
+        return this.http.post<string>(`${this.url}/resend-verification`, email, {responseType: 'text' as 'json'});
+    }
 
-    // Ensuite, envoyer la requête de déconnexion au serveur
-    // sans attendre ni bloquer l'exécution
-    fetch(`${this.url}/logout`, {
-      method: 'POST',
-      credentials: 'include'
-    }).catch(() => {
-      // Ignorer les erreurs éventuelles
-      console.log('Erreur pendant la déconnexion du serveur');
-    });
-  }
+    login(email: string, password: string): Observable<any> {
+        return this.http.post<any>(`${this.url}/login`, {email, password})
+            .pipe(
+                tap(response => {
+                    this.storeUserData(response);
+                })
+            );
+    }
 
-  private finalizeLogout(): void {
-    this.clearUserData();
-    this.router.navigate(['/auth/login']).then();
-  }
+    refreshToken(): Observable<any> {
+        return this.http.post<any>(`${this.url}/refresh`, {})
+            .pipe(
+                tap(response => {
+                    this.storeUserData(response);
+                })
+            );
+    }
 
-  private storeUserData(response: any): void {
-    this.userData = {
-      role: response.role,
-      userId: response.userId,
-      nom: response.nom,
-      prenom: response.prenom
-    };
+    logout(): void {
+        this.http.post(`${this.url}/logout`, {}).subscribe({
+            next: () => this.finalizeLogout(),
+            error: () => this.finalizeLogout()
+        });
+    }
 
-    this.userDataSubject.next(this.userData);
-  }
+    logoutWithForceRedirect(): void {
+        this.clearUserData();
+        this.router.navigate(['/auth/login']).then();
+        fetch(`${this.url}/logout`, {
+            method: 'POST',
+            credentials: 'include'
+        }).catch(() => {
+            console.error('Erreur pendant la déconnexion du serveur');
+        });
+    }
 
-  private clearUserData(): void {
-    this.userData = null;
-    this.userDataSubject.next(null);
-  }
+    private finalizeLogout(): void {
+        this.clearUserData();
+        this.router.navigate(['/auth/login']).then();
+    }
 
-  register(firstName: string, lastName: string, email: string, password: string): Observable<string> {
-    return this.http.post<string>(`${this.url}/register`, {firstName, lastName, email, password});
-  }
+    private storeUserData(response: any): void {
+        this.userData = {
+            role: response.role,
+            userId: response.userId,
+            nom: response.nom,
+            prenom: response.prenom
+        };
 
-  isLoggedIn(): boolean {
-    return !!this.userData;
-  }
+        this.userDataSubject.next(this.userData);
+    }
 
-  getUserRole(): string | undefined {
-    return this.userData?.role;
-  }
+    private clearUserData(): void {
+        this.userData = null;
+        this.userDataSubject.next(null);
+    }
 
-  getUserId(): string | undefined {
-    return this.userData?.userId;
-  }
+    get user$() {
+        return this.userDataSubject.asObservable();
+    }
 
-  getUserEmail(): string | null {
-    return this.userData?.email;
-  }
+    isLoggedIn(): boolean {
+        return !!this.userData;
+    }
 
-  storeUserEmail(email: string): void {
-    this.pendingVerificationEmail = email;
-  }
+    getUserRole(): string | undefined {
+        return this.userData?.role;
+    }
 
-  getPendingVerificationEmail(): string | null {
-    return this.pendingVerificationEmail;
-  }
+    getUserId(): string | undefined {
+        return this.userData?.userId;
+    }
 
-  clearPendingVerificationEmail(): void {
-    this.pendingVerificationEmail = null;
-  }
-
-  verifyAccount(email: string | null, verificationCode: string): Observable<string> {
-    return this.http.post<string>(`${this.url}/verify`, {email, verificationCode}, {responseType: 'text' as 'json'});
-  }
-
-  resendVerificationCode(email: string | null): Observable<string> {
-    email ??= this.getUserEmail();
-    return this.http.post<string>(`${this.url}/resend-verification`, email, {responseType: 'text' as 'json'});
-  }
-
+    getUserEmail(): string | null {
+        return this.userData?.email;
+    }
 
 }
