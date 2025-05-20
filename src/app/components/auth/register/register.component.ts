@@ -112,9 +112,10 @@ export class RegisterComponent implements OnInit {
       this.registerForm.value.password
     ).subscribe({
       next: () => {
-        this.authService.storeUserEmail(this.registerForm.value.email);
         toast.success('Registration successful');
-        this.router.navigate(['/verify']).then();
+        this.router.navigate(['/verify'], {
+          queryParams: { email: this.registerForm.value.email }
+        });
       },
       error: (errorResponse: HttpErrorResponse) => {
         toast.error(errorResponse.error);

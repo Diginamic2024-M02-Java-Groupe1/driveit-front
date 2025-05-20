@@ -17,6 +17,8 @@ export class AuthService {
   private url: string = environment.auth;
   private userData: any = null;
   private readonly userDataSubject = new BehaviorSubject<any>(null);
+  private pendingVerificationEmail: string | null = null;
+
 
   constructor(private readonly http: HttpClient, private readonly router: Router) {
     const userDataStr = localStorage.getItem('userData');
@@ -55,6 +57,22 @@ export class AuthService {
     });
   }
 
+  logoutWithForceRedirect(): void {
+    // D'abord nettoyer les données et rediriger
+    this.clearUserData();
+    window.location.href = '/auth/login';
+
+    // Ensuite, envoyer la requête de déconnexion au serveur
+    // sans attendre ni bloquer l'exécution
+    fetch(`${this.url}/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    }).catch(() => {
+      // Ignorer les erreurs éventuelles
+      console.log('Erreur pendant la déconnexion du serveur');
+    });
+  }
+
   private finalizeLogout(): void {
     this.clearUserData();
     this.router.navigate(['/auth/login']).then();
@@ -68,13 +86,11 @@ export class AuthService {
       prenom: response.prenom
     };
 
-    localStorage.setItem('userData', JSON.stringify(this.userData));
     this.userDataSubject.next(this.userData);
   }
 
   private clearUserData(): void {
     this.userData = null;
-    localStorage.removeItem('userData');
     this.userDataSubject.next(null);
   }
 
@@ -99,15 +115,15 @@ export class AuthService {
   }
 
   storeUserEmail(email: string): void {
-    localStorage.setItem('pendingVerificationEmail', email);
+    this.pendingVerificationEmail = email;
   }
 
   getPendingVerificationEmail(): string | null {
-    return localStorage.getItem('pendingVerificationEmail');
+    return this.pendingVerificationEmail;
   }
 
   clearPendingVerificationEmail(): void {
-    localStorage.removeItem('pendingVerificationEmail');
+    this.pendingVerificationEmail = null;
   }
 
   verifyAccount(email: string | null, verificationCode: string): Observable<string> {
