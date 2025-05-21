@@ -12,7 +12,7 @@ import {CovoiturageFormComponent} from "@components/covoiturage-form/covoiturage
 import {VerifyComponent} from "@components/auth/verify/verify.component";
 import {VehicleBookingHistoryComponent} from "@components/service-vehicles/vehicle-booking-history/vehicle-booking-history.component";
 import {ListerVehiculesComponent} from "@components/vehicle-service/lister-vehicules/lister-vehicules.component";
-import {MyTripsComponent} from "@components/driver/my-trips/my-trips.component";
+import {PassengerTripsComponent} from "@components/my-trips/passenger-trips/passenger-trips.component";
 
 
 export const routes: Routes = [
@@ -52,8 +52,8 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
       },
         {
-          path:'my-trips',
-          component:MyTripsComponent,
+          path:'passenger-trips',
+          component:PassengerTripsComponent,
             canActivate: [AuthGuard]
         }
     ],
