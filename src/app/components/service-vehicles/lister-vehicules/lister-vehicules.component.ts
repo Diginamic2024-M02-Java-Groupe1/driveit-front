@@ -1,4 +1,4 @@
-import {Component, OnInit, output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {toast} from "ngx-sonner";
 import {TableModule} from "primeng/table";
 import {VehicleService} from "@services/vehicle/vehicle.service";
@@ -6,30 +6,32 @@ import {Vehicle} from "@models/vehicle.model";
 import {NgForOf, NgClass, NgOptimizedImage} from "@angular/common";
 import {Button} from "primeng/button";
 import {Router} from "@angular/router";
-import {EditVehicleComponent} from "@components/service-vehicles/edit-vehicle/edit-vehicle.component";
+import {DialogModalService} from "@services/dialog-modal/dialog-modal.service";
+import {
+    FormVehiculeComponent
+} from "@components/service-vehicles/form-vehicule/form-vehicule/form-vehicule.component";
 
 @Component({
     selector: 'app-lister-vehicules',
     standalone: true,
-  imports: [
-    TableModule,
-    NgForOf,
-    NgClass,
-    NgOptimizedImage,
-    Button,
-    EditVehicleComponent
-  ],
+    imports: [
+        TableModule,
+        NgForOf,
+        NgClass,
+        Button
+    ],
     templateUrl: './lister-vehicules.component.html',
     styleUrl: './lister-vehicules.component.scss'
 })
 export class ListerVehiculesComponent implements OnInit {
 
     vehicles: Vehicle[] = [];
-    isEditDialogVisible = false;
 
     constructor(
         private vehicleService: VehicleService,
-        private router: Router) {
+        private router: Router,
+        private dialogModalService: DialogModalService
+    ) {
     }
 
     ngOnInit(): void {
@@ -58,9 +60,22 @@ export class ListerVehiculesComponent implements OnInit {
     }
 
     onSeeDetails(vehicle: Vehicle): void {
-        if(vehicle.id) {
-          this.isEditDialogVisible = true;
-          // emit id vehicule
+        if (vehicle.id) {
+            let ref = this.dialogModalService.show(FormVehiculeComponent, {
+                header: 'Editer un véhicule',
+                width: '75%',
+                closeOnEscape: true,
+                draggable: true,
+                resizable: true,
+                position: 'center',
+                data: {
+                    isInDialogModal: true,
+                    vehicleToUpdate: vehicle,
+                    onClose: () => {
+                        ref.close();
+                    }
+                }
+            });
         }
     }
 

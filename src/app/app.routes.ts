@@ -6,7 +6,7 @@ import { NotFoundComponent } from '@components/not-found/not-found.component';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
 import {LoginComponent} from "@components/auth/login/login.component";
 import {RegisterComponent} from "@components/auth/register/register.component";
-import {AjoutVehiculeComponent} from "@components/service-vehicles/ajout-vehicule/ajout-vehicule/ajout-vehicule.component";
+import {FormVehiculeComponent} from "@components/service-vehicles/form-vehicule/form-vehicule/form-vehicule.component";
 
 import {CovoiturageFormComponent} from "@components/covoiturage-form/covoiturage-form.component";
 import {VerifyComponent} from "@components/auth/verify/verify.component";
@@ -33,7 +33,7 @@ export const routes: Routes = [
       },
       {
         path: 'vehicles/add',
-        component: AjoutVehiculeComponent,
+        component: FormVehiculeComponent,
         canActivate: [AuthGuard]
       },
       {

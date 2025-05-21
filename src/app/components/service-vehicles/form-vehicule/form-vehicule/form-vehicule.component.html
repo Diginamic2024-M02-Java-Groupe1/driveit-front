@@ -1,9 +1,11 @@
-<div class="w-full" [ngClass]="{'mt-20': !hideFooterButtons}">
-    <h1 class="text-2xl font-bold text-center mb-4">Ajouter un véhicule</h1>
+<div class="w-full" [ngClass]="{'mt-20': !isInDialogModal}">
+    @if (!isInDialogModal) {
+        <h1 class="text-2xl font-bold text-center mb-4">Ajouter un véhicule</h1>
+    }
     <div class="flex justify-center w-full">
         <div class="border border-gray-300 p-4 rounded-lg">
             <div class="flex space-x-10 items-center">
-                <form [formGroup]="ajoutVehiculeForm" (ngSubmit)="onSubmit()"
+                <form [formGroup]="ajoutVehiculeForm"
                       class="flex flex-col justify-center items-center">
                     <div class="w-full">
                         <label for="url"
@@ -178,22 +180,27 @@
                             </div>
                         </div>
                     </div>
-                    @if (!hideFooterButtons) {
-                        <div class="justify center flex space-x-4">
-                            <button type="submit"
-                                    class="mt-4 w-full bg-red-600 text-white py-2 px-6 rounded-md hover:opacity-80">
-                                Annuler
-                            </button>
-                            <button type="submit"
-                                    class="mt-4 w-full bg-driveGreen text-white py-2 px-6 rounded-md hover:opacity-80">
-                                Valider
-                            </button>
-                        </div>
-                    }
                 </form>
 
-                <app-visualisation-ajout-vehicule
-                        [formValues]="ajoutVehiculeForm.value"></app-visualisation-ajout-vehicule>
+                <app-visualisation-form-vehicule
+                        [formValues]="ajoutVehiculeForm.value"></app-visualisation-form-vehicule>
+            </div>
+            <div class="flex justify-center space-x-4">
+                <p-button
+                        type="submit"
+                        label="Annuler"
+                        severity="danger"
+                        icon="pi pi-times"
+                        styleClass="!text-white"
+                        (onClick)="onCancel()"
+                />
+                <p-button
+                        type="submit"
+                        icon="pi pi-check"
+                        styleClass="!text-white"
+                        [label]="isInDialogModal ? 'Modifier' : 'Ajouter'"
+                        (onClick)="vehicleToUpdate ? onUpdate() : onAdd()"
+                />
             </div>
         </div>
     </div>
