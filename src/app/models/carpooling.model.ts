@@ -9,6 +9,6 @@ export interface Carpooling {
   organizer: Collaborator;
   departureAddress: Address;
   arrivalAddress: Address;
-  passengers: Collaborator[];
+  participants: Collaborator[];
   vehicle: Vehicle;
 }
