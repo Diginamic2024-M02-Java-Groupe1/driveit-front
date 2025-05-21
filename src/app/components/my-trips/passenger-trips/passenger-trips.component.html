@@ -1,115 +1,136 @@
 <div class="container mx-auto px-4 py-6">
-  <!-- Liste des trajets -->
-  <div class="space-y-4">
-    @for (carpooling of carpoolings;track $index){
-    <div class="bg-white rounded-lg shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow duration-300">
-      <!-- Première ligne -->
-      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
-        <div class="font-medium text-gray-800">Trajet de {{getOrganizer(carpooling)}}  </div>
-        <div class="text-sm px-3 py-1 bg-blue-50 text-blue-600 rounded-full">{{getAvailableSeats(carpooling)}}</div>
-        <div class="text-sm px-3 py-1 bg-green-50 text-green-600 rounded-full">Demande envoyée</div>
-      </div>
-
-      <!-- Deuxième ligne -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-4">
-        <div class="flex flex-col">
-          <p class="text-xs mb-1">Heure de départ</p>
-        <div class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span class="text-sm text-gray-600">{{ carpooling.departureDate | date:'H\'h\'mm' }}</span>
-        </div>
+    <div class="flex flex-col md:flex-row gap-6">
+        <!-- Filtre à gauche -->
+        <div class="w-full md:w-1/3">
+            <app-filter-form [filterConfig]="filterFields" (filterSubmit)="onFilterSubmit($event)"></app-filter-form>
         </div>
 
-        <div class="flex flex-col">
-          <p class="text-xs mb-1">Véhicule</p>
-        <div class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m-8 3H4m0 0l4 4m-4-4l4-4" />
-          </svg>
-          <span class="text-sm text-gray-600">{{getVehicle(carpooling)}}</span>
-        </div>
-        </div>
-        <div class="flex flex-col">
-          <p class="text-xs text-center mb-1">Départ</p>
-        <div class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          <span class="text-sm text-gray-600">13 rue Montpellier</span>
-        </div>
-        </div>
-        <div class="flex flex-col">
-          <p class="text-xs text-center mb-1">Arrivée</p>
-        <div class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-          </svg>
-          <span class="text-sm text-gray-600">14 chemin de l'impasse</span>
-        </div>
-        </div>
-      </div>
+        <div class="w-full md:w-2/3 space-y-4">
+            @for (carpooling of filteredCarpoolings; track $index) {
+                <div class="bg-white rounded-lg shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+                    <!-- Première ligne -->
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                        <div class="font-medium text-gray-800">Trajet de {{ getOrganizer(carpooling) }}</div>
+                        <div class="text-sm px-3 py-1 bg-blue-50 text-blue-600 rounded-full">{{ getAvailableSeats(carpooling) }}</div>
+                        <div class="text-sm px-3 py-1 rounded-full" [ngClass]="{
+                      'bg-green-50 text-green-600': carpooling.status === 'ACCEPTED',
+                      'bg-yellow-50 text-yellow-600': carpooling.status === 'PENDING',
+                      'bg-red-50 text-red-600': carpooling.status === 'REFUSED'
+                        }">{{ getStatusLabel(carpooling.status) }}
+                        </div>
+                    </div>
 
-      <!-- Troisième ligne -->
-      <div class="flex justify-end space-x-3 pt-3 border-t border-gray-100">
-        <button class="px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors">
-          Voir détails
-        </button>
-        <button class="px-4 py-2 text-sm bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors">
-          Annuler
-        </button>
-      </div>
+                    <!-- Deuxième ligne -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 items-center">
+                        <div class="flex flex-col">
+                            <p class="text-xs mb-1">Départ</p>
+                            <div class="flex items-center">
+                                <i class="pi pi-clock text-gray-600 mr-2"></i>
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-600">{{ carpooling.departureDate | date:'H\'h\'mm' }}</span>
+                                    <span class="text-xs text-gray-500">{{ carpooling.departureDate | date:'dd/MM/yyyy' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <p class="text-xs mb-1">Véhicule</p>
+                            <div class="flex items-center">
+                                <i class="pi pi-car text-gray-600 mr-2"></i>
+                                <span class="text-sm text-gray-600">{{ getVehicle(carpooling) }}</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="text-xs text-center mb-1">Départ</p>
+                            <div class="flex items-center justify-center">
+                                <i class="pi pi-map-marker text-gray-600 mr-2"></i>
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-600">{{ getAdress(carpooling.departureAddress).line1 }}</span>
+                                    <span class="text-xs text-gray-600">{{ getAdress(carpooling.departureAddress).line2 }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="text-xs text-center mb-1">Arrivée</p>
+                            <div class="flex items-center justify-center">
+                                <i class="pi pi-flag text-gray-600 mr-2"></i>
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-600">{{ getAdress(carpooling.arrivalAddress).line1 }}</span>
+                                    <span class="text-xs text-gray-600">{{ getAdress(carpooling.arrivalAddress).line2 }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (isExpanded(carpooling.id)) {
+                        <div class="mt-3 pt-3 border-t border-gray-100">
+                            <h3 class="font-medium text-gray-700 mb-3">Informations complémentaires</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Carte Véhicule -->
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Véhicule</h4>
+                                    <div class="text-sm">
+                                        <p><span
+                                                class="font-medium">Marque:</span> {{ carpooling.vehicle.model.brand.name }}
+                                        </p>
+                                        <p><span class="font-medium">Modèle:</span> {{ carpooling.vehicle.model.name }}
+                                        </p>
+                                        <p><span
+                                                class="font-medium">Nombre de places:</span> {{ carpooling.vehicle.numberOfSeats }}
+                                        </p>
+                                        <p><span
+                                                class="font-medium">Immatriculation:</span> {{ carpooling.vehicle.registration }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Carte Passagers -->
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Passagers</h4>
+                                    <div class="text-sm">
+                                        @if (carpooling.participants.length > 0) {
+                                            <ul>
+                                                @for (participant of carpooling.participants; track $index) {
+                                                    <li>{{ participant.firstName }} {{ participant.lastName }}</li>
+                                                }
+                                            </ul>
+                                        } @else {
+                                            <p>Aucun passager inscrit</p>
+                                        }
+                                    </div>
+                                </div>
+
+                                <!-- Carte Organisateur -->
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Organisateur</h4>
+                                    <div class="text-sm">
+                                        <p><span
+                                                class="font-medium">Nom:</span> {{ carpooling.organizer.firstName }} {{ carpooling.organizer.lastName }}
+                                        </p>
+                                        <p><span class="font-medium">Email:</span> {{ carpooling.organizer.email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Troisième ligne -->
+                    <div class="flex justify-end space-x-3 pt-3 border-t border-gray-100">
+                        <button (click)="toggleDetails(carpooling.id)"
+                                class="px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors">
+                            {{ isExpanded(carpooling.id) ? 'Masquer détails' : 'Voir détails' }}
+                        </button>
+                        @if (carpooling.status !== 'REFUSED') {
+                            <button
+                                    class="px-4 py-2 text-sm bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors"
+                                    (click)="removeMeFromCarpooling(carpooling.id)">
+                                Annuler
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
     </div>
-    }
-    <!-- Card 2 (exemple supplémentaire) -->
-    <div class="bg-white rounded-lg shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow duration-300">
-      <!-- Première ligne -->
-      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
-        <div class="font-medium text-gray-800">Trajet de Marie Durand</div>
-        <div class="text-sm px-3 py-1 bg-orange-50 text-orange-600 rounded-full">1 place restante sur 3</div>
-        <div class="text-sm px-3 py-1 bg-red-50 text-red-600 rounded-full">Demande refusée</div>
-      </div>
-
-      <!-- Deuxième ligne -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-4">
-        <div class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span class="text-sm text-gray-600">17h30</span>
-        </div>
-        <div class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m-8 3H4m0 0l4 4m-4-4l4-4" />
-          </svg>
-          <span class="text-sm text-gray-600">Peugeot 308</span>
-        </div>
-        <div class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          <span class="text-sm text-gray-600">5 avenue Victor Hugo</span>
-        </div>
-        <div class="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-          </svg>
-          <span class="text-sm text-gray-600">22 boulevard Central</span>
-        </div>
-      </div>
-
-      <!-- Troisième ligne -->
-      <div class="flex justify-end space-x-3 pt-3 border-t border-gray-100">
-        <button class="px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors">
-          Voir détails
-        </button>
-        <button class="px-4 py-2 text-sm bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors">
-          Annuler
-        </button>
-      </div>
-    </div>
-  </div>
 </div>

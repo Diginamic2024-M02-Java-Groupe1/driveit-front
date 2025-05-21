@@ -11,4 +11,5 @@ export interface Carpooling {
   arrivalAddress: Address;
   participants: Collaborator[];
   vehicle: Vehicle;
+  status: string;
 }
