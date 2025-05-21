@@ -42,6 +42,7 @@ export class MenuComponent implements OnInit, OnDestroy {
           {label: 'Ajouter un véhicule de service', icon: 'pi pi-fw pi-plus', routerLink: '/vehicles/add', routerLinkActiveOptions: {exact: true}},
           {label: 'Historique de reservation', icon: 'pi pi-fw pi-plus',routerLink: '/vehicles/service/booking/history', routerLinkActiveOptions: {exact: true}},
           {label:'Mes Trajets', icon: 'pi pi-fw pi-plus', routerLink: '/passenger-trips', routerLinkActiveOptions: {exact: true}},
+          {label:'Covoiturage', icon: 'pi pi-fw pi-plus', routerLink: '/passenger-reserve-trip', routerLinkActiveOptions: {exact: true}},
         ]
       }
     ];

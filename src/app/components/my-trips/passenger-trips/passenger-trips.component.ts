@@ -1,21 +1,22 @@
 import {Component, OnInit, inject, DestroyRef} from '@angular/core';
-import {FilterFormComponent} from "@components/filter-form/filter-form.component";
 import {CarpoolingService} from "@services/carpooling.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {AuthService} from "@services/auth.service";
 import {Carpooling} from "@models/carpooling.model";
 import {DatePipe, NgClass} from "@angular/common";
 import {Address} from "@models/address.model";
-import {GenericFilterConfig} from "@components/filter-form/filter-form.component";
-
+import {ActivatedRoute} from "@angular/router";
+import {Button} from "primeng/button";
+import {FilterFormComponent,GenericFilterConfig} from "../../filter-form/filter-form.component";
 
 @Component({
   selector: 'app-passenger-trips',
   standalone: true,
   imports: [
-    FilterFormComponent,
     DatePipe,
-    NgClass
+    NgClass,
+    Button,
+    FilterFormComponent
   ],
   templateUrl: './passenger-trips.component.html',
   styleUrl: './passenger-trips.component.scss'
@@ -24,47 +25,84 @@ export class PassengerTripsComponent implements OnInit {
 
   private readonly carpoolingService = inject(CarpoolingService);
   private readonly authService = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
   private readonly destroyRef$ = inject(DestroyRef);
 
   protected results: any[] = [];
   protected carpoolings: Carpooling[] = [];
   protected expandedTripIds: number[] = [];
+  protected isReserveTrip: boolean = false;
 
-
-  protected filterFields: GenericFilterConfig<any>[] = [
-    {
-      name: 'departureAddress',
-      type: 'text',
-      label: 'Lieu de départ'
-    },
-    {
-      name: 'arrivalAddress',
-      type: 'text',
-      label: 'Lieu d\'arrivée'
-    },
-    {
-      name: 'tripDate',
-      type: 'date',
-      label: 'Date du trajet'
-    },
-    {
-      name: 'status',
-      type: 'select',
-      label: 'Statut',
-      options: [
-        { label: 'Tous', value: '' },
-        { label: 'Accepté', value: 'ACCEPTED' },
-        { label: 'En attente', value: 'PENDING' },
-        { label: 'Refusé', value: 'REFUSED' }
-      ]
-    }
-  ];
+  protected filterFields: GenericFilterConfig<any>[] = [];
 
   protected filteredCarpoolings: Carpooling[] = [];
   protected filterValues: any = {};
 
   ngOnInit(): void {
-    this.getMyTrips();
+    this.route.data.pipe(takeUntilDestroyed(this.destroyRef$)).subscribe(data => {
+      if (data['isPassengerReserveTrip']) {
+        this.isReserveTrip = data['isPassengerReserveTrip'];
+        this.filterFields.push(
+            {
+              name: 'departureAddress',
+              type: 'select',
+              label: 'Lieu de départ',
+              options: [
+                { label: '', value: '' },
+                { label: 'Accepté', value: 'ACCEPTED' },
+                { label: 'En attente', value: 'PENDING' },
+                { label: 'Refusé', value: 'REFUSED' }
+              ]
+            },
+            {
+              name: 'arrivalAddress',
+              type: 'select',
+              label: 'Lieu d\'arrivée',
+              options: [
+                { label: '', value: '' },
+                { label: 'Accepté', value: 'ACCEPTED' },
+                { label: 'En attente', value: 'PENDING' },
+                { label: 'Refusé', value: 'REFUSED' }
+              ]
+            },
+            {
+              name: 'tripDate',
+              type: 'date',
+              label: 'Date du trajet'
+            },
+        )
+      }else{
+        this.getMyTrips();
+        this.filterFields.push(
+            {
+              name: 'departureAddress',
+              type: 'text',
+              label: 'Lieu de départ'
+            },
+            {
+              name: 'arrivalAddress',
+              type: 'text',
+              label: 'Lieu d\'arrivée'
+            },
+            {
+              name: 'tripDate',
+              type: 'date',
+              label: 'Date du trajet'
+            },
+            {
+              name: 'status',
+              type: 'select',
+              label: 'Statut',
+              options: [
+                { label: '', value: '' },
+                { label: 'Accepté', value: 'ACCEPTED' },
+                { label: 'En attente', value: 'PENDING' },
+                { label: 'Refusé', value: 'REFUSED' }
+              ]
+            }
+        )
+      }
+    });
   }
 
   getMyTrips(): void {
@@ -128,6 +166,10 @@ export class PassengerTripsComponent implements OnInit {
           next: () => this.getMyTrips(),
           error: err => console.error('Erreur lors du retrait du participant', err)
         });
+  }
+
+  reserveTrip(carpoolingId: number): void {
+
   }
 
   toggleDetails(carpoolingId: number): void {

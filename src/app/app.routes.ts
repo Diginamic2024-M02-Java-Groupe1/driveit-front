@@ -55,7 +55,15 @@ export const routes: Routes = [
           path:'passenger-trips',
           component:PassengerTripsComponent,
             canActivate: [AuthGuard]
+        },
+      {
+        path:'passenger-reserve-trip',
+        component:PassengerTripsComponent,
+        canActivate: [AuthGuard],
+        data: {
+          isPassengerReserveTrip: true
         }
+      }
     ],
   },
   {
