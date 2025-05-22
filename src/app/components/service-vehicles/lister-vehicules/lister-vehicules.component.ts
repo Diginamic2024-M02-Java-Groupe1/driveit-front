@@ -6,7 +6,10 @@ import {Vehicle} from "@models/vehicle.model";
 import {NgForOf, NgClass, NgOptimizedImage} from "@angular/common";
 import {Button} from "primeng/button";
 import {Router} from "@angular/router";
-import {FilterFormComponent} from "@components/filter-form/filter-form.component";
+import {DialogModalService} from "@services/dialog-modal/dialog-modal.service";
+import {
+    FormVehiculeComponent
+} from "@components/service-vehicles/form-vehicule/form-vehicule/form-vehicule.component";
 
 @Component({
     selector: 'app-lister-vehicules',
@@ -15,9 +18,7 @@ import {FilterFormComponent} from "@components/filter-form/filter-form.component
         TableModule,
         NgForOf,
         NgClass,
-        NgOptimizedImage,
-        Button,
-        FilterFormComponent
+        Button
     ],
     templateUrl: './lister-vehicules.component.html',
     styleUrl: './lister-vehicules.component.scss'
@@ -28,7 +29,9 @@ export class ListerVehiculesComponent implements OnInit {
 
     constructor(
         private vehicleService: VehicleService,
-        private router: Router) {
+        private router: Router,
+        private dialogModalService: DialogModalService
+    ) {
     }
 
     ngOnInit(): void {
@@ -36,12 +39,28 @@ export class ListerVehiculesComponent implements OnInit {
     }
 
     loadVehicles(): void {
-        this.vehicleService.getVehicles().subscribe({
+        this.vehicleService.getServiceVehicles().subscribe({
             next: (data: Vehicle[]) => {
                 this.vehicles = data;
             },
             error: (error) => {
                 toast.error('Erreur lors du chargement des véhicules');
+                console.error(error);
+            }
+        });
+    }
+
+    loadVehicle(id: number): void {
+        this.vehicleService.getVehicleById(id).subscribe({
+            next: (data: Vehicle) => {
+                const index = this.vehicles.findIndex(v => v.id === id);
+                if (index !== -1) {
+                    this.vehicles[index] = data;
+                    this.vehicles = [...this.vehicles];
+                }
+            },
+            error: (error) => {
+                toast.error('Erreur lors du chargement du véhicule');
                 console.error(error);
             }
         });
@@ -56,8 +75,27 @@ export class ListerVehiculesComponent implements OnInit {
         }
     }
 
-    onSeeDetails(vehicle: Vehicle): void {
-        //TODO
+    onUpdate(vehicle: Vehicle): void {
+        if (vehicle.id !== undefined) {
+            let ref = this.dialogModalService.show(FormVehiculeComponent, {
+                header: 'Editer un véhicule',
+                width: '75%',
+                closeOnEscape: true,
+                draggable: true,
+                resizable: true,
+                position: 'center',
+                data: {
+                    isInDialogModal: true,
+                    vehicleToUpdate: vehicle,
+                    onClose: () => {
+                        ref.close();
+                        if (vehicle.id !== undefined) {
+                            this.loadVehicle(vehicle.id);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     onDelete(vehicle: Vehicle): void {
@@ -77,9 +115,5 @@ export class ListerVehiculesComponent implements OnInit {
 
     onAddVehicle() {
         this.router.navigate(['vehicles/add']).then();
-    }
-
-    onFilter(value: any) {
-        console.log(value);
     }
 }

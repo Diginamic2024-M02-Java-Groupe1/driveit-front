@@ -1,9 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NgClass, NgIf} from '@angular/common';
 import {FormGroup, FormsModule, ReactiveFormsModule, Validators, FormControl} from '@angular/forms';
-import {
-    VisualisationAjoutVehiculeComponent
-} from "@components/vehicle-service/ajout-vehicule/visualisation-ajout-vehicule/visualisation-ajout-vehicule.component";
 import {InputMaskModule} from 'primeng/inputmask';
 import {StatusVehicle} from "@models/enums/status-vehicle.enum";
 import {toast} from "ngx-sonner";
@@ -13,22 +10,30 @@ import {AutoCompleteCompleteEvent, AutoCompleteModule} from "primeng/autocomplet
 import {VehicleService} from "@services/vehicle/vehicle.service";
 import {Vehicle} from "@models/vehicle.model";
 import {HttpErrorResponse} from "@angular/common/http";
-import { Router } from '@angular/router';
-
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {
+    VisualisationFormVehiculeComponent
+} from "@components/service-vehicles/form-vehicule/visualisation-form-vehicule/visualisation-form-vehicule.component";
+import {Button} from "primeng/button";
+import {Router} from "@angular/router";
 
 @Component({
-    selector: 'app-form',
+    selector: 'app-form-vehicule',
     standalone: true,
-    imports: [NgClass, ReactiveFormsModule, FormsModule, VisualisationAjoutVehiculeComponent, InputMaskModule, NgIf, DropdownModule, InputTextModule, AutoCompleteModule],
-    templateUrl: './form.component.html',
-    styleUrls: ['./form.component.scss'],
+    imports: [NgClass, ReactiveFormsModule, FormsModule, InputMaskModule, NgIf, DropdownModule, InputTextModule, AutoCompleteModule, VisualisationFormVehiculeComponent, Button],
+    templateUrl: './form-vehicule.component.html',
+    styleUrls: ['./form-vehicule.component.scss'],
 })
-export class FormComponent implements OnInit {
+
+export class FormVehiculeComponent implements OnInit {
     protected ajoutVehiculeForm!: FormGroup;
     submitted: boolean = false;
     filteredCategories: any[] = [];
     filteredMotorizations: any[] = [];
     filteredBrands: any[] = [];
+    filteredStatuses: any[] = [];
+    isInDialogModal: boolean = false;
+    vehicleToUpdate: Vehicle | undefined;
 
     categorieTab = [
         {value: 'SUV'},
@@ -65,9 +70,14 @@ export class FormComponent implements OnInit {
         {value: 'Hydrogène'},
     ];
 
+    statusTab = Object.values(StatusVehicle).map((status) => ({
+        value: status
+    }));
+
     constructor(
         private vehicleService: VehicleService,
-        private router: Router,
+        public config: DynamicDialogConfig,
+        public router: Router
     ) {
         this.ajoutVehiculeForm = new FormGroup({
             registration: new FormControl('', [Validators.required]),
@@ -79,9 +89,35 @@ export class FormComponent implements OnInit {
             emission: new FormControl('', [Validators.required, Validators.min(0)]),
             status: new FormControl(StatusVehicle.AVAILABLE, [Validators.required]),
             url: new FormControl('', [Validators.required]),
-            service: new FormControl(true, [Validators.required]),
+            service: new FormControl(true, [Validators.required])
         });
 
+        if (this.config?.data?.isInDialogModal !== undefined) {
+            this.isInDialogModal = this.config.data.isInDialogModal;
+        }
+
+        if (this.config?.data?.vehicleToUpdate) {
+            this.vehicleToUpdate = this.config.data.vehicleToUpdate;
+        }
+    }
+
+    ngOnInit(): void {
+        if (this.vehicleToUpdate) {
+            this.ajoutVehiculeForm.patchValue({
+                registration: this.vehicleToUpdate.registration,
+                numberOfSeats: this.vehicleToUpdate.numberOfSeats,
+                category: this.vehicleToUpdate.category.name,
+                brand: this.vehicleToUpdate.model.brand.name,
+                model: this.vehicleToUpdate.model.name,
+                motorization: this.vehicleToUpdate.motorization.name,
+                emission: this.vehicleToUpdate.emission,
+                status: this.vehicleToUpdate.status,
+                url: this.vehicleToUpdate.url,
+                service: this.vehicleToUpdate.service
+            });
+        }
+        this.ajoutVehiculeForm.valueChanges.subscribe();
+        //TODO créer une méthode get pour requêter en base de données les catégories
     }
 
     get registration() {
@@ -128,7 +164,7 @@ export class FormComponent implements OnInit {
         return value.toUpperCase();
     }
 
-    onSubmit(): void {
+    onAdd(): void {
         this.submitted = true;
 
         if (this.ajoutVehiculeForm.valid) {
@@ -139,15 +175,23 @@ export class FormComponent implements OnInit {
                 service: this.ajoutVehiculeForm.get('service')?.value,
                 emission: this.ajoutVehiculeForm.get('emission')?.value,
                 url: this.ajoutVehiculeForm.get('url')?.value,
-                motorization: this.ajoutVehiculeForm.get('motorization')?.value,
-                brand: this.ajoutVehiculeForm.get('brand')?.value,
-                category: this.ajoutVehiculeForm.get('category')?.value,
-                model: this.ajoutVehiculeForm.get('model')?.value,
                 status: this.ajoutVehiculeForm.get('status')?.value,
+                motorization: {
+                    name: this.ajoutVehiculeForm.get('motorization')?.value,
+                },
+                model: {
+                    name: this.ajoutVehiculeForm.get('model')?.value,
+                    brand: {
+                        name: this.ajoutVehiculeForm.get('brand')?.value,
+                    }
+                },
+                category: {
+                    name: this.ajoutVehiculeForm.get('category')?.value,
+                }
             };
 
             this.vehicleService.insertVehicleService(vehicle).subscribe({
-                next: (response) => {
+                next: () => {
                     this.submitted = true
                     toast.success(`Véhicule ${vehicle.registration} ajouté avec succès`);
                     this.ajoutVehiculeForm.reset({
@@ -174,6 +218,53 @@ export class FormComponent implements OnInit {
         }
     }
 
+    onUpdate() {
+        if (!this.vehicleToUpdate || !this.vehicleToUpdate.id) {
+            toast.error('Impossible de mettre à jour le véhicule car l\'\identifiant est manquant.');
+            return;
+        }
+
+        const updatedVehicle: Vehicle = {
+            ...this.vehicleToUpdate,
+            registration: this.toUpperCase(this.ajoutVehiculeForm.get('registration')?.value),
+            numberOfSeats: this.ajoutVehiculeForm.get('numberOfSeats')?.value,
+            category: {
+                name: this.ajoutVehiculeForm.get('category')?.value,
+            },
+            model: {
+                name: this.ajoutVehiculeForm.get('model')?.value,
+                brand: {
+                    name: this.ajoutVehiculeForm.get('brand')?.value,
+                }
+            },
+            motorization: {
+                name: this.ajoutVehiculeForm.get('motorization')?.value,
+            },
+            emission: this.ajoutVehiculeForm.get('emission')?.value,
+            status: this.ajoutVehiculeForm.get('status')?.value,
+            url: this.ajoutVehiculeForm.get('url')?.value,
+            service: this.ajoutVehiculeForm.get('service')?.value,
+        };
+
+        this.vehicleService.updateVehicleService(updatedVehicle).subscribe({
+            next: () => {
+                toast.success(`Véhicule ${updatedVehicle.registration} mis à jour avec succès`);
+                this.config.data.onClose();
+            },
+            error: (error) => {
+                toast.error('Erreur lors de la mise à jour du véhicule');
+                console.error(error);
+            }
+        });
+    }
+
+    onCancel() {
+        if(this.vehicleToUpdate) {
+            this.config.data.onClose();
+        } else {
+            this.router.navigate(['/vehicles/list']).then();
+        }
+    }
 
     getErrorMessage(controlName: string): string {
         const control = this.ajoutVehiculeForm.get(controlName);
@@ -187,19 +278,12 @@ export class FormComponent implements OnInit {
             return `La valeur saisie doit être supérieure à ${control.errors?.['min'].min}.`;
         }
         return '';
-
-    }
-
-    ngOnInit(): void {
-        this.ajoutVehiculeForm.valueChanges.subscribe();
-        //TODO créer une méthode get pour requêter en base de données les catégories
     }
 
     onUrlInput(event: Event) {
         const input = event.target as HTMLInputElement;
         this.ajoutVehiculeForm.get('urlImage')?.setValue(input.value);
     }
-
 
     filterCategory($event: AutoCompleteCompleteEvent) {
         let filtered: any[] = [];
@@ -239,6 +323,19 @@ export class FormComponent implements OnInit {
             }
         }
         this.filteredBrands = filtered;
-
     }
+
+    filterStatus($event: AutoCompleteCompleteEvent) {
+        let filtered: any[] = [];
+        let query = $event.query;
+
+        for (let i = 0; i < (this.statusTab as any).length; i++) {
+            let status = this.statusTab[i];
+            if (status.value.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+                filtered.push(status);
+            }
+        }
+        this.filteredStatuses = filtered;
+    }
+
 }

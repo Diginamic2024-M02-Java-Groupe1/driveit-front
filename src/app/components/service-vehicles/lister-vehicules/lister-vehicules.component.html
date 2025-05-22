@@ -24,9 +24,7 @@
                 <td class="px-3 py-2 text-center">
                     @if (isValidUrl(v.url)) {
                         <img
-                                ngSrc="{{v.url}}"
-                                height="200"
-                                width="200"
+                                src="{{v.url}}"
                                 alt="Image du véhicule"
                                 class="w-48 h-28 object-cover rounded-lg border border-grey-400 m-2"
                         />
@@ -51,7 +49,8 @@
                 <td class="px-3 py-2 text-center">
                     <span [ngClass]="{
                       'bg-green-100 text-green-800': v.status === 'AVAILABLE',
-                      'bg-red-100 text-red-800': v.status === 'UNAVAILABLE'
+                      'bg-yellow-100 text-yellow-600': v.status === 'UNAVAILABLE',
+                      'bg-red-100 text-red-800': v.status === 'MAINTENANCE',
                     }" class="px-3 py-1 rounded text-xs font-semibold">
                       {{ v.status }}
                     </span>
@@ -59,12 +58,12 @@
                 <td class="px-3 py-2 text-center">
                     <div class="flex flex-col items-center gap-2">
                         <p-button
-                                label="Détails"
+                                label="Modifier"
                                 severity="info"
                                 size="small"
                                 icon="pi pi-file-edit"
                                 iconPos="right"
-                                (click)="onSeeDetails(v)"
+                                (click)="onUpdate(v)"
                         />
                         <p-button
                                 label="Supprimer"

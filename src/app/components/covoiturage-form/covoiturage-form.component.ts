@@ -61,7 +61,7 @@ export class CovoiturageFormComponent implements OnInit {
 
   constructor(private vehicleService: VehicleService, private carpoolingService: CarpoolingService, private messageService: MessageService,
               private readonly localCalendarService: LocalCalendarService) {
-    this.vehicleService.getVehicles().subscribe((vehicles) => {
+    this.vehicleService.getServiceVehicles().subscribe((vehicles) => {
       this.vehicles = vehicles;
       this.groupedVehicles = [
         {
