@@ -2,7 +2,10 @@
     <div class="flex flex-col md:flex-row gap-6">
         <!-- Filtre à gauche -->
         <div class="w-full md:w-1/3">
-            <app-filter-form [filterConfig]="filterFields" (filterSubmit)="onFilterSubmit($event)"></app-filter-form>
+            <app-filter-form [filterConfig]="filterFields"
+                             (filterSubmit)="onFilterSubmit($event)"
+                             (filterReset)="onFilterReset()"
+            ></app-filter-form>
         </div>
 
         <div class="w-full md:w-2/3 space-y-4">

@@ -35,4 +35,18 @@ export class CarpoolingService {
       }
     );
   }
+
+  searchCarpoolings(departureCity: string, arrivalCity: string, departureDate: Date): Observable<Carpooling[]> {
+    const params = new HttpParams()
+      .set('departureCity', departureCity)
+      .set('arrivalCity', arrivalCity)
+      .set('departureDate', departureDate.toISOString());
+
+    return this.http.get<Carpooling[]>(`${this.apiURL}/search`, { params });
+  }
+
+  getCities(): Observable<string[]> {
+    return this.http.get<string[]>(`${environment.api}/city-zipcode/getCities`);
+  }
+
 }

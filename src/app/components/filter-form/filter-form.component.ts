@@ -7,8 +7,9 @@ import {Button} from "primeng/button";
 import {CalendarModule} from "primeng/calendar";
 import {DropdownModule} from "primeng/dropdown";
 import {CheckboxModule} from "primeng/checkbox";
+import {AutoCompleteModule} from "primeng/autocomplete";
 
-type FieldType = 'text' | 'number' | 'boolean' | 'date' | 'select';
+type FieldType = 'text' | 'number' | 'boolean' | 'date' | 'select' | 'autocomplete';
 
 export interface GenericFilterConfig<T> {
   name: string;
@@ -16,6 +17,14 @@ export interface GenericFilterConfig<T> {
   label: string;
   defaultValue?: any;
   options?: Array<{label: string, value: T}>;
+  // Ajout des propriétés pour l'autocomplete
+  suggestions?: Array<any>;
+  filterMethod?: (event: any) => void;
+  minLength?: number;
+  placeholder?: string;
+  optionLabel?: string;
+  optionValue?: string;
+  dropdown?: boolean;
 }
 
 @Component({
@@ -30,6 +39,7 @@ export interface GenericFilterConfig<T> {
     CalendarModule,
     DropdownModule,
     CheckboxModule,
+    AutoCompleteModule
   ],
   templateUrl: './filter-form.component.html',
   styleUrl: './filter-form.component.scss'
@@ -37,6 +47,7 @@ export interface GenericFilterConfig<T> {
 export class FilterFormComponent implements OnInit {
   filterConfig = input.required<GenericFilterConfig<any>[]>();
   filterSubmit = output();
+  filterReset = output();
   today = new Date();
   filterForm!: FormGroup;
 
@@ -69,8 +80,49 @@ export class FilterFormComponent implements OnInit {
 
   onSubmit(): void {
     if(this.filterForm.valid){
-      this.filterSubmit.emit(this.filterForm.value);
+      const formValues = {...this.filterForm.value};
+      Object.keys(formValues).forEach(key => {
+        if (formValues[key] && formValues[key] instanceof Date) {
+          const date = new Date(formValues[key]);
+          date.setHours(12, 0, 0, 0);
+          formValues[key] = date;
+        }
+      });
+      this.filterSubmit.emit(formValues);
     }
+  }
+
+  hasAnyValue(): boolean {
+    if (!this.filterForm) return false;
+
+    const formValues = this.filterForm.value;
+    return Object.keys(formValues).some(key => {
+      const value = formValues[key];
+
+      if (value === null || value === undefined) return false;
+      if (typeof value === 'string' && value.trim() === '') return false;
+      if (Array.isArray(value) && value.length === 0) return false;
+
+      return true;
+    });
+  }
+
+  clearForm(): void {
+    this.filterConfig().forEach(config => {
+      const defaultValue = this.getDefaultValueForType(config.type, config.defaultValue);
+      this.filterForm.get(config.name)?.setValue(defaultValue);
+    });
+    this.filterReset.emit();
+  }
+
+  triggerFilterMethod(event: any, config: GenericFilterConfig<any>): void {
+    if (config.filterMethod) {
+      config.filterMethod(event);
+    }
+  }
+
+  getSuggestions(config: GenericFilterConfig<any>): any[] {
+    return config.suggestions || [];
   }
 
   protected readonly Date = Date;
