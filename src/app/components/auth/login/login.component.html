@@ -1,0 +1,59 @@
+<div class="surface-card shadow-2 border-round p-4">
+  <div class="border-primary border-top-3 mb-3"></div>
+  <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()">
+    <div class="mb-4">
+      <label for="loginEmail" class="block text-sm font-semibold mb-2">Email</label>
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-at"></i>
+        </p-inputgroup-addon>
+        <input
+          id="loginEmail"
+          type="text"
+          pInputText
+          formControlName="email"
+          placeholder="Email"
+          class="w-full"
+          [ngClass]="{'ng-invalid ng-dirty': email?.invalid && (!email?.untouched || submitted)}"
+        >
+      </p-inputgroup>
+      @if (email?.invalid && (email?.dirty || !email?.untouched || submitted)) {
+        <small class="text-red-500">
+          {{ getErrorMessage('email') }}
+        </small>
+      }
+    </div>
+
+    <div class="mb-4">
+      <label for="loginPassword" class="block text-sm font-semibold mb-2">Mot de passe</label>
+      <p-password
+        id="loginPassword"
+        formControlName="password"
+        placeholder="Password"
+        [toggleMask]="true"
+        [feedback]="false"
+        [inputStyle]="{'width': '100%'}"
+        [style]="{'width': '100%'}"
+        [ngClass]="{'ng-invalid ng-dirty': password?.invalid && (!password?.untouched || submitted)}"
+      ></p-password>
+      @if (password?.invalid && (password?.dirty || !password?.untouched || submitted)) {
+        <small class="text-red-500">
+          {{ getErrorMessage('password') }}
+        </small>
+      }
+    </div>
+
+    <div class="flex justify-between items-center">
+      <a
+        routerLink="/auth/forgot-password"
+        class="text-sm text-primary cursor-pointer hover:underline"
+      >Mot de passe oublié ?</a>
+      <p-button
+        label="Se connecter"
+        styleClass="max-w-64"
+        type="submit"
+        [loading]="loading"
+      ></p-button>
+    </div>
+  </form>
+</div>

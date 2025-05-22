@@ -1,0 +1,130 @@
+<div class="surface-card shadow-2 border-round p-4">
+  <div class="border-primary border-top-3 mb-3"></div>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <!-- First name and Last name in two columns with proper alignment -->
+    <div class="flex gap-3 mb-4">
+      <div class="flex-1 field">
+        <label for="firstName" class="block text-sm font-semibold mb-2">Prénom</label>
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-user"></i>
+          </p-inputgroup-addon>
+          <input
+            id="firstName"
+            pInputText
+            class="w-full"
+            placeholder="Prénom"
+            formControlName="firstName"
+            [ngClass]="{'ng-invalid ng-dirty': firstName?.invalid && (!firstName?.untouched || submitted)}"
+          />
+        </p-inputgroup>
+        @if (firstName?.invalid && (firstName?.dirty || !firstName?.untouched || submitted)) {
+          <small class="text-red-500">
+            {{ getErrorMessage('firstName') }}
+          </small>
+        }
+      </div>
+
+      <div class="flex-1 field">
+        <label for="lastName" class="block text-sm font-semibold mb-2">Nom</label>
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-user"></i>
+          </p-inputgroup-addon>
+          <input
+            id="lastName"
+            pInputText
+            class="w-full"
+            placeholder="Nom"
+            formControlName="lastName"
+            [ngClass]="{'ng-invalid ng-dirty': lastName?.invalid && (!lastName?.untouched || submitted)}"
+          />
+        </p-inputgroup>
+        @if (lastName?.invalid && (lastName?.dirty || !lastName?.untouched || submitted)) {
+          <small class="text-red-500">
+            {{ getErrorMessage('lastName') }}
+          </small>
+        }
+      </div>
+    </div>
+
+    <!-- Email on its own row -->
+    <div class="mb-4 field">
+      <label for="email" class="block text-sm font-semibold mb-2">Email</label>
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-at"></i>
+        </p-inputgroup-addon>
+        <input
+          id="email"
+          pInputText
+          class="w-full"
+          placeholder="Email"
+          formControlName="email"
+          [ngClass]="{'ng-invalid ng-dirty': email?.invalid && (!email?.untouched || submitted)}"
+        />
+      </p-inputgroup>
+      @if (email?.invalid && (email?.dirty || !email?.untouched || submitted)) {
+        <small class="text-red-500">
+          {{ getErrorMessage('email') }}
+        </small>
+      }
+    </div>
+
+    <!-- Password on its own row -->
+    <div class="mb-4 field">
+      <label for="password" class="block text-sm font-semibold mb-2">Mot de passe</label>
+      <p-password
+        id="password"
+        formControlName="password"
+        [toggleMask]="true"
+        [feedback]="true"
+        promptLabel="Choose a password"
+        weakLabel="Too simple"
+        mediumLabel="Average complexity"
+        strongLabel="Complex password"
+        [inputStyle]="{'width': '100%'}"
+        [style]="{'width': '100%'}"
+        [ngClass]="{'ng-invalid ng-dirty': password?.invalid && (!password?.untouched || submitted)}"
+      ></p-password>
+      @if (password?.invalid && (password?.dirty || !password?.untouched || submitted)) {
+        <small class="text-red-500">
+          {{ getErrorMessage('password') }}
+        </small>
+      }
+    </div>
+
+    <!-- Confirm password on its own row -->
+    <div class="mb-4 field">
+      <label for="confirmPassword" class="block text-sm font-semibold mb-2">Confirmer le mot de passe</label>
+      <p-password
+        id="confirmPassword"
+        formControlName="confirmPassword"
+        [toggleMask]="true"
+        [feedback]="false"
+        [inputStyle]="{'width': '100%'}"
+        [style]="{'width': '100%'}"
+        [ngClass]="{'ng-invalid ng-dirty': confirmPassword?.invalid && (!confirmPassword?.untouched || submitted) || registerForm.hasError('passwordMismatch')}"
+      ></p-password>
+      @if ((confirmPassword?.invalid && (confirmPassword?.dirty || !confirmPassword?.untouched || submitted)) || registerForm.hasError('passwordMismatch')) {
+        <small class="text-red-500">
+          {{ getErrorMessage('confirmPassword') }}
+        </small>
+      }
+    </div>
+
+    <div class="field-checkbox mt-4 mb-4">
+      <p-checkbox formControlName="termsConditions" [binary]="true" inputId="termsConditions"></p-checkbox>
+      <label for="termsConditions" class="ml-2">J'accepte les <a href="/terms.html" class="text-blue-500 hover:underline">conditions générales</a></label>
+      @if (termsConditions?.invalid && (termsConditions?.dirty || !termsConditions?.untouched || submitted)) {
+        <small class="block text-red-500 mt-2">
+          {{ getErrorMessage('termsConditions') }}
+        </small>
+      }
+    </div>
+
+    <div class="flex justify-end">
+      <p-button label="S'inscrire" styleClass="max-w-64" type="submit" [loading]="submitting"></p-button>
+    </div>
+  </form>
+</div>

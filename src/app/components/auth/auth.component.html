@@ -1,0 +1,25 @@
+<main class="flex flex-col justify-center items-center min-h-screen p-4 bg-gray-50">
+  <p-image src="logo.png" alt="Logo" width="192" height="48" class="mb-4" />
+  <div class="card w-full max-w-lg shadow-lg border border-gray-200 rounded-xl overflow-hidden transition-all">
+    <div class="border-primary border-top-4 bg-gradient-to-r from-primary to-primary-light"></div>
+    <div class="p-5">
+      <p-tabs [value]="getActiveRoute()">
+        <p-tablist class="flex w-full">
+          @for (tab of tabs; track tab.route) {
+            <p-tab
+              [value]="tab.route"
+              [routerLink]="tab.route"
+              routerLinkActive="p-highlight"
+              [routerLinkActiveOptions]="{exact: true}"
+              class="flex-1 flex justify-center items-center !gap-2 text-inherit hover:bg-gray-50 transition-colors"
+            >
+              <i [class]="tab.icon"></i>
+              <span>{{ tab.label }}</span>
+            </p-tab>
+          }
+        </p-tablist>
+      </p-tabs>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,114 @@
+<div class="p-4 max-w-[1400px] mx-auto">
+  <h1 class="text-2xl font-bold mb-4">Liste des véhicules de service</h1>
+  <div class="flex justify-end">
+    <p-button label="Ajouter un véhicule" text icon="pi pi-plus-circle" iconPos="right" (onClick)="onAddVehicle()"/>
+  </div>
+
+  <p-table
+    [value]="vehicles"
+    [tableStyle]="{'min-width': '100%'}"
+    [scrollable]="true"
+    scrollHeight="550px"
+    styleClass="p-datatable-sm"
+    [rowHover]="true"
+    dataKey="id"
+    [sortMode]="'multiple'"
+    responsiveLayout="scroll">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="w-40 text-center">Image</th>
+        <th pSortableColumn="registration" class="text-center">Immatriculation <p-sortIcon field="registration"></p-sortIcon></th>
+        <th pSortableColumn="model.brand.name" class="text-center">Marque <p-sortIcon field="model.brand.name"></p-sortIcon></th>
+        <th pSortableColumn="model.name" class="text-center">Modèle <p-sortIcon field="model.name"></p-sortIcon></th>
+        <th pSortableColumn="category.name" class="text-center">Catégorie <p-sortIcon field="category.name"></p-sortIcon></th>
+        <th pSortableColumn="numberOfSeats" class="text-center">Places <p-sortIcon field="numberOfSeats"></p-sortIcon></th>
+        <th pSortableColumn="motorization.name" class="text-center">Motorisation <p-sortIcon field="motorization.name"></p-sortIcon></th>
+        <th pSortableColumn="emission" class="text-center">Émission <p-sortIcon field="emission"></p-sortIcon></th>
+        <th pSortableColumn="status" class="text-center">Statut <p-sortIcon field="status"></p-sortIcon></th>
+        <th class="w-40 text-center">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-vehicle>
+      <tr>
+        <td class="text-center">
+          <div class="flex justify-center">
+            @if (isValidUrl(vehicle.url)) {
+              <p-image
+                src="{{vehicle.url}}"
+                alt="Image du véhicule"
+                width="120"
+                height="80"
+                [preview]="true"
+                imageClass="object-cover rounded-lg shadow-sm" />
+            } @else {
+              <div class="h-20 w-24 flex items-center justify-center bg-slate-50 rounded-lg">
+                <i class="pi pi-car text-2xl text-slate-400"></i>
+              </div>
+            }
+          </div>
+        </td>
+        <td class="text-center">{{ vehicle.registration }}</td>
+        <td class="text-center">{{ vehicle.model.brand.name }}</td>
+        <td class="text-center">{{ vehicle.model.name }}</td>
+        <td class="text-center">{{ vehicle.category.name }}</td>
+        <td class="text-center">
+          <span class="inline-flex items-center justify-center">
+            <i class="pi pi-users mr-2"></i>{{ vehicle.numberOfSeats }}
+          </span>
+        </td>
+        <td class="text-center">
+          <span [ngClass]="{'text-green-600': vehicle.motorization.name === 'Électrique'}">
+            {{ vehicle.motorization.name }}
+          </span>
+        </td>
+        <td class="text-center">{{ vehicle.emission }} CO<sub>2</sub>/km</td>
+        <td class="text-center">
+          <span class="inline-flex py-1 px-2 rounded-full text-xs font-medium justify-center"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': vehicle.status === 'AVAILABLE',
+                  'bg-red-100 text-red-800': vehicle.status === 'UNAVAILABLE'
+                }">
+            {{ vehicle.status === 'AVAILABLE' ? 'Disponible' : 'Indisponible' }}
+          </span>
+        </td>
+        <td class="text-center">
+          <div class="flex gap-2 justify-center">
+            <p-button
+              icon="pi pi-eye"
+              severity="info"
+              size="small"
+              text
+              rounded
+              tooltip="Voir détails"
+              tooltipPosition="top"
+              (onClick)="onSeeDetails(vehicle)"
+            ></p-button>
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              size="small"
+              text
+              rounded
+              tooltip="Supprimer"
+              tooltipPosition="top"
+              (onClick)="onDelete(vehicle)"
+            ></p-button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="10" class="p-6 text-center">
+          <div class="flex flex-col items-center justify-center gap-4">
+            <i class="pi pi-inbox text-4xl text-slate-300"></i>
+            <span class="text-slate-500">Aucun véhicule trouvé</span>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

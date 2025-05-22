@@ -1,0 +1,20 @@
+<div class="card flex flex-wrap justify-center gap-2">
+  <p-drawer [(visible)]="sidebarVisible" position="right">
+    <ng-template #headless>
+      <div class="flex flex-col h-full">
+        <div class="flex items-center justify-between px-6 pt-4 shrink-0">
+          <span class="font-medium text-2xl text-primary">Menu</span>
+          <span>
+            <p-button type="button" (click)="closeDrawer()" icon="pi pi-times" rounded="true" outlined="true" styleClass="h-8 w-8"></p-button>
+          </span>
+        </div>
+        <div class="p-4 overflow-y-auto">
+          <p-panelMenu [model]="links" styleClass="w-full" [multiple]="true" />
+        </div>
+      </div>
+    </ng-template>
+  </p-drawer>
+  <div class="card flex flex-wrap justify-center gap-2">
+    <ng-content></ng-content>
+  </div>
+</div>

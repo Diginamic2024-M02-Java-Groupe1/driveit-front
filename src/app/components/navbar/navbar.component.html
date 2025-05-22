@@ -1,0 +1,61 @@
+<div class="card sticky top-0 left-0 w-full z-50 shadow-sm">
+  <p-toolbar>
+    <div class="p-toolbar-group-start">
+      <p-image src="logo.png" alt="Logo" width="150" height="38" class="sm:w-[150px] sm:h-[38px] w-[120px] h-[30px]" />
+    </div>
+
+    <!-- Search bar - hidden on mobile -->
+    <div class="p-toolbar-group-center hidden md:block">
+      <p-inputgroup>
+        <input pInputText placeholder="Rechercher..." />
+        <p-inputgroup-addon>
+          <p-button icon="pi pi-search" severity="secondary" variant="text" (click)="console.log('Search')" />
+        </p-inputgroup-addon>
+      </p-inputgroup>
+    </div>
+
+    <div class="p-toolbar-group-end flex items-center gap-1 sm:gap-2">
+      <!-- Search icon only visible on mobile -->
+      <p-button icon="pi pi-search" severity="secondary" variant="text" class="md:hidden" (click)="toggleMobileSearch()" />
+
+      <!-- Profile button - always visible -->
+      <p-button
+        icon="pi pi-user"
+        routerLink="/profile"
+        routerLinkActive="bg-primary-50 text-primary-500"
+        pTooltip="Profile"
+        tooltipPosition="bottom"
+      />
+
+      <!-- Logout button - hidden on mobile -->
+      @if (!isMobile) {
+        <p-button
+          icon="pi pi-sign-out"
+          (click)="logout()"
+          pTooltip="Logout"
+          tooltipPosition="bottom"
+        />
+      }
+
+      <!-- Menu button - always visible -->
+      <p-button
+        icon="pi pi-bars"
+        (click)="toggleDrawer()"
+        pTooltip="Menu"
+        tooltipPosition="bottom"
+      />
+    </div>
+  </p-toolbar>
+
+  <!-- Mobile search bar - only shown when activated -->
+  @if (showMobileSearch) {
+    <div class="p-2 border-t border-gray-200 bg-white md:hidden">
+      <p-inputgroup>
+        <input pInputText placeholder="Rechercher..." class="w-full" />
+        <p-inputgroup-addon>
+          <p-button icon="pi pi-search" severity="secondary" variant="text" />
+        </p-inputgroup-addon>
+      </p-inputgroup>
+    </div>
+  }
+</div>

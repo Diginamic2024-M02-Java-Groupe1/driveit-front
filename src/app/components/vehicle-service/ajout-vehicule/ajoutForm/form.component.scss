@@ -1,0 +1,52 @@
+:host ::ng-deep .p-autocomplete-dropdown {
+  background-color: transparent !important;
+  border-left-color: transparent !important;
+  border-right-color: #dcdcdc;
+  border-top-color: #dcdcdc;
+  border-bottom-color: #dcdcdc;
+}
+
+/* Ciblez le chevron de l'autoComplete de PrimeNG */
+:host ::ng-deep .p-button {
+  color: black !important; /* Définir la couleur du chevron en noir */
+}
+
+
+:host ::ng-deep .p-inputtext {
+  box-shadow: none;
+  width: 100%;
+}
+
+:host ::ng-deep .p-autocomplete input::placeholder {
+  color: lightgrey;
+  font-style: italic;
+}
+
+:host ::ng-deep .invalid-field .p-inputtext {
+  border: 1px solid red;  /* Red border for invalid state */
+}
+
+:host ::ng-deep .valid-field .p-inputtext {
+  border: 1px solid limegreen;  /* Green border for valid state */
+}
+
+:host ::ng-deep .p-icon-spin {
+  animation: none;
+  display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
