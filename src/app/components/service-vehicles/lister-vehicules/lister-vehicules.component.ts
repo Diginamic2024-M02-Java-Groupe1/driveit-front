@@ -39,12 +39,28 @@ export class ListerVehiculesComponent implements OnInit {
     }
 
     loadVehicles(): void {
-        this.vehicleService.getVehicles().subscribe({
+        this.vehicleService.getServiceVehicles().subscribe({
             next: (data: Vehicle[]) => {
                 this.vehicles = data;
             },
             error: (error) => {
                 toast.error('Erreur lors du chargement des véhicules');
+                console.error(error);
+            }
+        });
+    }
+
+    loadVehicle(id: number): void {
+        this.vehicleService.getVehicleById(id).subscribe({
+            next: (data: Vehicle) => {
+                const index = this.vehicles.findIndex(v => v.id === id);
+                if (index !== -1) {
+                    this.vehicles[index] = data;
+                    this.vehicles = [...this.vehicles];
+                }
+            },
+            error: (error) => {
+                toast.error('Erreur lors du chargement du véhicule');
                 console.error(error);
             }
         });
@@ -59,8 +75,8 @@ export class ListerVehiculesComponent implements OnInit {
         }
     }
 
-    onSeeDetails(vehicle: Vehicle): void {
-        if (vehicle.id) {
+    onUpdate(vehicle: Vehicle): void {
+        if (vehicle.id !== undefined) {
             let ref = this.dialogModalService.show(FormVehiculeComponent, {
                 header: 'Editer un véhicule',
                 width: '75%',
@@ -73,6 +89,9 @@ export class ListerVehiculesComponent implements OnInit {
                     vehicleToUpdate: vehicle,
                     onClose: () => {
                         ref.close();
+                        if (vehicle.id !== undefined) {
+                            this.loadVehicle(vehicle.id);
+                        }
                     }
                 }
             });

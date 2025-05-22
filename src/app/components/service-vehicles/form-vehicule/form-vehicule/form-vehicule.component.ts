@@ -31,6 +31,7 @@ export class FormVehiculeComponent implements OnInit {
     filteredCategories: any[] = [];
     filteredMotorizations: any[] = [];
     filteredBrands: any[] = [];
+    filteredStatuses: any[] = [];
     isInDialogModal: boolean = false;
     vehicleToUpdate: Vehicle | undefined;
 
@@ -69,9 +70,12 @@ export class FormVehiculeComponent implements OnInit {
         {value: 'Hydrogène'},
     ];
 
+    statusTab = Object.values(StatusVehicle).map((status) => ({
+        value: status
+    }));
+
     constructor(
         private vehicleService: VehicleService,
-        // public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
         public router: Router
     ) {
@@ -85,7 +89,7 @@ export class FormVehiculeComponent implements OnInit {
             emission: new FormControl('', [Validators.required, Validators.min(0)]),
             status: new FormControl(StatusVehicle.AVAILABLE, [Validators.required]),
             url: new FormControl('', [Validators.required]),
-            service: new FormControl(true, [Validators.required]),
+            service: new FormControl(true, [Validators.required])
         });
 
         if (this.config?.data?.isInDialogModal !== undefined) {
@@ -171,11 +175,19 @@ export class FormVehiculeComponent implements OnInit {
                 service: this.ajoutVehiculeForm.get('service')?.value,
                 emission: this.ajoutVehiculeForm.get('emission')?.value,
                 url: this.ajoutVehiculeForm.get('url')?.value,
-                motorization: this.ajoutVehiculeForm.get('motorization')?.value,
-                brand: this.ajoutVehiculeForm.get('brand')?.value,
-                category: this.ajoutVehiculeForm.get('category')?.value,
-                model: this.ajoutVehiculeForm.get('model')?.value,
                 status: this.ajoutVehiculeForm.get('status')?.value,
+                motorization: {
+                    name: this.ajoutVehiculeForm.get('motorization')?.value,
+                },
+                model: {
+                    name: this.ajoutVehiculeForm.get('model')?.value,
+                    brand: {
+                        name: this.ajoutVehiculeForm.get('brand')?.value,
+                    }
+                },
+                category: {
+                    name: this.ajoutVehiculeForm.get('category')?.value,
+                }
             };
 
             this.vehicleService.insertVehicleService(vehicle).subscribe({
@@ -207,7 +219,6 @@ export class FormVehiculeComponent implements OnInit {
     }
 
     onUpdate() {
-        console.log("je passe dans l'update");
         if (!this.vehicleToUpdate || !this.vehicleToUpdate.id) {
             toast.error('Impossible de mettre à jour le véhicule car l\'\identifiant est manquant.');
             return;
@@ -217,10 +228,18 @@ export class FormVehiculeComponent implements OnInit {
             ...this.vehicleToUpdate,
             registration: this.toUpperCase(this.ajoutVehiculeForm.get('registration')?.value),
             numberOfSeats: this.ajoutVehiculeForm.get('numberOfSeats')?.value,
-            category: this.ajoutVehiculeForm.get('category')?.value,
-            brand: this.ajoutVehiculeForm.get('brand')?.value,
-            model: this.ajoutVehiculeForm.get('model')?.value,
-            motorization: this.ajoutVehiculeForm.get('motorization')?.value,
+            category: {
+                name: this.ajoutVehiculeForm.get('category')?.value,
+            },
+            model: {
+                name: this.ajoutVehiculeForm.get('model')?.value,
+                brand: {
+                    name: this.ajoutVehiculeForm.get('brand')?.value,
+                }
+            },
+            motorization: {
+                name: this.ajoutVehiculeForm.get('motorization')?.value,
+            },
             emission: this.ajoutVehiculeForm.get('emission')?.value,
             status: this.ajoutVehiculeForm.get('status')?.value,
             url: this.ajoutVehiculeForm.get('url')?.value,
@@ -304,6 +323,19 @@ export class FormVehiculeComponent implements OnInit {
             }
         }
         this.filteredBrands = filtered;
+    }
+
+    filterStatus($event: AutoCompleteCompleteEvent) {
+        let filtered: any[] = [];
+        let query = $event.query;
+
+        for (let i = 0; i < (this.statusTab as any).length; i++) {
+            let status = this.statusTab[i];
+            if (status.value.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+                filtered.push(status);
+            }
+        }
+        this.filteredStatuses = filtered;
     }
 
 }

@@ -12,8 +12,8 @@ export class VehicleService {
   constructor(private http: HttpClient) { }
 
 
-  public getVehicles() {
-    return this.http.get<Vehicle[]>(`${this.apiURL}/vehicules`);
+  public getServiceVehicles() {
+    return this.http.get<Vehicle[]>(`${this.apiURL}/vehicules/service`);
   }
 
   public getVehicleById(id: number) {
@@ -24,9 +24,8 @@ export class VehicleService {
     return this.http.post<string>(`${this.apiURL}/vehicules/service`, vehicle, {responseType: 'text' as 'json'});
   }
 
-  public updateVehicleService(vehicle: Vehicle): Observable<Vehicle>{
-    console.log('in vehicle service', vehicle);
-    return this.http.put<Vehicle>(`${this.apiURL}/vehicules/service`, vehicle, {responseType: 'text' as 'json'});
+  public updateVehicleService(vehicle: Vehicle): Observable<string>{
+    return this.http.put<string>(`${this.apiURL}/vehicules/service`, vehicle, {responseType: 'text' as 'json'});
   }
 
   public deleteVehicle(id: number): Observable<string> {

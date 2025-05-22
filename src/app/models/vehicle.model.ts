@@ -19,5 +19,4 @@ export interface Vehicle {
   motorization: Motorization;
   model: Model;
   category: Category;
-  brand: Brand;
 }
