@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {NgClass, NgIf} from '@angular/common';
+import {Component, inject, OnInit} from '@angular/core';
+import {NgClass, NgForOf, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault} from '@angular/common';
 import {FormGroup, FormsModule, ReactiveFormsModule, Validators, FormControl} from '@angular/forms';
 import {InputMaskModule} from 'primeng/inputmask';
 import {StatusVehicle} from "@models/enums/status-vehicle.enum";
@@ -16,11 +16,13 @@ import {
 } from "@components/service-vehicles/form-vehicule/visualisation-form-vehicule/visualisation-form-vehicule.component";
 import {Button} from "primeng/button";
 import {Router} from "@angular/router";
+import {AuthService} from "@services/auth.service";
+import {isAdmin} from "@utils/isAdmin.util";
 
 @Component({
     selector: 'app-form-vehicule',
     standalone: true,
-    imports: [NgClass, ReactiveFormsModule, FormsModule, InputMaskModule, NgIf, DropdownModule, InputTextModule, AutoCompleteModule, VisualisationFormVehiculeComponent, Button],
+    imports: [NgClass, ReactiveFormsModule, FormsModule, InputMaskModule, NgIf, DropdownModule, InputTextModule, AutoCompleteModule, VisualisationFormVehiculeComponent, Button, NgSwitch, NgSwitchCase, NgForOf, NgSwitchDefault],
     templateUrl: './form-vehicule.component.html',
     styleUrls: ['./form-vehicule.component.scss'],
 })
@@ -34,6 +36,7 @@ export class FormVehiculeComponent implements OnInit {
     filteredStatuses: any[] = [];
     isInDialogModal: boolean = false;
     vehicleToUpdate: Vehicle | undefined;
+    protected authService = inject(AuthService);
 
     categorieTab = [
         {value: 'SUV'},
@@ -89,7 +92,7 @@ export class FormVehiculeComponent implements OnInit {
             emission: new FormControl('', [Validators.required, Validators.min(0)]),
             status: new FormControl(StatusVehicle.AVAILABLE, [Validators.required]),
             url: new FormControl('', [Validators.required]),
-            service: new FormControl(true, [Validators.required])
+            service: new FormControl(isAdmin(this.authService.getUserRole()) ? true : '', isAdmin(this.authService.getUserRole()) ? [Validators.required] : []),
         });
 
         if (this.config?.data?.isInDialogModal !== undefined) {
@@ -102,6 +105,8 @@ export class FormVehiculeComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log(isAdmin(this.authService.getUserRole()))
+
         if (this.vehicleToUpdate) {
             this.ajoutVehiculeForm.patchValue({
                 registration: this.vehicleToUpdate.registration,
@@ -172,7 +177,7 @@ export class FormVehiculeComponent implements OnInit {
             const vehicle: Vehicle = {
                 registration: this.toUpperCase(this.ajoutVehiculeForm.get('registration')?.value),
                 numberOfSeats: this.ajoutVehiculeForm.get('numberOfSeats')?.value,
-                service: this.ajoutVehiculeForm.get('service')?.value,
+                service: isAdmin(this.authService.getUserRole()) ? this.ajoutVehiculeForm.get('service')?.value : false,
                 emission: this.ajoutVehiculeForm.get('emission')?.value,
                 url: this.ajoutVehiculeForm.get('url')?.value,
                 status: this.ajoutVehiculeForm.get('status')?.value,
@@ -204,7 +209,7 @@ export class FormVehiculeComponent implements OnInit {
                         emission: '',
                         status: StatusVehicle.AVAILABLE,
                         url: '',
-                        service: true
+                        service: ''
                     });
                     this.submitted = false;
                 },
@@ -338,4 +343,5 @@ export class FormVehiculeComponent implements OnInit {
         this.filteredStatuses = filtered;
     }
 
+    protected readonly isAdmin = isAdmin;
 }

@@ -14,14 +14,13 @@ import {CarpoolingService} from "@services/carpooling.service";
 import {MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
 import {LocalCalendarService} from "@services/local-calendar.service";
+import {toast} from "ngx-sonner";
+import {HttpErrorResponse} from "@angular/common/http";
 @Component({
   selector: 'app-covoiturage-form',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    NgForOf,
-    NgIf,
-    NgOptimizedImage,
     InputMaskModule,
     CalendarModule,
     AccordionModule,
@@ -34,6 +33,7 @@ import {LocalCalendarService} from "@services/local-calendar.service";
   ],
   providers: [MessageService],
   templateUrl: './covoiturage-form.component.html',
+  styleUrls: ['./covoiturage-form.component.scss'],
 })
 export class CovoiturageFormComponent implements OnInit {
 
@@ -44,14 +44,14 @@ export class CovoiturageFormComponent implements OnInit {
     arrivalDateTime: new FormControl('', [Validators.required]),
     departureAddress: new FormGroup({
       number: new FormControl('', [Validators.required, Validators.pattern('^[0-9]*$')]),
-      street: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]),
+      street: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ\u00C0-\u017F ]*$')]),
       type: new FormControl('rue', [Validators.required]),
       city: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]),
       zipcode: new FormControl('', [Validators.required, Validators.pattern('^[0-9]*$')]),
     }),
     arrivalAddress: new FormGroup({
       number: new FormControl('', [Validators.required, Validators.pattern('^[0-9]*$')]),
-      street: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]),
+      street: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ\u00C0-\u017F ]*$')]),
       type: new FormControl('avenue', [Validators.required]),
       city: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]),
       zipcode: new FormControl('', [Validators.required, Validators.pattern('^[0-9]*$')]),
@@ -61,11 +61,11 @@ export class CovoiturageFormComponent implements OnInit {
 
   constructor(private vehicleService: VehicleService, private carpoolingService: CarpoolingService, private messageService: MessageService,
               private readonly localCalendarService: LocalCalendarService) {
-    this.vehicleService.getServiceVehicles().subscribe((vehicles) => {
+    this.vehicleService.getAllVehicles().subscribe((vehicles) => {
       this.vehicles = vehicles;
       this.groupedVehicles = [
         {
-          label: 'Véhicules personnels',
+          label: 'Véhicules de service',
           items: this.vehicles
             .filter((vehicle) => vehicle.service)
             .map((vehicle) => {
@@ -76,7 +76,7 @@ export class CovoiturageFormComponent implements OnInit {
           })
         },
         {
-          label: 'Véhicules de service',
+          label: 'Véhicules personnels',
           items: this.vehicles
             .filter((vehicle) => !vehicle.service)
             .map((vehicle) => {
@@ -99,16 +99,17 @@ export class CovoiturageFormComponent implements OnInit {
     const carpooling = this.carpoolingForm.value as CarpoolingData;
     this.carpoolingService.insertCarpooling(carpooling).subscribe({
       next: (response) => {
-        this.messageService.add({severity:'success', summary:'Création de covoiturage', detail:'Covoiturage créé avec succès'});
+        toast.success('Covoiturage créé avec succès')
+        this.carpoolingForm.reset();
       },
-      error: (error) => {
-        console.error(error.error?.errors);
-        const errors = error.error?.errors;
-        let message = errors.join(',')
-        message = message.substring(0, message.length) + '.'
-        this.messageService.add({severity:'error', summary:'Création de covoiturage', detail: message});
+      error: (error: HttpErrorResponse) => {
+        toast.error(error.error);
       }
     });
+  }
+
+  onCancel() {
+    console.log('canceled');
   }
 
   getErrorClass(controlName: string): any {

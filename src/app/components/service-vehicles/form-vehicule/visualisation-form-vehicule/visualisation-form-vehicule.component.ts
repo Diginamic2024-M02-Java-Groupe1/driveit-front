@@ -1,6 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {FormVehiculeComponent} from "@components/service-vehicles/form-vehicule/form-vehicule/form-vehicule.component";
+import {AuthService} from "@services/auth.service";
+import {isAdmin} from "@utils/isAdmin.util";
 
 @Component({
   selector: 'app-visualisation-form-vehicule',
@@ -15,6 +17,7 @@ export class VisualisationFormVehiculeComponent implements OnInit{
   @Input() formValues: any;
 
   protected readonly FormComponent = FormVehiculeComponent;
+  protected authService = inject(AuthService);
 
   constructor() {
 
@@ -24,5 +27,5 @@ export class VisualisationFormVehiculeComponent implements OnInit{
   }
 
 
-
+  protected readonly isAdmin = isAdmin;
 }

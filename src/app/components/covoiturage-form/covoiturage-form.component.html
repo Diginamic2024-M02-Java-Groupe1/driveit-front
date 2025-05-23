@@ -1,6 +1,7 @@
-<div class="h-full flex w-screen">
+<div class="h-full w-screen">
+    <h1 class="text-2xl font-bold text-center mb-4">Publier une annonce de covoiturage</h1>
   <div class="px-8 py-6 mx-0 lg:mx-16">
-    <form [formGroup]="carpoolingForm" (ngSubmit)="submit()">
+    <form [formGroup]="carpoolingForm">
       <div class="-mx-3 mb-2 flex flex-col gap-4">
         <div class="px-3 mb-6 md:mb-0">
           <label class="block tracking-wide text-grey-darker text-xs font-bold mb-2">
@@ -75,6 +76,7 @@
                 [showTime]="true"
                 hourFormat="24"
                 dateFormat="dd/mm/yy"
+                [firstDayOfWeek]="1"
                 [showIcon]="true"
                 placeholder="08/12/2021"
                 styleClass="w-full"
@@ -97,13 +99,15 @@
           </p-dropdown>
         </div>
       </div>
-      <div class="flex items-center justify-between">
-        <div class="flex justify-center">
+      <div class="flex justify-end">
+        <div class="flex justify-center gap-2">
           <p-button class="mt-4 w-full text-white rounded-md hover:opacity-50" type="submit"
-                    label="Créer un covoiturage"/>
+                    label="Publier" (click)="submit()"/>
+            <p-button class="mt-4 w-full text-white rounded-md hover:opacity-50" type="button"
+                      severity="danger"
+                      label="Annuler" (click)="onCancel()"/>
         </div>
       </div>
     </form>
-    <p-toast/>
   </div>
 </div>

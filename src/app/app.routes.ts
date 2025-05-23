@@ -17,86 +17,86 @@ import {DriverTripsComponent} from "@components/my-trips/driver-trips/driver-tri
 
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: HomeLayoutComponent,
-    canActivate: [AuthGuard],
-    children: [
-      {
+    {
         path: '',
-        redirectTo: 'vehicles/service/booking',
-        pathMatch: 'full'
-      },
-      {
-        path: 'vehicles/service/booking',
-        component: ReservationsServiceVehiclesComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'vehicles/add',
-        component: FormVehiculeComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'vehicles/list',
-        component: ListerVehiculesComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path:'vehicles/service/booking/history',
-        component: VehicleBookingHistoryComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path:'creation-covoiturage',
-        component: CovoiturageFormComponent,
-        canActivate: [AuthGuard]
-      },
-        {
-          path:'passenger-trips',
-          component:PassengerTripsComponent,
-            canActivate: [AuthGuard]
-        },
-      {
-        path:'passenger-reserve-trip',
-        component:PassengerTripsComponent,
+        component: HomeLayoutComponent,
         canActivate: [AuthGuard],
-        data: {
-          isPassengerReserveTrip: true
-        }
-      },
-      {
-        path:'driver-trips',
-        component:DriverTripsComponent,
-        canActivate: [AuthGuard]
-      },
-    ],
-  },
-  {
-    path: 'auth',
-    component: AuthComponent,
-    children: [
-      {
-        path: '',
-        redirectTo: 'login',
-        pathMatch: 'full'
-      },
-      {
-        path: 'login',
-        component: LoginComponent,
-      },
-      {
-        path: 'register',
-        component: RegisterComponent,
-      }
-    ]
-  },
-  {
-    path: 'verify',
-    component: VerifyComponent,
-  },
-  {
-    path: '**',
-    component: NotFoundComponent
-  }
+        children: [
+            {
+                path: '',
+                redirectTo: 'vehicles/service/booking',
+                pathMatch: 'full'
+            },
+            {
+                path: 'vehicles/service/booking',
+                component: ReservationsServiceVehiclesComponent,
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'vehicles/add',
+                component: FormVehiculeComponent,
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'vehicles/list',
+                component: ListerVehiculesComponent,
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'vehicles/service/booking/history',
+                component: VehicleBookingHistoryComponent,
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'carpool/add',
+                component: CovoiturageFormComponent,
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'passenger-trips',
+                component: PassengerTripsComponent,
+                canActivate: [AuthGuard]
+            },
+            {
+                path:'passenger-reserve-trip',
+                component:PassengerTripsComponent,
+                canActivate: [AuthGuard],
+                data: {
+                    isPassengerReserveTrip: true
+                }
+            },
+            {
+                path:'driver-trips',
+                component:DriverTripsComponent,
+                canActivate: [AuthGuard]
+            },
+        ],
+    },
+    {
+        path: 'auth',
+        component: AuthComponent,
+        children: [
+            {
+                path: '',
+                redirectTo: 'login',
+                pathMatch: 'full'
+            },
+            {
+                path: 'login',
+                component: LoginComponent,
+            },
+            {
+                path: 'register',
+                component: RegisterComponent,
+            }
+        ]
+    },
+    {
+        path: 'verify',
+        component: VerifyComponent,
+    },
+    {
+        path: '**',
+        component: NotFoundComponent
+    }
 ];

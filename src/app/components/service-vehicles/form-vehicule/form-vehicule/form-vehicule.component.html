@@ -104,11 +104,14 @@
                                     {{ getErrorMessage('emission') }}
                                 </div>
                             </div>
-                            <div class="mb-6">
-                                <label for="service" class="tracking-wide text-xs font-bold mb-2 mr-2">Service</label>
-                                <input id="service" formControlName="service"
-                                       type="checkbox">
-                            </div>
+                            @if (isAdmin(authService.getUserRole())) {
+                                <div class="mb-6">
+                                    <label for="service"
+                                           class="tracking-wide text-xs font-bold mb-2 mr-2">Service</label>
+                                    <input id="service" formControlName="service"
+                                           type="checkbox">
+                                </div>
+                            }
                         </div>
                         <div class="w-1/2">
                             <div class="mb-6">
@@ -178,31 +181,34 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="mb-6">
-                                <label for="status" class="block tracking-wide text-xs font-bold mb-2">Statut</label>
-                                <div class="relative">
-                                    <p-autoComplete
-                                            id="status"
-                                            formControlName="status"
-                                            [dropdown]="true"
-                                            [suggestions]="filteredStatuses"
-                                            (completeMethod)="filterStatus($event)"
-                                            optionLabel="value"
-                                            optionValue="value"
-                                            placeholder="Sélectionnez un statut"
-                                            [ngClass]="{
+                            @if (isInDialogModal) {
+                                <div class="mb-6">
+                                    <label for="status"
+                                           class="block tracking-wide text-xs font-bold mb-2">Statut</label>
+                                    <div class="relative">
+                                        <p-autoComplete
+                                                id="status"
+                                                formControlName="status"
+                                                [dropdown]="true"
+                                                [suggestions]="filteredStatuses"
+                                                (completeMethod)="filterStatus($event)"
+                                                optionLabel="value"
+                                                optionValue="value"
+                                                placeholder="Sélectionnez un statut"
+                                                [ngClass]="{
                     'invalid-field': ajoutVehiculeForm.get('status')?.invalid && ajoutVehiculeForm.get('status')?.touched,
                     'valid-field': ajoutVehiculeForm.get('status')?.valid && ajoutVehiculeForm.get('status')?.touched
                 }">
-                                    </p-autoComplete>
+                                        </p-autoComplete>
 
-                                    <div
-                                            *ngIf="ajoutVehiculeForm.get('status')?.invalid && (ajoutVehiculeForm.get('status')?.dirty || ajoutVehiculeForm.get('status')?.touched || submitted)"
-                                            class="text-red-500 text-xs italic">
-                                        {{ getErrorMessage('status') }}
+                                        <div
+                                                *ngIf="ajoutVehiculeForm.get('status')?.invalid && (ajoutVehiculeForm.get('status')?.dirty || ajoutVehiculeForm.get('status')?.touched || submitted)"
+                                                class="text-red-500 text-xs italic">
+                                            {{ getErrorMessage('status') }}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </form>
