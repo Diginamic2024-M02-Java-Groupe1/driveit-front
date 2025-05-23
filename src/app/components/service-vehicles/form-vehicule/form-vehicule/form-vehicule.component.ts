@@ -105,7 +105,6 @@ export class FormVehiculeComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log(isAdmin(this.authService.getUserRole()))
 
         if (this.vehicleToUpdate) {
             this.ajoutVehiculeForm.patchValue({
