@@ -91,7 +91,7 @@ export class FormVehiculeComponent implements OnInit {
             motorization: new FormControl('', [Validators.required]),
             emission: new FormControl('', [Validators.required, Validators.min(0)]),
             status: new FormControl(StatusVehicle.AVAILABLE, [Validators.required]),
-            url: new FormControl('', [Validators.required]),
+            url: new FormControl('', [Validators.required, Validators.pattern('https?://.+')]),
             service: new FormControl(isAdmin(this.authService.getUserRole()) ? true : '', isAdmin(this.authService.getUserRole()) ? [Validators.required] : []),
         });
 
@@ -275,9 +275,13 @@ export class FormVehiculeComponent implements OnInit {
         if (control?.hasError('required')) {
             return 'Ce champ est requis';
         }
-        if (control?.hasError('pattern')) {
+        if (control?.hasError('pattern') && controlName === 'registration') {
             return "Le format de la plaque d'immatriculation est invalide";
         }
+        if (control?.hasError('pattern') && controlName === 'url') {
+            return "L'URL est invalide";
+        }
+        if(control?.hasError)
         if (control?.hasError('min')) {
             return `La valeur saisie doit être supérieure à ${control.errors?.['min'].min}.`;
         }

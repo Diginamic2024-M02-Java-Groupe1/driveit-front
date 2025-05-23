@@ -16,6 +16,7 @@ import {ToastModule} from "primeng/toast";
 import {LocalCalendarService} from "@services/local-calendar.service";
 import {toast} from "ngx-sonner";
 import {HttpErrorResponse} from "@angular/common/http";
+
 @Component({
   selector: 'app-covoiturage-form',
   standalone: true,
@@ -57,7 +58,7 @@ export class CovoiturageFormComponent implements OnInit {
       zipcode: new FormControl('', [Validators.required, Validators.pattern('^[0-9]*$')]),
     }),
     vehicle: new FormControl('', [Validators.required]),
-  });
+  })
 
   constructor(private vehicleService: VehicleService, private carpoolingService: CarpoolingService, private messageService: MessageService,
               private readonly localCalendarService: LocalCalendarService) {
@@ -118,11 +119,5 @@ export class CovoiturageFormComponent implements OnInit {
       '' : this.carpoolingForm?.get(controlName)?.valid
     }
   }
-
-
-
-
-
-
 
 }
