@@ -1,12 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormComponent} from "@components/vehicle-service/ajout-vehicule/ajoutForm/form.component";
+import {FormComponent} from '../ajoutForm/form.component';
 
 @Component({
   selector: 'app-visualisation-ajout-vehicule',
   standalone: true,
   imports: [],
   templateUrl: './visualisation-ajout-vehicule.component.html',
-  styleUrls: ['./visualisation-ajout-vehicule.component.scss']
+  styleUrls: ['./visualisation-ajout-vehicule.component.css']
 })
 export class VisualisationAjoutVehiculeComponent implements OnInit{
   @Input() formValues: any;

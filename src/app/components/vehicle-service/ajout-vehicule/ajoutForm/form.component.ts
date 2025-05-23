@@ -1,16 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {NgClass, NgIf} from '@angular/common';
 import {FormGroup, FormsModule, ReactiveFormsModule, Validators, FormControl} from '@angular/forms';
-import {
-    VisualisationAjoutVehiculeComponent
-} from "@components/vehicle-service/ajout-vehicule/visualisation-ajout-vehicule/visualisation-ajout-vehicule.component";
+import {VisualisationAjoutVehiculeComponent} from '../visualisation-ajout-vehicule/visualisation-ajout-vehicule.component';
 import {InputMaskModule} from 'primeng/inputmask';
 import {StatusVehicle} from "@models/enums/status-vehicle.enum";
 import {toast} from "ngx-sonner";
 import {DropdownModule} from "primeng/dropdown";
 import {InputTextModule} from "primeng/inputtext";
 import {AutoCompleteCompleteEvent, AutoCompleteModule} from "primeng/autocomplete";
-import {VehicleService} from "@services/vehicle/vehicle.service";
+import {VehicleService} from "@services/vehicle.service";
 import {Vehicle} from "@models/vehicle.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import { Router } from '@angular/router';
@@ -140,7 +138,6 @@ export class FormComponent implements OnInit {
                 emission: this.ajoutVehiculeForm.get('emission')?.value,
                 url: this.ajoutVehiculeForm.get('url')?.value,
                 motorization: this.ajoutVehiculeForm.get('motorization')?.value,
-                brand: this.ajoutVehiculeForm.get('brand')?.value,
                 category: this.ajoutVehiculeForm.get('category')?.value,
                 model: this.ajoutVehiculeForm.get('model')?.value,
                 status: this.ajoutVehiculeForm.get('status')?.value,

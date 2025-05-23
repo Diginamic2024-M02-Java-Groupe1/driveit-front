@@ -6,13 +6,17 @@
     "baseUrl": "./",
     "paths": {
       "@assets/*": ["src/assets/*"],
-      "@components/*": ["src/app/components/*"],
       "@env/*": ["src/environments/*"],
-      "@models/*": ["src/app/models/*"],
-      "@pipes/*": ["src/app/pipes/*"],
-      "@services/*": ["src/app/services/*"],
-      "@utils/*": ["src/app/utils/*"],
-      "@validators/*": ["src/app/validators/*"]
+      "@features/*": ["src/app/features/*"],
+      "@guards/*": ["src/app/core/guards/*"],
+      "@interceptors/*": ["src/app/core/interceptors/*"],
+      "@models/*": ["src/app/core/models/*"],
+      "@services/*": ["src/app/core/services/*"],
+      "@validators/*": ["src/app/core/validators/*"],
+      "@layouts/*": ["src/app/layouts/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@pipes/*": ["src/app/shared/pipes/*"],
+      "@utils/*": ["src/app/utils/*"]
     },
     "outDir": "./dist/out-tsc",
     "strict": true,
