@@ -3,4 +3,5 @@ export interface Collaborator {
   email: string;
   firstName: string;
   lastName: string;
+  status: string;
 }
