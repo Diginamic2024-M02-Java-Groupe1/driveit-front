@@ -103,7 +103,9 @@
                                         @if (carpooling.participants.length > 0) {
                                             <ul>
                                                 @for (participant of carpooling.participants; track $index) {
+                                                  @if(participant.status === 'ACCEPTED') {
                                                     <li>{{ participant.collaborator.firstName }} {{ participant.collaborator.lastName }}</li>
+                                                  }
                                                 }
                                             </ul>
                                         } @else {
