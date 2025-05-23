@@ -1,6 +1,7 @@
 import {Collaborator} from "@models/collaborator.model";
 import {Address} from "@models/address.model";
 import {Vehicle} from "@models/vehicle.model";
+import {Participants} from "@models/participants.model";
 
 export interface Carpooling {
   id: number;
@@ -9,7 +10,7 @@ export interface Carpooling {
   organizer: Collaborator;
   departureAddress: Address;
   arrivalAddress: Address;
-  participants: Collaborator[];
+  participants: Participants[];
   vehicle: Vehicle;
   status: string;
 }

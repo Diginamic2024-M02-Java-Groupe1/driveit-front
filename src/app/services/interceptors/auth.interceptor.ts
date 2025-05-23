@@ -1,69 +1,69 @@
-import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
+import { HttpRequest, HttpHandlerFn, HttpEvent, HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
+import { inject } from '@angular/core';
 import { AuthService } from '@services/auth.service';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  private isRefreshing = false;
-  private readonly refreshTokenSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+// Variables de fermeture pour gérer l'état de rafraîchissement
+let isRefreshing = false;
+const refreshTokenSubject = new BehaviorSubject<boolean>(false);
 
-  constructor(private readonly authService: AuthService) {}
+export const AuthInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>, next: HttpHandlerFn) => {
+  const authService = inject(AuthService);
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    request = request.clone({
-      withCredentials: true
-    });
+  // Cloner la requête avec withCredentials
+  request = request.clone({
+    withCredentials: true
+  });
 
-    const isLogoutRequest = request.url.includes('/auth/logout');
+  // Ignorer la requête de déconnexion
+  const isLogoutRequest = request.url.includes('/auth/logout');
+  if (isLogoutRequest) {
+    return next(request);
+  }
 
-    if (isLogoutRequest) {
-      return next.handle(request);
-    }
+  // Intercepter les erreurs 401
+  return next(request).pipe(
+    catchError(error => {
+      if (error instanceof HttpErrorResponse && error.status === 401) {
+        return handle401Error(request, next, authService);
+      } else {
+        return throwError(() => error);
+      }
+    })
+  );
+};
 
-    return next.handle(request).pipe(
-      catchError(error => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
-          return this.handle401Error(request, next);
-        } else {
-          return throwError(() => error);
-        }
+function handle401Error(request: HttpRequest<any>, next: HttpHandlerFn, authService: AuthService): Observable<HttpEvent<any>> {
+  if (!authService.isLoggedIn()) {
+    authService.logout();
+    return throwError(() => new Error('Utilisateur déconnecté'));
+  }
+
+  if (!isRefreshing) {
+    isRefreshing = true;
+    refreshTokenSubject.next(false);
+
+    return authService.refreshToken().pipe(
+      switchMap(() => {
+        isRefreshing = false;
+        refreshTokenSubject.next(true);
+        return next(request);
+      }),
+      catchError((err) => {
+        isRefreshing = false;
+        authService.logoutWithForceRedirect();
+        return throwError(() => err);
+      }),
+      finalize(() => {
+        isRefreshing = false;
       })
     );
   }
 
-  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
-    if (!this.authService.isLoggedIn()) {
-      this.authService.logout();
-      return throwError(() => new Error('Utilisateur déconnecté'));
-    }
-
-    if (!this.isRefreshing) {
-      this.isRefreshing = true;
-      this.refreshTokenSubject.next(false);
-
-      return this.authService.refreshToken().pipe(
-          switchMap(() => {
-            this.isRefreshing = false;
-            this.refreshTokenSubject.next(true);
-            return next.handle(request);
-          }),
-          catchError((err) => {
-            this.isRefreshing = false;
-            this.authService.logoutWithForceRedirect();
-            return throwError(() => err);
-          }),
-          finalize(() => {
-            this.isRefreshing = false;
-          })
-      );
-    }
-
-    return this.refreshTokenSubject.pipe(
-        filter(refreshed => refreshed),
-        take(1),
-        switchMap(() => next.handle(request))
-    );
-  }
+  return refreshTokenSubject.pipe(
+    filter(refreshed => refreshed),
+    take(1),
+    switchMap(() => next(request))
+  );
 }

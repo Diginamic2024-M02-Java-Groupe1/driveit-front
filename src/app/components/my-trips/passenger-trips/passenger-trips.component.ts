@@ -10,6 +10,7 @@ import {Button} from "primeng/button";
 import {FilterFormComponent,GenericFilterConfig} from "../../filter-form/filter-form.component";
 import {toast} from "ngx-sonner";
 import {HttpErrorResponse} from "@angular/common/http";
+import {ErrorHandlerService} from "@services/error-handler.service";
 
 @Component({
   selector: 'app-passenger-trips',
@@ -27,6 +28,7 @@ export class PassengerTripsComponent implements OnInit {
   private readonly carpoolingService = inject(CarpoolingService);
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
+  private readonly errorHandler = inject(ErrorHandlerService);
   private readonly destroyRef$ = inject(DestroyRef);
 
   protected carpoolings: Carpooling[] = [];
@@ -49,10 +51,7 @@ export class PassengerTripsComponent implements OnInit {
         next: (data) => {
           this.cityOptions = data.map((city: string) => ({ label: city, value: city }));
         },
-        error: (error) => {
-          console.error('Erreur lors du chargement des villes:', error);
-          toast.error('Impossible de charger la liste des villes');
-        }
+        error: (err) => this.errorHandler.handleError(err),
       });
   }
 
@@ -138,10 +137,7 @@ export class PassengerTripsComponent implements OnInit {
           this.carpoolings = data;
           this.applyFilters();
         },
-        error: (error) => {
-          console.error('Erreur lors de la récupération des covoiturages:', error);
-          toast.error('Impossible de récupérer vos trajets');
-        }
+        error: (err) => this.errorHandler.handleError(err),
       });
   }
 
@@ -157,10 +153,7 @@ export class PassengerTripsComponent implements OnInit {
           }
           this.filteredCarpoolings = data;
         },
-        error: (error) => {
-          console.error('Erreur lors de la recherche de covoiturages:', error);
-          toast.error('La recherche de covoiturages a échoué');
-        }
+        error: (err) => this.errorHandler.handleError(err),
       });
   }
 
@@ -232,10 +225,7 @@ export class PassengerTripsComponent implements OnInit {
           toast.success('Vous avez été retiré du covoiturage');
           this.getMyTrips();
         },
-        error: (err) => {
-          console.error('Erreur lors du retrait du participant', err);
-          toast.error('Impossible de vous retirer du covoiturage');
-        }
+        error: (err) => this.errorHandler.handleError(err),
       });
   }
 
@@ -251,9 +241,7 @@ export class PassengerTripsComponent implements OnInit {
           toast.success('Réservation réussie');
           this.getCarpoolings(this.filterValues.departureAddress, this.filterValues.arrivalAddress, this.filterValues.tripDate);
         },
-        error: (err:HttpErrorResponse) => {
-          toast.error(err.error);
-        }
+        error: (err) => this.errorHandler.handleError(err),
       });
 
   }

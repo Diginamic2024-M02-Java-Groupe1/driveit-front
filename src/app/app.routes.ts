@@ -13,6 +13,7 @@ import {VerifyComponent} from "@components/auth/verify/verify.component";
 import {VehicleBookingHistoryComponent} from "@components/service-vehicles/vehicle-booking-history/vehicle-booking-history.component";
 import {ListerVehiculesComponent} from "@components/service-vehicles/lister-vehicules/lister-vehicules.component";
 import {PassengerTripsComponent} from "@components/my-trips/passenger-trips/passenger-trips.component";
+import {DriverTripsComponent} from "@components/my-trips/driver-trips/driver-trips.component";
 
 
 export const routes: Routes = [
@@ -63,7 +64,12 @@ export const routes: Routes = [
         data: {
           isPassengerReserveTrip: true
         }
-      }
+      },
+      {
+        path:'driver-trips',
+        component:DriverTripsComponent,
+        canActivate: [AuthGuard]
+      },
     ],
   },
   {

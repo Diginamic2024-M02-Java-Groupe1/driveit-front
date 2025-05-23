@@ -1,0 +1,125 @@
+<div class="container mx-auto w-screen px-4 py-6">
+  <div class="flex flex-col md:flex-row gap-6">
+    <!-- Filtre à gauche -->
+    <div class="w-full md:w-1/3">
+      <app-filter-form [filterConfig]="filterFields"
+                       (filterSubmit)="onFilterSubmit($event)"
+                       (filterReset)="onFilterReset()"
+      ></app-filter-form>
+    </div>
+
+    <div class="w-full md:w-2/3 space-y-4">
+      @for (carpooling of filteredCarpoolings; track $index) {
+        <div
+          class="bg-white rounded-lg shadow-md p-5 border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+          <!-- Première ligne -->
+          <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+            <div class="font-medium text-gray-800">Mon Trajet du {{ carpooling.departureDate | date:'dd/MM/yyyy' }}
+            </div>
+            <div>Demande à valider</div>
+            <div class="text-sm px-3 py-1 bg-blue-50 text-blue-600 rounded-full">{{ getAvailableSeats(carpooling) }}
+            </div>
+          </div>
+
+          <!-- Deuxième ligne -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 items-center">
+            <div class="flex flex-col">
+              <p class="text-xs mb-1">Départ</p>
+              <div class="flex items-center">
+                <i class="pi pi-clock text-gray-600 mr-2"></i>
+                <span class="text-sm text-gray-600">{{ carpooling.departureDate | date:'H\'h\'mm' }}</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col">
+              <p class="text-xs mb-1">Véhicule</p>
+              <div class="flex items-center">
+                <i class="pi pi-car text-gray-600 mr-2"></i>
+                <span class="text-sm text-gray-600">{{ getVehicle(carpooling) }}</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col">
+              <p class="text-xs text-center mb-1">Départ</p>
+              <div class="flex items-center justify-center">
+                <i class="pi pi-map-marker text-gray-600 mr-2"></i>
+                <div class="flex flex-col">
+                  <span class="text-sm text-gray-600">{{ getAdress(carpooling.departureAddress).line1 }}</span>
+                  <span class="text-xs text-gray-600">{{ getAdress(carpooling.departureAddress).line2 }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <p class="text-xs text-center mb-1">Arrivée</p>
+              <div class="flex items-center justify-center">
+                <i class="pi pi-flag text-gray-600 mr-2"></i>
+                <div class="flex flex-col">
+                  <span class="text-sm text-gray-600">{{ getAdress(carpooling.arrivalAddress).line1 }}</span>
+                  <span class="text-xs text-gray-600">{{ getAdress(carpooling.arrivalAddress).line2 }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Troisième ligne - Participants -->
+          <div class="pt-4 border-t border-gray-100">
+            <h4 class="text-sm font-medium text-gray-700 mb-2">Participants ({{ getParticipantsValidated(carpooling) }})</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+              @for (participant of carpooling.participants; track $index) {
+                @if (participant.status === 'ACCEPTED') {
+                  <div class="flex items-center bg-gray-50 rounded-md p-2">
+                    <i class="pi pi-user text-gray-500 mr-2"></i>
+                    <span
+                      class="text-sm">{{ participant.collaborator.firstName }} {{ participant.collaborator.lastName }}</span>
+                  </div>
+                }
+              }
+              @if (carpooling.participants.length === 0) {
+                <div class="text-sm text-gray-500 italic">Aucun participant</div>
+              }
+            </div>
+          </div>
+
+          <!-- Quatrième ligne - Demandes en attente -->
+          <div class="pt-4 border-t border-gray-100 mt-3">
+            <h4 class="text-sm font-medium text-gray-700 mb-2">Demandes en attente</h4>
+            <div class="space-y-2">
+              @for (participant of carpooling.participants; track $index) {
+                @if (participant.status === 'PENDING') {
+                  <div class="flex items-center justify-between bg-gray-50 rounded-md p-3">
+                    <div class="flex items-center">
+                      <i class="pi pi-user text-gray-500 mr-2"></i>
+                      <p-inputGroup>
+                        <input type="text" pInputText [disabled]="true"
+                               [value]="participant.collaborator.firstName + ' ' + participant.collaborator.lastName"/>
+                        <button type="button" pButton icon="pi pi-check" class="p-button-success"
+                        (click)="acceptPassenger(carpooling.id,participant.collaborator.id)"></button>
+                        <button type="button" pButton icon="pi pi-times" class="p-button-danger"
+                                (click)="declinePassenger(carpooling.id,participant.collaborator.id)"></button>
+                      </p-inputGroup>
+
+                    </div>
+                  </div>
+                    }
+              }
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div
+          class="flex flex-col items-center justify-center p-8 text-center bg-white rounded-lg shadow-md border border-gray-100">
+          <i class="pi pi-car text-4xl text-gray-300 mb-4"></i>
+          <h3 class="text-lg font-medium text-gray-700 mb-2">Aucun trajet disponible</h3>
+          <p class="text-gray-500 mb-4">
+            Utilisez les filtres pour afficher vos trajets ou créez un nouveau covoiturage
+          </p>
+          <div class="flex items-center text-sm text-blue-600">
+            <i class="pi pi-arrow-left mr-2"></i>
+            <span>Ajustez les critères de filtrage pour voir vos trajets</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+

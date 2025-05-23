@@ -18,6 +18,11 @@ export class CarpoolingService {
   insertCarpooling(carpooling: CarpoolingData): Observable<any> {
     return this.http.post(`${this.apiURL}`, carpooling);
   }
+
+  getCarpoolingsByOrganizer(): Observable<Carpooling[]> {
+    return this.http.get<Carpooling[]>(`${this.apiURL}/organizer/${this.authService.getUserId()}`);
+  }
+
   getCarpoolingsForParticipants(): Observable<Carpooling[]> {
     return this.http.get<Carpooling[]>(`${this.apiURL}/participant/${this.authService.getUserId()}`);
   }
@@ -36,6 +41,19 @@ export class CarpoolingService {
 
     return this.http.delete<string>(
       `${this.apiURL}/participant`,
+      {
+        params,
+        responseType: 'text' as 'json'
+      }
+    );
+  }
+
+  updateParticipantStatus(id: number, idParticipant: number, status: string): Observable<string> {
+    const params = new HttpParams().set('status', status);
+
+    return this.http.put<string>(
+      `${this.apiURL}/${id}/participants/${idParticipant}`,
+      null,  // Corps vide car les informations sont dans les paramètres
       {
         params,
         responseType: 'text' as 'json'
