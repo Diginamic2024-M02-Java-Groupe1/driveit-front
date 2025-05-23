@@ -6,9 +6,8 @@
   border-bottom-color: #dcdcdc;
 }
 
-/* Ciblez le chevron de l'autoComplete de PrimeNG */
 :host ::ng-deep .p-button {
-  color: black !important; /* Définir la couleur du chevron en noir */
+  color: black !important;
 }
 
 

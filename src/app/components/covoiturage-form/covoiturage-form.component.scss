@@ -1,0 +1,30 @@
+input::placeholder {
+  color: lightgrey;
+  font-style: italic;
+}
+
+:host ::ng-deep .p-calendar input::placeholder {
+  color: lightgrey;
+  font-style: italic;
+}
+
+:host ::ng-deep .p-dropdown-label.p-placeholder {
+  font-style: italic;
+  color: lightgrey;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

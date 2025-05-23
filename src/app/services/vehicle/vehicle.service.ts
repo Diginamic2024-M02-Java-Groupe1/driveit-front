@@ -11,6 +11,9 @@ export class VehicleService {
   private apiURL = environment.api;
   constructor(private http: HttpClient) { }
 
+  public getAllVehicles() {
+    return this.http.get<Vehicle[]>(`${this.apiURL}/vehicules`);
+  }
 
   public getServiceVehicles() {
     return this.http.get<Vehicle[]>(`${this.apiURL}/vehicules/service`);
