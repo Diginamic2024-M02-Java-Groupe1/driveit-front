@@ -9,6 +9,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Button} from "primeng/button";
 import {FilterFormComponent,GenericFilterConfig} from "../../filter-form/filter-form.component";
 import {toast} from "ngx-sonner";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-passenger-trips',
@@ -151,6 +152,7 @@ export class PassengerTripsComponent implements OnInit {
         next: (data) => {
           if(!data || data.length === 0) {
             toast.info('Aucun covoiturage trouvé pour cette recherche');
+            this.filteredCarpoolings = [];
             return;
           }
           this.filteredCarpoolings = data;
@@ -238,15 +240,22 @@ export class PassengerTripsComponent implements OnInit {
   }
 
   protected reserveTrip(carpoolingId: number): void {
-    // Implémenter la réservation ici
     const userId = this.authService.getUserId();
     if (!userId) {
       toast.error('Vous devez être connecté pour réserver un trajet');
       return;
     }
+    this.carpoolingService.addParticipant(carpoolingId, parseInt(userId))
+      .subscribe({
+        next: () => {
+          toast.success('Réservation réussie');
+          this.getCarpoolings(this.filterValues.departureAddress, this.filterValues.arrivalAddress, this.filterValues.tripDate);
+        },
+        error: (err:HttpErrorResponse) => {
+          toast.error(err.error);
+        }
+      });
 
-    // Implémentation à faire
-    toast.info('Fonctionnalité de réservation à implémenter');
   }
 
   protected toggleDetails(carpoolingId: number): void {
@@ -278,6 +287,9 @@ export class PassengerTripsComponent implements OnInit {
 
   protected getAvailableSeats(carpooling: Carpooling): string {
     const seatsAvailable = carpooling.vehicle.numberOfSeats - carpooling.participants.length;
+    if (seatsAvailable === 0) {
+      return "Complet";
+    }
     const texte = seatsAvailable > 1 ? 'places disponibles' : 'place disponible';
     return `${seatsAvailable} ${texte} sur ${carpooling.vehicle.numberOfSeats}`;
   }
@@ -302,286 +314,3 @@ export class PassengerTripsComponent implements OnInit {
     return statusMap[status] || status;
   }
 }
-// export class PassengerTripsComponent implements OnInit {
-//
-//   private readonly carpoolingService = inject(CarpoolingService);
-//   private readonly authService = inject(AuthService);
-//   private readonly route = inject(ActivatedRoute);
-//   private readonly destroyRef$ = inject(DestroyRef);
-//
-//   protected results: any[] = [];
-//   protected carpoolings: Carpooling[] = [];
-//   protected expandedTripIds: number[] = [];
-//   protected isReserveTrip: boolean = false;
-//
-//   protected filterFields: GenericFilterConfig<any>[] = [];
-//
-//   protected filteredCarpoolings: Carpooling[] = [];
-//   protected filterValues: any = {};
-//
-//   //villes
-//   protected filteredCities: any[] = [];
-//   protected cityOptions: any[] = [];
-//
-//   ngOnInit(): void {
-//     this.carpoolingService.getCities().subscribe(data => {
-//       this.cityOptions = data.map((city: string) => ({ label: city, value: city }));
-//       console.log("Villes disponibles:", this.cityOptions);
-//     });
-//
-//     this.route.data.pipe(takeUntilDestroyed(this.destroyRef$)).subscribe(data => {
-//       if (data['isPassengerReserveTrip']) {
-//         this.isReserveTrip = data['isPassengerReserveTrip'];
-//
-//         this.filterFields.push(
-//           {
-//             name: 'departureAddress',
-//             type: 'autocomplete',
-//             label: 'Lieu de départ',
-//             placeholder: 'Sélectionnez une ville',
-//             suggestions: this.filteredCities,
-//             dropdown: true,
-//             optionLabel: 'value',
-//             optionValue: 'value',
-//             filterMethod: (event: any) => {
-//               const filtered = this.cityOptions.filter(city =>
-//                 city.value.toLowerCase().includes(event.query.toLowerCase())
-//               );
-//
-//               const fieldIndex = this.filterFields.findIndex(f => f.name === 'departureAddress');
-//               if (fieldIndex !== -1) {
-//                 this.filterFields[fieldIndex] = {
-//                   ...this.filterFields[fieldIndex],
-//                   suggestions: [...filtered]
-//                 };
-//               }
-//             }
-//           },
-//
-//           {
-//             name: 'arrivalAddress',
-//             type: 'autocomplete',
-//             label: 'Lieu d\'arrivée',
-//             placeholder: 'Sélectionnez une ville',
-//             suggestions: this.filteredCities,
-//             dropdown: true,
-//             optionLabel: 'value',
-//             optionValue: 'value',
-//             filterMethod: (event: any) => {
-//              const filtered = this.cityOptions.filter(city =>
-//                 city.value.toLowerCase().includes(event.query.toLowerCase())
-//               );
-//
-//               const fieldIndex = this.filterFields.findIndex(f => f.name === 'arrivalAddress');
-//               if (fieldIndex !== -1) {
-//                 this.filterFields[fieldIndex] = {
-//                   ...this.filterFields[fieldIndex],
-//                   suggestions: [...filtered]
-//                 };
-//               }
-//
-//             }
-//           },
-//           {
-//             name: 'tripDate',
-//             type: 'date',
-//             label: 'Date du trajet'
-//           },
-//         )
-//       }else{
-//         this.getMyTrips();
-//         this.filterFields.push(
-//           {
-//             name: 'departureAddress',
-//             type: 'autocomplete',
-//             label: 'Lieu de départ',
-//             placeholder: 'Sélectionnez une ville',
-//             suggestions: [],
-//             dropdown: true,
-//             optionLabel: 'value',
-//             optionValue: 'value',
-//             filterMethod: (event: any) => {
-//               const filtered = this.cityOptions.filter(city =>
-//                 city.value.toLowerCase().includes(event.query.toLowerCase())
-//               );
-//
-//               const fieldIndex = this.filterFields.findIndex(f => f.name === 'departureAddress');
-//               if (fieldIndex !== -1) {
-//                 this.filterFields[fieldIndex] = {
-//                   ...this.filterFields[fieldIndex],
-//                   suggestions: [...filtered]
-//                 };
-//               }
-//             }
-//           },
-//           {
-//             name: 'arrivalAddress',
-//             type: 'autocomplete',
-//             label: 'Lieu d\'arrivée',
-//             placeholder: 'Sélectionnez une ville',
-//             suggestions: [],
-//             dropdown: true,
-//             optionLabel: 'value',
-//             optionValue: 'value',
-//             filterMethod: (event: any) => {
-//               const filtered = this.cityOptions.filter(city =>
-//                 city.value.toLowerCase().includes(event.query.toLowerCase())
-//               );
-//
-//               const fieldIndex = this.filterFields.findIndex(f => f.name === 'arrivalAddress');
-//               if (fieldIndex !== -1) {
-//                 this.filterFields[fieldIndex] = {
-//                   ...this.filterFields[fieldIndex],
-//                   suggestions: [...filtered]
-//                 };
-//               }
-//             }
-//           },
-//             {
-//               name: 'tripDate',
-//               type: 'date',
-//               label: 'Date du trajet'
-//             },
-//             {
-//               name: 'status',
-//               type: 'select',
-//               label: 'Statut',
-//               options: [
-//                 { label: '', value: '' },
-//                 { label: 'Accepté', value: 'ACCEPTED' },
-//                 { label: 'En attente', value: 'PENDING' },
-//                 { label: 'Refusé', value: 'REFUSED' }
-//               ]
-//             }
-//         )
-//       }
-//     });
-//   }
-//
-//   getMyTrips(): void {
-//     this.carpoolingService.getCarpoolingsForParticipants().pipe(takeUntilDestroyed(this.destroyRef$))
-//       .subscribe({
-//       next: (data) => {
-//         this.carpoolings = data;
-//         this.applyFilters();
-//         console.log('Carpoolings:', this.carpoolings);
-//       }
-//     });
-//   }
-//
-//   getCarpoolings(departCity:string,arrivalCity:string,date:any): void {
-//     this.carpoolingService.searchCarpoolings(departCity,arrivalCity,date)
-//       .pipe(takeUntilDestroyed(this.destroyRef$)).subscribe({
-//         next: (data) => {
-//           this.filteredCarpoolings = data;
-//         },
-//         error: (error) => {
-//           console.error('Erreur lors de la recherche de covoiturages:', error);
-//         }
-//     })
-//   }
-//
-//   onFilterSubmit(formData: any): void {
-//     this.filterValues = formData;
-//     if(!this.isReserveTrip) {
-//       this.applyFilters();
-//     }else{
-//     this.getCarpoolings(this.filterValues.departureAddress, this.filterValues.arrivalAddress, this.filterValues.tripDate);
-//     }
-//     console.log('Valeurs du formulaire de filtre:', this.filterValues);
-//   }
-//
-//   private applyFilters(): void {
-//     this.filteredCarpoolings = this.carpoolings.filter(carpooling => {
-//       // Filtre par statut
-//       if (this.filterValues.status && carpooling.status !== this.filterValues.status) {
-//         return false;
-//       }
-//
-//       // Filtre par date
-//       if (this.filterValues.tripDate) {
-//         const filterDate = new Date(this.filterValues.tripDate);
-//         const carpoolingDate = new Date(carpooling.departureDate);
-//
-//         if (filterDate.toDateString() !== carpoolingDate.toDateString()) {
-//           return false;
-//         }
-//       }
-//
-//       // Filtre par adresse de départ
-//       if (this.filterValues.departureAddress) {
-//         const departureAddress = `${carpooling.departureAddress.streetNumber} ${carpooling.departureAddress.streetName}`.toLowerCase();
-//         if (!departureAddress.includes(this.filterValues.departureAddress.toLowerCase())) {
-//           return false;
-//         }
-//       }
-//
-//       // Filtre par adresse d'arrivée
-//       if (this.filterValues.arrivalAddress) {
-//         const arrivalAddress = `${carpooling.arrivalAddress.streetNumber} ${carpooling.arrivalAddress.streetName}`.toLowerCase();
-//         if (!arrivalAddress.includes(this.filterValues.arrivalAddress.toLowerCase())) {
-//           return false;
-//         }
-//       }
-//
-//       return true;
-//     });
-//   }
-//
-//   removeMeFromCarpooling(carpoolingId: number): void {
-//     const participantId = this.authService.getUserId();
-//     if (!participantId) return;
-//     this.carpoolingService.removeParticipant(carpoolingId, parseInt(participantId))
-//         .subscribe({
-//           next: () => this.getMyTrips(),
-//           error: err => console.error('Erreur lors du retrait du participant', err)
-//         });
-//   }
-//
-//   reserveTrip(carpoolingId: number): void {
-//
-//   }
-//
-//   toggleDetails(carpoolingId: number): void {
-//     const index = this.expandedTripIds.indexOf(carpoolingId);
-//     if (index === -1) {
-//       this.expandedTripIds.push(carpoolingId);
-//     } else {
-//       this.expandedTripIds.splice(index, 1);
-//     }
-//   }
-//
-//   isExpanded(carpoolingId: number): boolean {
-//     return this.expandedTripIds.includes(carpoolingId);
-//   }
-//
-//   getOrganizer(carpooling: Carpooling): string {
-//     return `${carpooling.organizer.firstName} ${carpooling.organizer.lastName}`;
-//   }
-//
-//   getAvailableSeats(carpooling: Carpooling): string {
-//     const seatsAvailable = carpooling.vehicle.numberOfSeats - carpooling.participants.length;
-//     let texte = seatsAvailable> 1 ? 'places disponibles' : 'place disponible';
-//     return `${seatsAvailable} ${texte} sur ${carpooling.vehicle.numberOfSeats}`;
-//   }
-//
-//   getVehicle(carpooling: Carpooling): string {
-//     return `${carpooling.vehicle.model.brand.name} ${carpooling.vehicle.model.name}`;
-//   }
-//
-//   getAdress(address: Address): {line1: string, line2: string} {
-//     return {
-//       line1: `${address.streetNumber} ${address.streetName}`,
-//       line2: `${address.cityZipCode.code} ${address.cityZipCode.city}`
-//     };
-//   }
-//
-//   getStatusLabel(status: string): string {
-//     const statusMap: Record<string, string> = {
-//       'ACCEPTED': 'acceptée',
-//       'PENDING': 'en attente',
-//       'REFUSED': 'refusée'
-//     };
-//     return statusMap[status] || status;
-//   }
-// }

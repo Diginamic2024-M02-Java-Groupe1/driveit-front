@@ -16,25 +16,7 @@ export class AuthService {
     private readonly http = inject(HttpClient);
     private readonly router = inject(Router);
 
-    constructor() {
-    }
-
-    // async checkSession(): Promise<boolean> {
-    //     try {
-    //         const user = await this.http.get<any>(`${environment.api}/collaborators/me`, {withCredentials: true}).toPromise();
-    //         this.userData = {
-    //             role: user.authorities[0].authority,
-    //             userId: user.id,
-    //             nom: user.lastName,
-    //             prenom: user.firstName,
-    //         };
-    //         this.userDataSubject.next(this.userData);
-    //         return true;
-    //     } catch {
-    //         this.clearUserData();
-    //         return false;
-    //     }
-    // }
+    constructor() {}
 
     async checkSession(): Promise<boolean> {
         try {

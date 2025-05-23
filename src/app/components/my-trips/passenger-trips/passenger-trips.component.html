@@ -68,7 +68,8 @@
                             </div>
                         </div>
                         @if(isReserveTrip && carpooling.vehicle.numberOfSeats > carpooling.participants.length) {
-                            <p-button label="Réserver" icon="pi pi-check" class="w-full" (click)="reserveTrip(carpooling.id)"></p-button>
+                            <p-button label="Réserver" icon="pi pi-check" class="w-full"
+                                      (click)="reserveTrip(carpooling.id)" (keydown.enter)="reserveTrip(carpooling.id)"></p-button>
                         }
                     </div>
 

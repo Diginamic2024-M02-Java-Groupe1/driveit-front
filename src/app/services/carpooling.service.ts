@@ -22,6 +22,13 @@ export class CarpoolingService {
     return this.http.get<Carpooling[]>(`${this.apiURL}/participant/${this.authService.getUserId()}`);
   }
 
+  addParticipant(idCarpooling: number, idParticipant: number): Observable<string> {
+    return this.http.get<string>(
+      `${this.apiURL}/${idCarpooling}/participants/${idParticipant}`,
+      { responseType: 'text' as 'json' }
+    );
+  }
+
   removeParticipant(idCarpooling: number, idParticipant: number): Observable<string> {
     const params = new HttpParams()
       .set('idCarpooling', idCarpooling.toString())
